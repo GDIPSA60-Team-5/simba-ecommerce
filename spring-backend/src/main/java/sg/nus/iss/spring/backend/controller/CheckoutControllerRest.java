@@ -14,10 +14,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.stripe.Stripe;
-import com.stripe.model.checkout.Session;
-import com.stripe.param.checkout.SessionCreateParams;
-
 import jakarta.servlet.http.HttpSession;
 import sg.nus.iss.spring.backend.interfacemethods.CheckoutInterface;
 import sg.nus.iss.spring.backend.model.CartItem;
@@ -27,11 +23,6 @@ import sg.nus.iss.spring.backend.model.CartItem;
 public class CheckoutControllerRest {
 	@Autowired
 	private CheckoutInterface checkoutInterface;
-	
-	private final String MY_DOMAIN = "http://localhost:8080";
-	static {
-		Stripe.apiKey = "sk_test_51RBtJ5GBEBEiOSMSwCNG9SWurkv6aRMDKx75WJ25okSE3sRE7NJQJcScQqjd82l5v4sxFF2XrAn1iW9hUPJPULw6009memfSib";
-	}
 		
 	// go to the browse-product page
 	@GetMapping("/")
@@ -82,46 +73,6 @@ public class CheckoutControllerRest {
 	}
 	
 	// implement the payment gateway method by embedding Stripe	
-	// POST: Create Checkout Session
-    @PostMapping("/cart/create-checkout-session")
-    public Map<String, String> createCheckoutSession() throws Exception {
-        SessionCreateParams params = SessionCreateParams.builder()
-            .setUiMode(SessionCreateParams.UiMode.EMBEDDED)
-            .setMode(SessionCreateParams.Mode.PAYMENT)
-            .setReturnUrl(MY_DOMAIN + "/cart/return.html?session_id={CHECKOUT_SESSION_ID}")
-            .addLineItem(
-                SessionCreateParams.LineItem.builder()
-                    .setQuantity(1L)
-                    .setPrice("{{PRICE_ID}}") // Replace with your actual Price ID
-                    .build())
-            .build();
-
-        Session session = Session.create(params);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("clientSecret", session.getRawJsonObject()
-                                             .getAsJsonPrimitive("client_secret")
-                                             .getAsString());
-        return response;
-    }
-
-    // GET: Retrieve session status
-    @GetMapping("/session-status")
-    public Map<String, String> getSessionStatus(@RequestParam("session_id") String sessionId) throws Exception {
-        Session session = Session.retrieve(sessionId);
-
-        Map<String, String> response = new HashMap<>();
-        response.put("status", session.getRawJsonObject()
-                                      .getAsJsonPrimitive("status")
-                                      .getAsString());
-
-        response.put("customer_email", session.getRawJsonObject()
-                                              .getAsJsonObject("customer_details")
-                                              .getAsJsonPrimitive("email")
-                                              .getAsString());
-
-        return response;
-    }
 	
 	// cancel order in cart page
 	@DeleteMapping("/cart/cancel-order/{userId}")
