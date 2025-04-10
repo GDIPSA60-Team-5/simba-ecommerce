@@ -8,6 +8,7 @@ import sg.nus.iss.spring.backend.model.CartItem;
 
 public interface CartRepository extends JpaRepository<CartItem, Integer> {
 
-	List<CartItem> findAllByUser_Id(int user_id);
+	List<CartItem> findAllByUser_Id(int userId);
+	void deleteAllByUser_Id(int userId);
 
 }

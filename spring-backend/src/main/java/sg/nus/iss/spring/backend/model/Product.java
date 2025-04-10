@@ -33,17 +33,19 @@ public class Product {
     @Column
     private float rating;
 
-    @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
-    private Category category;
+//    @ManyToOne
+//    @JoinColumn(name = "category_id", nullable = false)
+//    private Category category;
+    
+    @OneToMany(mappedBy="product")
+    private List<CartItem> userCart;
 
     // Constructors
     public Product() {
     }
 
-    public Product(int id, String name, String description, String category, String brand,
-                   float price, int quantity, String imageUrl, float rating) {
-        this.id = id;
+    public Product(String name, String description, String brand, float price, int quantity, 
+    		String imageUrl, float rating) {
         this.name = name;
         this.description = description;
         this.brand = brand;
@@ -78,13 +80,13 @@ public class Product {
         this.description = description;
     }
 
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
+//    public Category getCategory() {
+//        return category;
+//    }
+//
+//    public void setCategory(Category category) {
+//        this.category = category;
+//    }
 
     public String getBrand() {
         return brand;

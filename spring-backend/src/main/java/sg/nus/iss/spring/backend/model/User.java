@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -41,6 +42,10 @@ public class User {
 
     @Column(name = "user_role", nullable = false)
     private String userRole;
+    
+    // One to many mapping for UserCart
+    @OneToMany(mappedBy = "user")
+    private List<CartItem> userCart;
 
     // Constructors
     public User() {
