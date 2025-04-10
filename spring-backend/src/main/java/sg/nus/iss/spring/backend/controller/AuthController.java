@@ -6,9 +6,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import sg.nus.iss.spring.backend.exception.auth.InvalidCredentialsException;
 import sg.nus.iss.spring.backend.exception.auth.UserAlreadyExistsException;
-import sg.nus.iss.spring.backend.interfacemethods.AuthInterface;
+import sg.nus.iss.spring.backend.interfacemethods.AuthService;
 import sg.nus.iss.spring.backend.model.Role;
 import sg.nus.iss.spring.backend.model.User;
+import sg.nus.iss.spring.backend.service.AuthServiceImpl;
 
 /* Written by Phyo Nyi Nyi Paing */
 @RestController
@@ -16,9 +17,9 @@ import sg.nus.iss.spring.backend.model.User;
 public class AuthController {
 
     private final Role DEFAULT_ROLE = Role.USER;
-    private final AuthInterface authService;
+    private final AuthService authService;
 
-    public AuthController(AuthInterface authService) {
+    public AuthController(AuthServiceImpl authService) {
         this.authService = authService;
     }
 
