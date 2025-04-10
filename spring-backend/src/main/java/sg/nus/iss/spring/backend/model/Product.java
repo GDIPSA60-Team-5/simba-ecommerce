@@ -25,7 +25,7 @@ public class Product {
     private float price;
 
     @Column(nullable = false)
-    private int quantity;
+    private int inStockQty;
 
     @Column(name = "image_url", length = 500)
     private String imageUrl;
@@ -41,16 +41,16 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, String name, String description, String category, String brand,
-                   float price, int quantity, String imageUrl, float rating) {
-        this.id = id;
+    public Product(String name, String description, String category, String brand,
+                   float price, int inStockQty, String imageUrl, float rating) {
         this.name = name;
         this.description = description;
         this.brand = brand;
         this.price = price;
-        this.quantity = quantity;
+        this.inStockQty = inStockQty;
         this.imageUrl = imageUrl;
         this.rating = rating;
+      
     }
 
     // Getters and Setters
@@ -102,12 +102,12 @@ public class Product {
         this.price = price;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getinStockQty() {
+        return inStockQty;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setinStockQty(int quantity) {
+        this.inStockQty = quantity;
     }
 
     public String getImageUrl() {
@@ -125,5 +125,8 @@ public class Product {
     public void setRating(float rating) {
         this.rating = rating;
     }
+
+
+   
 }
 
