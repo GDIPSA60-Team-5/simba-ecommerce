@@ -4,8 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import sg.nus.iss.spring.backend.Repository.CartRepository;
-import sg.nus.iss.spring.backend.Repository.ProductRepository;
+import sg.nus.iss.spring.backend.repository.CartRepository;
+import sg.nus.iss.spring.backend.repository.ProductRepository;
 import sg.nus.iss.spring.backend.model.Cart;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.Product;
