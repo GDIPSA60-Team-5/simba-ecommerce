@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sg.nus.iss.spring.backend.exception.auth.InvalidCredentialsException;
+import sg.nus.iss.spring.backend.exception.auth.UserAlreadyExistsException;
 import sg.nus.iss.spring.backend.interfacemethods.AuthInterface;
 import sg.nus.iss.spring.backend.model.Role;
 import sg.nus.iss.spring.backend.model.User;
@@ -32,7 +34,7 @@ public class AuthController {
             user.setRole(DEFAULT_ROLE);
             authService.register(user);
             return new ResponseEntity<>(HttpStatus.CREATED);
-        } catch (RuntimeException e) {
+        } catch (UserAlreadyExistsException e) {
             return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
         }
     }
@@ -51,7 +53,7 @@ public class AuthController {
         try {
             authService.authenticate(username, password, DEFAULT_ROLE, session);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (RuntimeException e) {
+        } catch (InvalidCredentialsException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(e.getMessage());
