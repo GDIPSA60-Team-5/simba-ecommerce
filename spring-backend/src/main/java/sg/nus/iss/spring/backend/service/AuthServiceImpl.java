@@ -38,7 +38,7 @@ public class AuthServiceImpl implements AuthService {
      * @param password the password to validate
      * @param role     the required role for authentication (e.g. user, admin)
      * @param session  the HTTP session to store the authenticated user
-     * @throws InvalidCredentialsException if username does not exist or password is not matching
+     * @throws InvalidCredentialsException if username does not exist or password is incorrect
      */
     @Override
     public void authenticate(String username, String password, Role role, HttpSession session) {

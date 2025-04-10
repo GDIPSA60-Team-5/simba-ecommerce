@@ -27,7 +27,7 @@ public class AuthController {
      * Handles new user registration.
      *
      * @param user The user details to register.
-     * @return ResponseEntity with status created or error message.
+     * @return ResponseEntity with status created or expectation failed status.
      */
     @PostMapping("/register")
     public ResponseEntity<HttpStatus> register(@RequestBody User user) {
@@ -46,7 +46,7 @@ public class AuthController {
      * @param username The user's username.
      * @param password The user's password.
      * @param session  The current HTTP session.
-     * @return ResponseEntity with a success or unauthorized message.
+     * @return ResponseEntity with a success or unauthorized status.
      */
     @PostMapping("/login")
     public ResponseEntity<?> login(
@@ -65,7 +65,7 @@ public class AuthController {
      * Handles user logout of the session.
      *
      * @param session The current HTTP session.
-     * @return ResponseEntity with a success message.
+     * @return ResponseEntity with a success status.
      */
     @PostMapping("/logout")
     public ResponseEntity<HttpStatus> logout(HttpSession session) {
