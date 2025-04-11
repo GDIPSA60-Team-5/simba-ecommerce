@@ -33,12 +33,12 @@ public class Product {
     @Column
     private float rating;
 
-//    @ManyToOne
-//    @JoinColumn(name = "category_id", nullable = false)
-//    private Category category;
+    @ManyToOne
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
     
     @OneToMany(mappedBy="product")
-    private List<CartItem> userCart;
+    private List<CartItem> cartItems;
 
     // Constructors
     public Product() {
@@ -80,13 +80,13 @@ public class Product {
         this.description = description;
     }
 
-//    public Category getCategory() {
-//        return category;
-//    }
-//
-//    public void setCategory(Category category) {
-//        this.category = category;
-//    }
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
     public String getBrand() {
         return brand;

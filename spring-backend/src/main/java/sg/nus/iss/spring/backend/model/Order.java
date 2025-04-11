@@ -11,7 +11,7 @@ public class Order {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int orderId;
+    private int id;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -25,10 +25,9 @@ public class Order {
     @JoinColumn(name = "delivery_type_id", nullable = false)
     private DeliveryType deliveryType;
 
-    private float totalAmount;
-
     private String status;
 
+    
     private LocalDateTime dateTime;
 
     private String shippingAddress;
@@ -42,14 +41,30 @@ public class Order {
             inverseJoinColumns = @JoinColumn(name = "product_id"))
     private List<Product> products;
 
+    // Constructors
+    public Order() {
+    	
+    }
 
-    // Getters and Setters
+    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime,
+    		String shippingAddress, float goodsServiceTax, List<Product> products) {
+		this.user = user;
+		this.paymentType = paymentType;
+		this.deliveryType = deliveryType;
+		this.status = status;
+		this.dateTime = dateTime;
+		this.shippingAddress = shippingAddress;
+		this.goodsServiceTax = goodsServiceTax;
+		this.products = products;
+	}
+
+	// Getters and Setters
     public int getOrderId() {
-        return orderId;
+        return id;
     }
 
     public void setOrderId(int orderId) {
-        this.orderId = orderId;
+        this.id = orderId;
     }
 
     public User getUser() {
@@ -74,14 +89,6 @@ public class Order {
 
     public void setDeliveryType(DeliveryType deliveryType) {
         this.deliveryType = deliveryType;
-    }
-
-    public float getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(float totalAmount) {
-        this.totalAmount = totalAmount;
     }
 
     public String getStatus() {

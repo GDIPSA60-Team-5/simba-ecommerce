@@ -45,7 +45,7 @@ public class User {
     
     // One to many mapping for UserCart
     @OneToMany(mappedBy = "user")
-    private List<CartItem> userCart;
+    private List<CartItem> cartItems;
 
     // Constructors
     public User() {
