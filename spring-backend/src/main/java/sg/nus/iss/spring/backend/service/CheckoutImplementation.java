@@ -24,6 +24,8 @@ import sg.nus.iss.spring.backend.repository.OrderItemRepository;
 import sg.nus.iss.spring.backend.repository.OrderRepository;
 import sg.nus.iss.spring.backend.repository.PaymentTypeRepository;
 
+
+/* Written by Aung Myin Moe */
 @Service
 @Transactional
 public class CheckoutImplementation implements CheckoutInterface {
@@ -75,6 +77,7 @@ public class CheckoutImplementation implements CheckoutInterface {
 		PaymentType pType;
 		if (existingPType.isEmpty()) {
 			pType = new PaymentType(paymentType);
+			paymentRepo.save(pType);
 		} else {
 			pType = existingPType.get();
 		}
@@ -96,10 +99,9 @@ public class CheckoutImplementation implements CheckoutInterface {
 		// get dateTime of order and shipping address from order data
 		LocalDateTime dateTime = (LocalDateTime) orderData.get("date_time");
 		String shippingAddress = (String) orderData.get("shipping_address");
-		float goodsServiceTax = 9f;
 				
 		// now create an order instance and save it to database
-		Order order = new Order(user, pType, dType, status, dateTime, shippingAddress, goodsServiceTax);
+		Order order = new Order(user, pType, dType, status, dateTime, shippingAddress);
 		Order savedOrder = orderRepo.save(order);	
 
 		// create order_item records for each cart_item

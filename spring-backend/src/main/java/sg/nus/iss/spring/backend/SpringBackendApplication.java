@@ -1,7 +1,6 @@
 package sg.nus.iss.spring.backend;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,9 +8,14 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 
 import sg.nus.iss.spring.backend.model.Product;
+import sg.nus.iss.spring.backend.model.Role;
 import sg.nus.iss.spring.backend.model.User;
 import sg.nus.iss.spring.backend.model.CartItem;
+import sg.nus.iss.spring.backend.model.Category;
+import sg.nus.iss.spring.backend.model.DeliveryType;
 import sg.nus.iss.spring.backend.repository.CartRepository;
+import sg.nus.iss.spring.backend.repository.CategoryRepository;
+import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
 import sg.nus.iss.spring.backend.repository.ProductRepository;
 import sg.nus.iss.spring.backend.repository.UserRepository;
 
@@ -22,50 +26,84 @@ public class SpringBackendApplication {
         SpringApplication.run(SpringBackendApplication.class, args);
     }
     
-//    @Bean
-//	CommandLineRunner loadData(CartRepository cartRepo, UserRepository userRepo, ProductRepository productRepo) {
-//		return(args) -> {
-//			// Parse the string to LocalDate
-//			SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-//			Date date = formatter.parse("12/12/2023");
-//
-//			User user1 = new User("Aung", "Moe", "asdf", "123", "dfhd", "wery", "ili", date, "erter");
-//			userRepo.save(user1);
-//			
-//			Product product1 = new Product("asdf", "bb", "dd", 1f, 2, "a", 1f);
-//			productRepo.save(product1);
-//			
-//			// add a few cart items
-//			CartItem cart1 = new CartItem(user1, product1, 3);
-//			cartRepo.save(cart1);
-//			
-//			User user2 = new User("wer", "uiu", "amm", "io", "rtyrt", "23", "kyuk", date, "li");
-//			userRepo.save(user2);
-//			
-//			Product product2 = new Product("aa", "bb", "cc", 1f, 2, "a", 1f);
-//			productRepo.save(product2);
-//			
-//			// add a few cart items
-//			CartItem cart2 = new CartItem(user2, product2, 3);
-//			cartRepo.save(cart2);
-//			
-//			User user3 = new User("wersd", "uisdu", "asdmm", "isdo", "rtysdrt", "2sd3", "ksdyuk", date, "lisd");
-//			userRepo.save(user3);
-//			
-//			Product product3 = new Product("asda", "bsdb", "csdc", 1f, 2, "sda", 1f);
-//			productRepo.save(product3);
-//			
-//			// add a few cart items
-//			CartItem cart3 = new CartItem(user3, product3, 3);
-//			cartRepo.save(cart3);
-//			
-//			CartItem cart4 = new CartItem(user1, product2, 2);
-//			CartItem cart5 = new CartItem(user1, product3, 5);
-//			
-//			cartRepo.save(cart4);
-//			cartRepo.save(cart5);
-//		};
-//		
-//	}
+    @Bean
+	CommandLineRunner loadData(CartRepository cartRepo, UserRepository userRepo, ProductRepository productRepo, DeliveryTypeRepository deliTypeRepo,
+			CategoryRepository categoryRepo) {
+		return(args) -> {
+			// user dummy data
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+	        User user_1 = userRepo.save(new User(
+	                "Alice", "Tan", "alice", "pass123", "91234567", "alice@example.com",
+	                "123 Orchard Rd", sdf.parse("1990-01-01"), Role.USER
+	        ));
+
+	        User user_2 = userRepo.save(new User(
+	                "Bob", "Lee", "bob", "pass123", "98765432", "bob@example.com",
+	                "456 Clementi Rd", sdf.parse("1985-05-15"), Role.ADMIN
+	        ));
+
+	        User user_3 = userRepo.save(new User(
+	                "Carol", "Lim", "carol", "pass123", "92223333", "carol@example.com",
+	                "789 Bukit Timah", sdf.parse("1992-07-10"), Role.USER
+	        ));
+	        
+	        // caetgory dummy data
+	        Category electronics = categoryRepo.save(new Category("Electronics"));
+	        categoryRepo.save(new Category("Home Appliances"));
+	        categoryRepo.save(new Category("Fashion"));
+	        
+	        // product dummy data
+	        Product product_1 = productRepo.save(new Product(
+	        	    "Wireless Headphones", "Noise-cancelling over-ear headphones", "SoundMagic", 129.99f, 50,
+	        	    "https://example.com/images/headphones.jpg", 4.6f, electronics
+	        	));
+
+        	Product product_2 = productRepo.save(new Product(
+        	    "Smart Watch", "Water-resistant smart watch with fitness tracking", "FitTech", 89.50f, 75,
+        	    "https://example.com/images/smartwatch.jpg", 4.3f, electronics
+        	));
+
+        	Product product_3 = productRepo.save(new Product(
+        	    "Gaming Mouse", "RGB gaming mouse with 6 programmable buttons", "ProGamer", 45.90f, 100,
+        	    "https://example.com/images/gamingmouse.jpg", 4.7f, electronics
+        	));
+			
+			// cart item dummy data
+        	cartRepo.save(new CartItem(
+    		    user_1, product_1, 2 // Alice buys 2 Wireless Headphones
+    		));
+
+    		cartRepo.save(new CartItem(
+    		    user_1, product_3, 1 // Alice buys 1 Gaming Mouse
+    		));
+
+    		cartRepo.save(new CartItem(
+    		    user_2, product_2, 3 // Bob buys 3 Smart Watches
+    		));
+
+    		cartRepo.save(new CartItem(
+    		    user_3, product_1, 1 // Carol buys 1 Wireless Headphones
+    		));
+
+    		cartRepo.save(new CartItem(
+    		    user_3, product_2, 2 // Carol buys 2 Smart Watches
+    		));
+    		
+    		// delivery type dummy data
+    		deliTypeRepo.save(new DeliveryType(
+			    "Standard Delivery", "Delivered within 3–5 working days", 3.50f
+			));
+
+			deliTypeRepo.save(new DeliveryType(
+			    "Express Delivery", "Delivered within 1–2 working days", 7.90f
+			));
+
+			deliTypeRepo.save(new DeliveryType(
+			    "Same-Day Delivery", "Delivered on the same day if ordered before 12pm", 12.00f
+			));
+		};
+		
+	}
 
 }

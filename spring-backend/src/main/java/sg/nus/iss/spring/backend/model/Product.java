@@ -48,7 +48,7 @@ public class Product {
     }
 
     public Product(String name, String description, String brand, float price, int quantity, 
-    		String imageUrl, float rating) {
+    		String imageUrl, float rating, Category category) {
         this.name = name;
         this.description = description;
         this.brand = brand;
@@ -56,6 +56,7 @@ public class Product {
         this.quantity = quantity;
         this.imageUrl = imageUrl;
         this.rating = rating;
+        this.category = category;
     }
 
     // Getters and Setters

@@ -67,11 +67,12 @@ public class CheckoutController {
 		// validate input data deliType and shippingAddress
 		// ...
 		// save form input data into session
-		// remove the session data from previous order
+		// remove the previous order_data in the session before saving new order_data
 		session.removeAttribute("order_data");
 		Map<String, Object> orderData = new HashMap<>();
 		orderData.put("delivery_type", deliType);
 		orderData.put("shipping_address", shippingAddress);
+		session.setAttribute("order_data", orderData);
 		
 		// get the cart items of the user
 		List<CartItem> cartItems = getCartItems(session);
@@ -111,6 +112,7 @@ public class CheckoutController {
 		Session stripeCheckoutSession = Session.create(params);
 		Map<String, Object> result = new HashMap<>();
 		result.put("sessionId", stripeCheckoutSession.getId());
+		result.put("checkoutUrl", stripeCheckoutSession.getUrl());
 		return ResponseEntity.ok(result).getBody();	
 	}
 	
@@ -119,6 +121,7 @@ public class CheckoutController {
 	@GetMapping("/payment/success")
 	public String paymentSuccess(HttpSession session, @RequestParam("session_id") String sessionId) throws Exception {
 		// upon successful payment, save the order details in the order table
+		// to save order details, we will collect required attributes and save it to session
 		// ...
 		List<CartItem> cartItems = getCartItems(session);
 		
@@ -147,6 +150,7 @@ public class CheckoutController {
 		Map<String, Object> orderData = (Map<String, Object>) session.getAttribute("order_data");
 	    orderData.put("date_time", LocalDateTime.now());
 	    orderData.put("payment_type", paymentType);
+	    session.setAttribute("order_data", orderData);
 		
 	    // save the order record
 	    checkoutInterface.saveOrderRecord(session, cartItems);

@@ -43,14 +43,14 @@ public class Order {
     }
 
     public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime,
-    		String shippingAddress, float goodsServiceTax) {
+    		String shippingAddress) {
 		this.user = user;
 		this.paymentType = paymentType;
 		this.deliveryType = deliveryType;
 		this.status = status;
 		this.dateTime = dateTime;
 		this.shippingAddress = shippingAddress;
-		this.goodsServiceTax = goodsServiceTax;
+		this.goodsServiceTax = 0.09f;
 	}
 
 	// Getters and Setters
