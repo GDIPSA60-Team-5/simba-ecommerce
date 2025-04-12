@@ -157,6 +157,7 @@ public class CheckoutController {
 		checkoutInterface.removeCart(userId);
 		
 		// send payment successful email to the customer
+		// ... to implement if we have time ...
 		return "Payment Successful!";
 	}
 	

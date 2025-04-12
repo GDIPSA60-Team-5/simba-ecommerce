@@ -34,12 +34,8 @@ public class Order {
 
     private float goodsServiceTax;
 
-    @ManyToMany
-    @JoinTable(
-            name = "order_items",
-            joinColumns = @JoinColumn(name = "order_id"),
-            inverseJoinColumns = @JoinColumn(name = "product_id"))
-    private List<Product> products;
+    @OneToMany(mappedBy="order")
+    private List<OrderItem> orderItems;
 
     // Constructors
     public Order() {
@@ -47,7 +43,7 @@ public class Order {
     }
 
     public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime,
-    		String shippingAddress, float goodsServiceTax, List<Product> products) {
+    		String shippingAddress, float goodsServiceTax) {
 		this.user = user;
 		this.paymentType = paymentType;
 		this.deliveryType = deliveryType;
@@ -55,7 +51,6 @@ public class Order {
 		this.dateTime = dateTime;
 		this.shippingAddress = shippingAddress;
 		this.goodsServiceTax = goodsServiceTax;
-		this.products = products;
 	}
 
 	// Getters and Setters
@@ -121,13 +116,5 @@ public class Order {
 
     public void setGoodsServiceTax(float goodsServiceTax) {
         this.goodsServiceTax = goodsServiceTax;
-    }
-
-    public List<Product> getProducts() {
-        return products;
-    }
-
-    public void setProducts(List<Product> products) {
-        this.products = products;
     }
 }
