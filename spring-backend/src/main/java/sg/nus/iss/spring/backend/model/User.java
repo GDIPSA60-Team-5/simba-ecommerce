@@ -1,6 +1,5 @@
 package sg.nus.iss.spring.backend.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -14,18 +13,17 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Column(nullable = false, unique = true, length = 50)
+    private String username;
+
+    @Column(nullable = false)
+    private String password;
+
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
-
-    @Column(nullable = false, unique = true, length = 50)
-    private String username;
-
-    @Column(nullable = false)
-    @JsonIgnore
-    private String password;
 
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
@@ -39,20 +37,20 @@ public class User {
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
-
-    @Column(name = "user_role", nullable = false)
-    private String userRole;
     
     // One to many mapping for UserCart
     @OneToMany(mappedBy = "user")
     private List<CartItem> cartItems;
+
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
 
     // Constructors
     public User() {
     }
 
     public User(String firstName, String lastName, String username, String password,
-                String phoneNumber, String email, String address, Date dateOfBirth, String userRole) {
+                String phoneNumber, String email, String address, Date dateOfBirth, Role userRole) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.username = username;
@@ -61,7 +59,7 @@ public class User {
         this.email = email;
         this.address = address;
         this.dateOfBirth = dateOfBirth;
-        this.userRole = userRole;
+        this.role = userRole;
     }
 
     // Getters and Setters
@@ -129,12 +127,20 @@ public class User {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public String getUserRole() {
-        return userRole;
+    public Role getRole() {
+        return role;
     }
 
-    public void setUserRole(String userRole) {
-        this.userRole = userRole;
+    public void setRole(Role userRole) {
+        this.role = userRole;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 
