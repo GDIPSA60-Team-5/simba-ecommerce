@@ -1,4 +1,4 @@
-package sg.nus.iss.spring.backend.interfaceMethods;
+package sg.nus.iss.spring.backend.interfacemethods;
 
 import sg.nus.iss.spring.backend.model.Product;
 

@@ -3,7 +3,7 @@ package sg.nus.iss.spring.backend.service;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import sg.nus.iss.spring.backend.interfaceMethods.ProductService;
+import sg.nus.iss.spring.backend.interfacemethods.ProductService;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.repository.ProductRepository;
 

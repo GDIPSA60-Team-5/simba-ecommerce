@@ -2,8 +2,6 @@ package sg.nus.iss.spring.backend.model;
 
 import jakarta.persistence.*;
 
-import java.util.List;
-
 @Entity
 @Table(name = "products")
 public class Product {
@@ -41,9 +39,8 @@ public class Product {
     public Product() {
     }
 
-    public Product(int id, String name, String description, String category, String brand,
+    public Product(String name, String description, Category category, String brand,
                    float price, int quantity, String imageUrl, float rating) {
-        this.id = id;
         this.name = name;
         this.description = description;
         this.brand = brand;
