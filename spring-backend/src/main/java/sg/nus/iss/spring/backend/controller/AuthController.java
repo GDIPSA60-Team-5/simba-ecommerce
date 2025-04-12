@@ -49,11 +49,11 @@ public class AuthController {
      * @return ResponseEntity with a success or unauthorized status.
      */
     @PostMapping("/login")
-    public ResponseEntity<?> login(
+    public ResponseEntity<String> login(
             @RequestParam String username, @RequestParam String password, HttpSession session) {
         try {
-            authService.authenticate(username, password, DEFAULT_ROLE, session);
-            return new ResponseEntity<>(HttpStatus.OK);
+            authService.login(username, password, DEFAULT_ROLE, session);
+            return ResponseEntity.ok("Login Successful");
         } catch (InvalidCredentialsException e) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)

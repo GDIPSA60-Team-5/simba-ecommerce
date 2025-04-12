@@ -21,13 +21,15 @@ public class AuthServiceImpl implements AuthService {
      * Registers a new user if the username does not already exist.
      *
      * @param newUser the user object to register
-     * @throws UserAlreadyExistsException if the username is already taken
+     * @throws UserAlreadyExistsException if the username or email is already taken
      */
     @Override
     public void register(User newUser) {
-        if (userRepository.existsByUsername(newUser.getUsername())) {
+        if (userRepository.existsByUsername(newUser.getUsername()))
             throw new UserAlreadyExistsException("Username taken");
-        }
+
+        if (userRepository.existsByEmail(newUser.getEmail()))
+            throw new UserAlreadyExistsException("Email Taken");
         userRepository.save(newUser);
     }
 
@@ -41,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
      * @throws InvalidCredentialsException if username does not exist or password is incorrect
      */
     @Override
-    public void authenticate(String username, String password, Role role, HttpSession session) {
+    public void login(String username, String password, Role role, HttpSession session) {
         User user = userRepository.findByUsernameAndRole(username, role);
 
         if (user == null) throw new InvalidCredentialsException("Invalid login credentials");

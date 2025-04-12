@@ -5,7 +5,7 @@ import sg.nus.iss.spring.backend.model.Role;
 import sg.nus.iss.spring.backend.model.User;
 
 public interface AuthService {
-    void authenticate(String username, String password, Role role, HttpSession session);
     void register(User newUser);
+    void login(String username, String password, Role role, HttpSession session);
     void logout(HttpSession session);
 }
