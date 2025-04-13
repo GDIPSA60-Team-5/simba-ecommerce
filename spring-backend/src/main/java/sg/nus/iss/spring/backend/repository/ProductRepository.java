@@ -8,6 +8,7 @@ import sg.nus.iss.spring.backend.model.Product;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 public interface ProductRepository extends JpaRepository<Product, Integer> {
 
     @Query("SELECT p FROM Product p WHERE " +
@@ -19,4 +20,6 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
                                  @Param("minPrice") BigDecimal minPrice,
                                  @Param("maxPrice") BigDecimal maxPrice,
                                  @Param("keywords") String keywords);
+
+    Product findProductById(@Param("productId") Integer id);
 }
