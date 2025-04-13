@@ -27,19 +27,18 @@ public class Order {
 
     private String status;
 
-    
     private LocalDateTime dateTime;
 
     private String shippingAddress;
 
     private float goodsServiceTax;
 
-    @OneToMany(mappedBy="order")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems;
 
     // Constructors
     public Order() {
-    	
+
     }
 
     public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime,
@@ -86,6 +85,10 @@ public class Order {
         this.deliveryType = deliveryType;
     }
 
+    public float getTotalAmount() {
+        return orderItems.size();
+    }
+
     public String getStatus() {
         return status;
     }
@@ -116,5 +119,13 @@ public class Order {
 
     public void setGoodsServiceTax(float goodsServiceTax) {
         this.goodsServiceTax = goodsServiceTax;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }
