@@ -1,77 +1,71 @@
 package sg.nus.iss.spring.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
-@Table(name = "order_item")
+@Table(name = "order_items")
 public class OrderItem {
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
-	
-	@ManyToOne
-	private Order order;
-	
-	@ManyToOne
-	private Product product;
-	
-	private int quantity;
-	
-	private float unitPriceAtTransaction;
 
-	public OrderItem() {
-		
-	}
-	
-	public OrderItem(Order order, Product product, int quantity, float unitPriceAtTransaction) {
-		this.order = order;
-		this.product = product;
-		this.quantity = quantity;
-		this.unitPriceAtTransaction = unitPriceAtTransaction;
-	}
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
 
-	public int getId() {
-		return id;
-	}
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
-	public void setId(int id) {
-		this.id = id;
-	}
+    @ManyToOne
+    private Product product;
 
-	public Order getOrder() {
-		return order;
-	}
+    private int quantity;
+    private float unitPriceAtTransaction;
 
-	public void setOrder(Order order) {
-		this.order = order;
-	}
+    public OrderItem() {
 
-	public Product getProduct() {
-		return product;
-	}
+    }
 
-	public void setProduct(Product product) {
-		this.product = product;
-	}
+    public OrderItem(Order order, Product product, int quantity, float unitPriceAtTransaction) {
+        this.order = order;
+        this.product = product;
+        this.quantity = quantity;
+        this.unitPriceAtTransaction = unitPriceAtTransaction;
+    }
 
-	public int getQuantity() {
-		return quantity;
-	}
+    public int getId() {
+        return id;
+    }
+    public void setId(int id) {
+        this.id = id;
+    }
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
-	}
+    public Order getOrder() {
+        return order;
+    }
+    public void setOrder(Order order) {
+        this.order = order;
+    }
 
-	public float getUnitPriceAtTransaction() {
-		return unitPriceAtTransaction;
-	}
+    public Product getProduct() {
+        return product;
+    }
 
-	public void setUnitPriceAtTransaction(float unitPriceAtTransaction) {
-		this.unitPriceAtTransaction = unitPriceAtTransaction;
-	}
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public float getUnitPriceAtTransaction() {
+        return unitPriceAtTransaction;
+    }
+
+    public void setUnitPriceAtTransaction(float unitPriceAtTransaction) {
+        this.unitPriceAtTransaction = unitPriceAtTransaction;
+    }
 }
