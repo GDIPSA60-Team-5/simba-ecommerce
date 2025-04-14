@@ -24,23 +24,24 @@ public class OrderController {
         return orderService.findAllOrders();
     }
 
-    @GetMapping
-    public Order findOrderById(@RequestParam Integer orderId) {
-        return orderService.findOrderById(orderId);
+    @GetMapping("/{id}")
+    public Order findOrderById(@PathVariable("id") Integer id) {
+        return orderService.findOrderById(id);
     }
 
     @PostMapping
-    public Order createOrder(@RequestParam Order order) {
+    public Order createOrder(@RequestBody Order order) {
         return orderService.saveOrder(order);
     }
 
-    @PutMapping
-    public Order editOrder(@RequestParam Order order) {
+    @PutMapping("/{id}")
+    public Order editOrder(@RequestBody Order order, @PathVariable("id") Integer id) {
+        order.setOrderId(id);
         return orderService.editOrder(order);
     }
 
-    @DeleteMapping
-    public void deleteOrder(@RequestParam Integer OrderId) {
-        orderService.deleteOrder(OrderId);
+    @DeleteMapping("/{id}")
+    public void deleteOrder(@PathVariable("id") Integer id) {
+        orderService.deleteOrder(id);
     }
 }
