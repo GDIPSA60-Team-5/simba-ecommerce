@@ -9,7 +9,7 @@ import sg.nus.iss.spring.backend.service.CategoryServiceImpl;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/Categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
     @Autowired
     private CategoryService categoryService;
@@ -20,27 +20,28 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<Category> findAllCategories() {
-        return categoryService.findAllCategories();
+    public List<Category> findAllCategory() {
+        return categoryService.findAllCategory();
     }
 
-    @GetMapping
-    public Category findCategoryById(@RequestParam Integer categoryId) {
-        return categoryService.findCategoryById(categoryId);
+    @GetMapping("/{id}")
+    public Category findCategoryBy(@PathVariable("id") Integer id) {
+        return categoryService.findCategoryById(id);
     }
 
     @PostMapping
-    public Category createCategory(@RequestParam Category category) {
+    public Category createCategory(@RequestBody Category category) {
         return categoryService.createCategory(category);
     }
 
-    @PutMapping
-    public Category editCategory(@RequestParam Category category) {
+    @PutMapping("/{id}")
+    public Category editCategory(@RequestBody Category category, @PathVariable("id") Integer id) {
+        category.setId(id);
         return categoryService.editCategory(category);
     }
 
-    @DeleteMapping
-    public void deleteCategory(@RequestParam Integer categoryId) {
+    @DeleteMapping("/{id}")
+    public void deleteCategory(@PathVariable("id") Integer categoryId) {
         categoryService.deleteCategory(categoryId);
     }
 }
