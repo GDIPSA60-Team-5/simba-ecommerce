@@ -4,12 +4,15 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.exception.StripeException;
@@ -118,5 +121,30 @@ public class CartController {
 	@DeleteMapping("/cancel-order")
 	public void cancelOrder(HttpSession session) {
 		cartService.removeCart(getUser(session));
+		
 	}
-}
+		
+	//Done by Haziq:
+	
+	@PostMapping("/{cartId}/add")
+	public ResponseEntity<String> addToCart(@PathVariable int cartId, @RequestParam int productId, @RequestParam int quantity){
+		cartService.addToCart(cartId, productId, quantity);
+		return ResponseEntity.ok("Product added to cart");
+	}
+	
+	
+		@PutMapping("/cart/{cartId}/reduce/{productId}")
+		public ResponseEntity<String> reduceProductQuantity(@PathVariable int cartId, @PathVariable int productId){
+			cartService.reduceProductQuantity(cartId, productId);
+			return ResponseEntity.ok("Quantity reduced by 1");
+		}
+		
+		@DeleteMapping("/cart/{cartId}/remove/{productId}")
+		public ResponseEntity<String> removeProductFromCart(@PathVariable int cartId, @PathVariable int productId){
+			cartService.removeProductFromCart(cartId, productId);
+			return ResponseEntity.ok("Product removed from cart");
+		}
+		
+		
+	}
+
