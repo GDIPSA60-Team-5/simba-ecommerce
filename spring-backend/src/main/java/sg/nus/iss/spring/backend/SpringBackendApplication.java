@@ -55,18 +55,18 @@ public class SpringBackendApplication {
 	        
 	        // product dummy data
 	        Product product_1 = productRepo.save(new Product(
-	        	    "Wireless Headphones", "Noise-cancelling over-ear headphones", "SoundMagic", 129.99f, 50,
-	        	    "https://example.com/images/headphones.jpg", 4.6f, electronics
+	        	    "Wireless Headphones", "Noise-cancelling over-ear headphones", electronics, "SoundMagic", 129.99f, 50,
+	        	    "https://example.com/images/headphones.jpg", 4f
 	        	));
 
         	Product product_2 = productRepo.save(new Product(
-        	    "Smart Watch", "Water-resistant smart watch with fitness tracking", "FitTech", 89.50f, 75,
-        	    "https://example.com/images/smartwatch.jpg", 4.3f, electronics
+        	    "Smart Watch", "Water-resistant smart watch with fitness tracking", electronics, "FitTech", 89.50f, 75,
+        	    "https://example.com/images/smartwatch.jpg", 3f
         	));
 
         	Product product_3 = productRepo.save(new Product(
-        	    "Gaming Mouse", "RGB gaming mouse with 6 programmable buttons", "ProGamer", 45.90f, 100,
-        	    "https://example.com/images/gamingmouse.jpg", 4.7f, electronics
+        	    "Gaming Mouse", "RGB gaming mouse with 6 programmable buttons", electronics, "ProGamer", 45.90f, 100,
+        	    "https://example.com/images/gamingmouse.jpg", 5f
         	));
 			
 			// cart item dummy data
