@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import sg.nus.iss.spring.backend.model.Product;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductRepository extends JpaRepository<Product, Integer> {
@@ -17,9 +16,11 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
             "AND (:keywords IS NULL OR :keywords = '' OR p.name LIKE %:keywords% OR p.description LIKE %:keywords%)")
     List<Product> searchProducts(@Param("categoryId") Integer categoryId,
-                                 @Param("minPrice") BigDecimal minPrice,
-                                 @Param("maxPrice") BigDecimal maxPrice,
+                                 @Param("minPrice") Float minPrice,
+                                 @Param("maxPrice") Float maxPrice,
                                  @Param("keywords") String keywords);
 
     Product findProductById(@Param("productId") Integer id);
+
+    void deleteProductByCategoryId(Integer categoryId);
 }
