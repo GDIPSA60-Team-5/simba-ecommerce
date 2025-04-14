@@ -82,7 +82,7 @@ public class CartServiceImpl implements CartService {
 		}
 		
 		// get delivery type data from order data
-		String deliType = (String) orderData.getDeliveryType();
+		String deliType = orderData.getDeliveryType();
 		Optional<DeliveryType> existingDeliType = deliRepo.findByName(deliType);
 		DeliveryType dType;
 		if (existingDeliType.isEmpty()) {
@@ -96,7 +96,7 @@ public class CartServiceImpl implements CartService {
 		
 		// get dateTime of order and shipping address from order data
 		LocalDateTime dateTime = LocalDateTime.now();
-		String shippingAddress = (String) orderData.getShippingAddress();
+		String shippingAddress = orderData.getShippingAddress();
 				
 		// now create an order instance and save it to database
 		Order order = new Order(user, pType, dType, status, dateTime, shippingAddress);
