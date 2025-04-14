@@ -1,5 +1,7 @@
 package sg.nus.iss.spring.backend.model;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -34,6 +36,12 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
+    
+    @OneToMany(mappedBy="product")
+    private List<CartItem> cartItems;
+    
+    @OneToMany(mappedBy="product")
+    private List<OrderItem> orderItems;
 
     // Constructors
     public Product() {
@@ -48,6 +56,7 @@ public class Product {
         this.quantity = quantity;
         this.imageUrl = imageUrl;
         this.rating = rating;
+        this.category = category;
     }
 
     // Getters and Setters

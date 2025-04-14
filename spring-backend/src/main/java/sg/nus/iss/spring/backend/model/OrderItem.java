@@ -8,40 +8,47 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 
 @Entity
-@Table (name = "cart_item")
-public class CartItem {
+@Table(name = "order_item")
+public class OrderItem {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
 	@ManyToOne
-	private User user;
+	private Order order;
 	
 	@ManyToOne
 	private Product product;
 	
 	private int quantity;
+	
+	private float unitPriceAtTransaction;
 
-	public CartItem() {
+	public OrderItem() {
 		
 	}
 	
-	public CartItem(User user, Product product, int quantity) {
-		this.user = user;
+	public OrderItem(Order order, Product product, int quantity, float unitPriceAtTransaction) {
+		this.order = order;
 		this.product = product;
 		this.quantity = quantity;
+		this.unitPriceAtTransaction = unitPriceAtTransaction;
 	}
-	
+
 	public int getId() {
 		return id;
 	}
 
-	public User getUser() {
-		return user;
+	public void setId(int id) {
+		this.id = id;
 	}
 
-	public void setUser(User user) {
-		this.user = user;
+	public Order getOrder() {
+		return order;
+	}
+
+	public void setOrder(Order order) {
+		this.order = order;
 	}
 
 	public Product getProduct() {
@@ -58,5 +65,13 @@ public class CartItem {
 
 	public void setQuantity(int quantity) {
 		this.quantity = quantity;
+	}
+
+	public float getUnitPriceAtTransaction() {
+		return unitPriceAtTransaction;
+	}
+
+	public void setUnitPriceAtTransaction(float unitPriceAtTransaction) {
+		this.unitPriceAtTransaction = unitPriceAtTransaction;
 	}
 }
