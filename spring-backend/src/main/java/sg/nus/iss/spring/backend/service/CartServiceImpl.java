@@ -2,7 +2,6 @@ package sg.nus.iss.spring.backend.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +9,8 @@ import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
-import sg.nus.iss.spring.backend.interfacemethods.CheckoutInterface;
+import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
+import sg.nus.iss.spring.backend.interfacemethods.CartService;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.DeliveryType;
 import sg.nus.iss.spring.backend.model.Order;
@@ -28,7 +28,7 @@ import sg.nus.iss.spring.backend.repository.PaymentTypeRepository;
 /* Written by Aung Myin Moe */
 @Service
 @Transactional
-public class CheckoutImplementation implements CheckoutInterface {
+public class CartServiceImpl implements CartService {
 	@Autowired
 	CartRepository cartRepo;
 	
@@ -45,8 +45,8 @@ public class CheckoutImplementation implements CheckoutInterface {
 	OrderItemRepository orderItemRepo;
 	
 	@Override
-	public List<CartItem> listCartItems(int userId) {
-		return cartRepo.findAllByUser_Id(userId);
+	public List<CartItem> listCartItems(User user) {
+		return cartRepo.findAllByUser(user);
 	}
 	
 	@Override
@@ -55,8 +55,8 @@ public class CheckoutImplementation implements CheckoutInterface {
 	}
 	
 	@Override
-	public void removeCart(int userId) {
-		cartRepo.deleteAllByUser_Id(userId);
+	public void removeCart(User user) {
+		cartRepo.deleteAllByUser(user);
 	}
 	
 	@Override
@@ -68,11 +68,10 @@ public class CheckoutImplementation implements CheckoutInterface {
 		User user = (User) session.getAttribute("authenticated_user");
 		
 		// get order data from session
-		@SuppressWarnings("unchecked")
-		Map<String, Object> orderData = (Map<String, Object>) session.getAttribute("order_data");
+		OrderDetailsDTO orderData = (OrderDetailsDTO) session.getAttribute("order_data");
 		
-		// get payment type data from order data
-		String paymentType = (String) orderData.get("payment_type");
+		// get payment type data from session
+		String paymentType = (String) session.getAttribute("payment_type");
 		Optional<PaymentType> existingPType = paymentRepo.findByName(paymentType);
 		PaymentType pType;
 		if (existingPType.isEmpty()) {
@@ -83,11 +82,10 @@ public class CheckoutImplementation implements CheckoutInterface {
 		}
 		
 		// get delivery type data from order data
-		String deliType = (String) orderData.get("delivery_type");
+		String deliType = (String) orderData.getDeliveryType();
 		Optional<DeliveryType> existingDeliType = deliRepo.findByName(deliType);
 		DeliveryType dType;
 		if (existingDeliType.isEmpty()) {
-			// Try to handle exception
 			throw new Exception("DeliveryType not found");
 		} else {
 			dType = existingDeliType.get();
@@ -97,8 +95,8 @@ public class CheckoutImplementation implements CheckoutInterface {
 		String status = "Order Confirmed";
 		
 		// get dateTime of order and shipping address from order data
-		LocalDateTime dateTime = (LocalDateTime) orderData.get("date_time");
-		String shippingAddress = (String) orderData.get("shipping_address");
+		LocalDateTime dateTime = LocalDateTime.now();
+		String shippingAddress = (String) orderData.getShippingAddress();
 				
 		// now create an order instance and save it to database
 		Order order = new Order(user, pType, dType, status, dateTime, shippingAddress);

@@ -5,10 +5,11 @@ import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import sg.nus.iss.spring.backend.model.CartItem;
+import sg.nus.iss.spring.backend.model.User;
 
 public interface CartRepository extends JpaRepository<CartItem, Integer> {
 
-	List<CartItem> findAllByUser_Id(int userId);
-	void deleteAllByUser_Id(int userId);
+	List<CartItem> findAllByUser(User user);
+	void deleteAllByUser(User user);
 
 }
