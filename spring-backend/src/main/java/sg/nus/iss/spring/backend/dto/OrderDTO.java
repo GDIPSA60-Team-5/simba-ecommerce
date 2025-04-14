@@ -17,7 +17,7 @@ public class OrderDTO {
     public void setOrderId(int orderId) {
         this.orderId = orderId;
     }
-
+1
     public float getTotalAmount() {
         return totalAmount;
     }
