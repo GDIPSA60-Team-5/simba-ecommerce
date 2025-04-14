@@ -23,23 +23,24 @@ public class UserController {
         return userService.findAllUsers();
     }
 
-    @GetMapping
-    public User findUserById(@RequestParam Integer userId) {
-        return userService.findUserById(userId);
+    @GetMapping("/{id}")
+    public User findUserById(@PathVariable("id") Integer id) {
+        return userService.findUserById(id);
     }
 
     @PostMapping
-    public User createUser(@RequestParam User user) {
+    public User createUser(@RequestBody User user) {
         return userService.createUser(user);
     }
 
-    @PutMapping
-    public User updateUser(@RequestParam User user) {
+    @PutMapping("/{id}")
+    public User updateUser(@RequestBody User user, @PathVariable("id") Integer id) {
+        user.setId(id);
         return userService.editUser(user);
     }
 
-    @DeleteMapping
-    public void deleteUserById(@RequestParam Integer userId) {
-        userService.deleteUser(userId);
+    @DeleteMapping("/{id}")
+    public void deleteUserById(@PathVariable("id") Integer id) {
+        userService.deleteUser(id);
     }
 }
