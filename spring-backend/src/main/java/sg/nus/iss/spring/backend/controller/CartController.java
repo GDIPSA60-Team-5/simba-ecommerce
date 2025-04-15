@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,20 +16,28 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.bind.annotation.RequestMethod;
 import com.stripe.exception.StripeException;
 
 import jakarta.servlet.http.HttpSession;
 import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
+import sg.nus.iss.spring.backend.model.Cart;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.User;
 
 
 /* Written by Aung Myin Moe */
+@CrossOrigin(
+		  origins = "http://localhost:3000",
+		  allowCredentials = "true",
+		  methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}
+		)
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/cart")
 public class CartController {
 	@Autowired
 	private CartService cartService;
@@ -124,22 +134,29 @@ public class CartController {
 		
 	}
 		
-	//Done by Haziq:
+	
+		//Done by Haziq:
+	
+	@GetMapping("/{cartId}")
+	public Cart getCart(@PathVariable int cartId) {
+		return cartService.getCartById(cartId);
+	}
 	
 	@PostMapping("/{cartId}/add")
 	public ResponseEntity<String> addToCart(@PathVariable int cartId, @RequestParam int productId, @RequestParam int quantity){
+		System.out.println("🛒 Add to Cart called: cartId=" + cartId + ", productId=" + productId + ", quantity=" + quantity);
 		cartService.addToCart(cartId, productId, quantity);
 		return ResponseEntity.ok("Product added to cart");
 	}
 	
 	
-		@PutMapping("/cart/{cartId}/reduce/{productId}")
+		@PutMapping("/{cartId}/reduce/{productId}")
 		public ResponseEntity<String> reduceProductQuantity(@PathVariable int cartId, @PathVariable int productId){
 			cartService.reduceProductQuantity(cartId, productId);
 			return ResponseEntity.ok("Quantity reduced by 1");
 		}
 		
-		@DeleteMapping("/cart/{cartId}/remove/{productId}")
+		@DeleteMapping("/{cartId}/remove/{productId}")
 		public ResponseEntity<String> removeProductFromCart(@PathVariable int cartId, @PathVariable int productId){
 			cartService.removeProductFromCart(cartId, productId);
 			return ResponseEntity.ok("Product removed from cart");

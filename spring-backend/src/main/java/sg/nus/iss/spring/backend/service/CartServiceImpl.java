@@ -132,24 +132,41 @@ public class CartServiceImpl implements CartService {
 	
 	@Transactional
 	public void addToCart(int cartId, int productId, int quantity) {
-		Product product = productRepo.findById(productId).orElseThrow(() -> new RuntimeException("Product not found"));
-		
-		Cart cart = cartRepo.findById(cartId).orElseThrow(() -> new RuntimeException("Cart not found"));
+		Product product = productRepo.findById(productId)
+			.orElseThrow(() -> new RuntimeException("Product not found"));
+
+		Cart cart = cartRepo.findById(cartId)
+			.orElseThrow(() -> new RuntimeException("Cart not found"));
 
 		if (product.getQuantity() < quantity) {
 			throw new RuntimeException("Not enough stock");
+		}
+
+		// Check if product already in cart
+		Optional<CartItem> existingItemOpt = cart.getItems().stream()
+			.filter(item -> item.getProduct().getId() == productId)
+			.findFirst();
+		
+		 int currentQtyInCart = existingItemOpt.map(CartItem::getQuantity).orElse(0);
+		 int totalRequestedQty = currentQtyInCart + quantity;
+		 if (totalRequestedQty > product.getQuantity()) {
+		        throw new RuntimeException("Not enough stock. You are requesting for more than what is available in stock (" + product.getQuantity() + ")");
+		 }
+
+		if (existingItemOpt.isPresent()) {
+			CartItem existingItem = existingItemOpt.get();
+			existingItem.setQuantity(existingItem.getQuantity() + quantity);
 		} else {
 			CartItem newItem = new CartItem();
 			newItem.setProduct(product);
 			newItem.setQuantity(quantity);
 			newItem.setCart(cart);
 			newItem.setUser(cart.getUser());
-			cart.getItems().add(newItem);
+
+			cart.getItems().add(newItem); // Cart must have cascade
 		}
-		
-		productRepo.save(product);
+
 		cartRepo.save(cart);
-		
 	}
 	
 	@Transactional
@@ -188,6 +205,12 @@ public class CartServiceImpl implements CartService {
 	    }
 
 	    cartRepo.save(cart);
+	}
+	
+	@Override
+	public Cart getCartById(int cartId) {
+	    return cartRepo.findById(cartId)
+	        .orElseThrow(() -> new RuntimeException("Cart not found"));
 	}
 	
 	
