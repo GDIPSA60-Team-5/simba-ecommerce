@@ -8,7 +8,7 @@ const renderRoute = (route: RouteObject) => {
     if (route.children) {
         return (
             <Route key={route.path} path={route.path} element={route.element}>
-                {route.children.map(renderRoute)}
+                {route.children.map((childRoute) => renderRoute(childRoute))}
             </Route>
         );
     }
@@ -17,12 +17,12 @@ const renderRoute = (route: RouteObject) => {
 };
 
 const Router = () => {
-    const allRoutes = [...PublicRoutes, ...AdminRoutes, ...UserRoutes];
+    const allRoutes: RouteObject[] = [...PublicRoutes, ...AdminRoutes, ...UserRoutes];
 
     return (
         <BrowserRouter>
             <Routes>
-                {allRoutes.map(renderRoute)}
+                {allRoutes.map((route) => renderRoute(route))}
                 <Route path="*" element={<NotFound />} />
             </Routes>
         </BrowserRouter>
