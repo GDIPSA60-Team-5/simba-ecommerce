@@ -4,12 +4,14 @@ package sg.nus.iss.spring.backend;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import sg.nus.iss.spring.backend.model.Category;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.repository.CategoryRepository;
 import sg.nus.iss.spring.backend.repository.ProductRepository;
 
 @SpringBootTest
+@ActiveProfiles("test")
 public class ProductAndCategoryDataCreationTests {
     @Autowired
     private ProductRepository prepo;
