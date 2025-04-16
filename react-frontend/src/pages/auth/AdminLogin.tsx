@@ -1,16 +1,12 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
-
-interface LoginForm {
-    username: string;
-    password: string;
-}
+import { Link } from 'react-router-dom';
+import { LoginRequest, useLogin } from '../../hooks/useLogin';
+import Logo from '../../components/Logo';
 
 const AdminLogin = () => {
-    const [form, setForm] = useState<LoginForm>({ username: '', password: '' });
-    const [error, setError] = useState<string>('');
-    const navigate = useNavigate();
+    const [form, setForm] = useState<LoginRequest>({ username: '', password: '' });
+    const { login, loading, error } = useLogin(true);
+
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -20,36 +16,24 @@ const AdminLogin = () => {
         }));
     };
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError('');
-
-        try {
-            await axios.post('/api/admin/auth/login', form, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            navigate('/admin/dashboard');
-        } catch (err: any) {
-            setError(err.response?.data || 'Login failed');
-        }
+        login(form);
     };
 
     return (
-        <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="flex flex-col items-center justify-center h-screen gap-10 bg-white">
+            <Logo></Logo>
             <form
                 onSubmit={handleSubmit}
-                className="bg-white shadow-md rounded-xl p-8 w-full max-w-sm space-y-4"
+                className="bg-white border border-black p-8 w-full max-w-sm space-y-4"
             >
-                <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
+                <h2 className="text-2xl font-light text-center text-black">Staff Portal</h2>
 
                 {error && <p className="text-red-500 text-sm">{error}</p>}
 
                 <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="username" className="block text-sm font-medium text-black">
                         Username
                     </label>
                     <input
@@ -59,12 +43,12 @@ const AdminLogin = () => {
                         value={form.username}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full px-3 py-2 border shadow-sm focus:ring-black-500 focus:border-black-500"
                     />
                 </div>
 
                 <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                    <label htmlFor="password" className="block text-sm font-medium text-black">
                         Password
                     </label>
                     <input
@@ -74,21 +58,20 @@ const AdminLogin = () => {
                         value={form.password}
                         onChange={handleChange}
                         required
-                        className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                        className="mt-1 block w-full px-3 py-2 border shadow-sm focus:ring-black-500 focus:border-black-500"
                     />
                 </div>
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 cursor-pointer text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+                    className="w-full bg-black cursor-pointer text-white py-2 px-4 hover:bg-black transition"
                 >
-                    Login
+                    {loading ? "Logging In" : "Login"}
                 </button>
 
                 <p className="text-sm text-center text-gray-600">
-                    Don't have an account?{' '}
-                    <Link to="/signup" className="text-blue-600 hover:underline">
-                        Sign up
+                    <Link to="/" className="text-black hover:underline">
+                        &#8592; Back To Home
                     </Link>
                 </p>
             </form>

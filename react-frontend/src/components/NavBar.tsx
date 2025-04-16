@@ -1,8 +1,8 @@
-import logo from "../assets/images/logo.png";
 import heart from "../assets/svgs/heart.svg";
 import cart from "../assets/svgs/cart.svg";
 import { Link } from "react-router-dom";
 import Profile from "./Profile";
+import Logo from "./Logo";
 
 const NavBar = () => {
 
@@ -15,7 +15,9 @@ const NavBar = () => {
                     </button>
 
                     <button className="relative" aria-label="Shopping cart">
-                        <img src={cart} alt="Cart Icon" />
+                        <Link to="/cart">
+                            <img src={cart} alt="Cart Icon" />
+                        </Link>
                     </button>
 
                     <span>|</span>
@@ -24,7 +26,7 @@ const NavBar = () => {
                 </nav>
 
                 <nav>
-                    <img src={logo} alt="Logo" />
+                    <Logo></Logo>
                 </nav>
 
                 <nav>

@@ -5,7 +5,7 @@ import { useLogin, LoginRequest } from '../../hooks/useLogin';
 
 const Login = () => {
     const [form, setForm] = useState<LoginRequest>({ username: '', password: '' });
-    const { login, loading, error } = useLogin()
+    const { login, loading, error } = useLogin();
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -22,60 +22,73 @@ const Login = () => {
 
 
     return (
-        <div className="flex items-center justify-center h-screen bg-gray-100">
-            <form
-                onSubmit={handleSubmit}
-                className="bg-white shadow-md rounded-xl p-8 w-full max-w-sm space-y-4 flex flex-col"
-            >
-                <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
-
-                {error && <p className="px-10 py-5 bg-gray-200 text rounded-[5px]">{error}</p>}
-
-                <div>
-                    <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                        Username
-                    </label>
-                    <input
-                        id="username"
-                        name="username"
-                        type="text"
-                        value={form.username}
-                        onChange={handleChange}
-                        required
-                        className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    />
+        <div className="flex justify-center gap-40 py-20 mx-[5rem]">
+            <div className='flex flex-col items-center gap-5'>
+                <img src="images/library.png" width={300} alt="" />
+                <div className="body max-w-[300px] text-center">
+                    <h2 className='uppercase text-3xl font-normal'>Become A Member</h2>
+                    <p>You can unlock special discounts by signing our membership</p>
                 </div>
 
-                <div>
-                    <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                        Password
-                    </label>
-                    <input
-                        id="password"
-                        name="password"
-                        type="password"
-                        value={form.password}
-                        onChange={handleChange}
-                        required
-                        className="mt-1 block w-full px-3 py-2 border rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                    />
-                </div>
+                <Link to={"/signup"}>Register Now →</Link>
+            </div>
 
-                <button
-                    type="submit"
-                    disabled={loading}
-                    className="align-self-center w-min bg-blue-600 cursor-pointer text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+            <div className='w-min'>
+                <h2 className='text-center text-3xl'>Login</h2>
+                <form
+                    onSubmit={handleSubmit}
+                    className="rounded-md w-[400px] max-w-sm space-y-4 flex flex-col items-center border-1 border-gray-400 m-5 px-15 py-15"
                 >
-                    {loading ? 'Logging in...' : 'Login'}
-                </button>
 
-                <p className="text-sm text-center text-gray-600">
-                    Don't have an account?{' '}
-                    <Link to="/signup" className="text-blue-600 hover:underline">
-                        Sign up
+                    {error && <p className="w-full text-center capitalize py-3 text-sm font-medium bg-red-100 text-red-500 rounded-[5px]">{error}!</p>}
+
+                    <div className="input-group mb-10 w-full">
+                        <div className='mb-10'>
+                            <label htmlFor="username" className="block text-sm font-medium text-gray-700">
+                                Username
+                            </label>
+                            <input
+                                id="username"
+                                name="username"
+                                type="text"
+                                value={form.username}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 block w-full border-b-2 border-b-gray-400 hover:border-b-black focus:border-b-black outline-0 transition"
+                            />
+                        </div>
+
+                        <div>
+                            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                                Password
+                            </label>
+                            <input
+                                id="password"
+                                name="password"
+                                type="password"
+                                value={form.password}
+                                onChange={handleChange}
+                                required
+                                className="mt-1 block w-full border-b-2 border-b-gray-400 hover:border-b-black focus:border-b-black outline-0 transition"
+                            />
+                        </div>
+                    </div>
+
+                    <Link to="/signup" className="text-gray-600 hover:underline text-sm">
+                        Forgot your password?
                     </Link>
-                </p>
-            </form>
+
+                    <button
+                        type="submit"
+                        disabled={loading}
+                        className="align-self-center w-min bg-black whitespace-nowrap cursor-pointer text-white py-2 px-10 rounded-md hover:bg-neutral-700
+                        transition"
+                    >
+                        {loading ? 'Signing in...' : 'Sign In'}
+                    </button>
+
+                </form>
+            </div>
         </div>
     );
 };

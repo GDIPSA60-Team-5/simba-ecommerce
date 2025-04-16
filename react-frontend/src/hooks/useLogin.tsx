@@ -9,33 +9,35 @@ export interface LoginRequest {
     password: string;
 }
 
-export const useLogin = () => {
+export const useLogin = (isAdmin: boolean = false) => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string>('');
     const { refreshUser } = useAuth();
     const navigate = useNavigate();
 
+    const endpoint = isAdmin ? "/api/admin/auth/login" : "/api/auth/login";
+    const redirectPath = isAdmin ? "/dashboard" : "/account";
+
     const login = async (request: LoginRequest) => {
         setLoading(true);
         setError('');
-
         try {
-            await axios.post('/api/auth/login', request, {
+            const response = await axios.post(endpoint, request, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' },
             });
+            console.log('Login response:', response.data);
 
             await refreshUser();
-
-            setTimeout(() => {
-                navigate('/account');
-            }, 1000);
+            setTimeout(() => navigate(redirectPath), 1000);
         } catch (err: any) {
+            console.error('Login error:', err);
             setError(err.response?.data || 'Login failed');
         } finally {
             setLoading(false);
         }
     };
+
 
     return { login, loading, error };
 };
