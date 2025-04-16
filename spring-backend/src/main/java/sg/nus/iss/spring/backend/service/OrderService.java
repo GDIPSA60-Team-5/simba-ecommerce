@@ -1,6 +1,7 @@
 package sg.nus.iss.spring.backend.service;
 
 import sg.nus.iss.spring.backend.model.Order;
+import sg.nus.iss.spring.backend.model.User;
 import sg.nus.iss.spring.backend.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,8 @@ public class OrderService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public List<Order> getOrdersByUser(int userId) {
-        return orderRepository.findByUserId(userId);
+    public List<Order> getOrdersByUser(User user) {
+        return orderRepository.findByUserId(user.getId());
     }
 
     public Order getOrderDetails(int orderId) {
@@ -26,21 +27,19 @@ public class OrderService {
         return orderRepository.findByUserIdAndStatus(userId, status);
     }
 
-    public List<Order> getAllOrdersFiltered(Integer userId, String status, LocalDate dateFrom, LocalDate dateTo) {
+    public List<Order> getAllOrdersFiltered(User user, String status, LocalDate dateFrom, LocalDate dateTo) {
         return orderRepository.findAll().stream()
-                .filter(order -> userId == null || order.getUserId() == userId)
+                .filter(order -> user == null || order.getUser() == user)
                 .filter(order -> status == null || order.getStatus().equalsIgnoreCase(status))
                 .filter(order -> dateFrom == null || !order.getDateTime().toLocalDate().isBefore(dateFrom))
                 .filter(order -> dateTo == null || !order.getDateTime().toLocalDate().isAfter(dateTo))
                 .toList();
     }
 
-    // 保存订单（更新）
     public void saveOrder(Order order) {
         orderRepository.save(order);
     }
 
-    // 删除订单
     public void deleteOrder(int orderId) {
         orderRepository.deleteById(orderId);
     }

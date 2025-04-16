@@ -3,6 +3,7 @@ package sg.nus.iss.spring.backend.model;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "orders")
@@ -32,43 +33,30 @@ public class Order {
 
     private float goodsServiceTax;
 
+    private float totalAmount;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonManagedReference
     private List<OrderItem> orderItems;
-    @Column(name = "admin_note")
-    private String adminNote;
 
-    public String getAdminNote() {
-        return adminNote;
-    }
-
-    public void setAdminNote(String adminNote) {
-        this.adminNote = adminNote;
-    }
-
-    // Constructors
     public Order() {
-
     }
 
-    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime,
-    		String shippingAddress) {
-		this.user = user;
-		this.paymentType = paymentType;
-		this.deliveryType = deliveryType;
-		this.status = status;
-		this.dateTime = dateTime;
-		this.shippingAddress = shippingAddress;
-		this.goodsServiceTax = 0.09f;
-	}
+    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime, String shippingAddress) {
+        this.user = user;
+        this.paymentType = paymentType;
+        this.deliveryType = deliveryType;
+        this.status = status;
+        this.dateTime = dateTime;
+        this.shippingAddress = shippingAddress;
+    }
 
-	// Getters and Setters
-    public int getOrderId() {
+    public int getId() {
         return id;
     }
 
-    public void setOrderId(int orderId) {
-        this.id = orderId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public User getUser() {
@@ -93,10 +81,6 @@ public class Order {
 
     public void setDeliveryType(DeliveryType deliveryType) {
         this.deliveryType = deliveryType;
-    }
-
-    public float getTotalAmount() {
-        return orderItems.size();
     }
 
     public String getStatus() {
@@ -139,4 +123,11 @@ public class Order {
         this.orderItems = orderItems;
     }
 
+    public float getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(float totalAmount) {
+        this.totalAmount = totalAmount;
+    }
 }
