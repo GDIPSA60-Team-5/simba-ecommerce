@@ -8,20 +8,21 @@ import Contact from "../pages/Contact";
 import BestSellers from "../pages/Bestsellers";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
+import RequireNoAuth from "./guards/RequireNoAuth";
 
 const PublicRoutes: RouteObject[] = [
     {
         path: "/",
         element: <Layout />,
         children: [
-            { index: true, element: <Home /> },
+            { path: "", element: <Home /> },
             { path: "books", element: <BookList /> },
             { path: "books/:id", element: <BookDetail /> },
             { path: "bestsellers", element: <BestSellers /> },
             { path: "about", element: <About /> },
             { path: "contact", element: <Contact /> },
-            { path: "login", element: <Login /> },
-            { path: "signup", element: <Register /> },
+            { path: "login", element: <RequireNoAuth><Login /></RequireNoAuth> },
+            { path: "signup", element: <RequireNoAuth> <Register /></RequireNoAuth> },
         ],
     },
 ];

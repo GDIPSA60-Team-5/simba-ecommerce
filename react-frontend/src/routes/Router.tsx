@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, RouteObject } from "react-router-dom";
+import { AuthProvider } from "../context/AuthContext";
 import PublicRoutes from "./PublicRoutes";
 import AdminRoutes from "./AdminRoutes";
 import UserRoutes from "./UserRoutes";
@@ -20,12 +21,14 @@ const Router = () => {
     const allRoutes: RouteObject[] = [...PublicRoutes, ...AdminRoutes, ...UserRoutes];
 
     return (
-        <BrowserRouter>
-            <Routes>
-                {allRoutes.map((route) => renderRoute(route))}
-                <Route path="*" element={<NotFound />} />
-            </Routes>
-        </BrowserRouter>
+        <AuthProvider>
+            <BrowserRouter>
+                <Routes>
+                    {allRoutes.map((route) => renderRoute(route))}
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </BrowserRouter>
+        </AuthProvider>
     );
 };
 

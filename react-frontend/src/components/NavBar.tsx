@@ -1,17 +1,10 @@
 import logo from "../assets/images/logo.png";
-import user from "../assets/svgs/user.svg";
 import heart from "../assets/svgs/heart.svg";
 import cart from "../assets/svgs/cart.svg";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import Profile from "./Profile";
 
 const NavBar = () => {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-    useEffect(() => {
-        const loggedIn = sessionStorage.getItem("user");
-        setIsLoggedIn(!!loggedIn);
-    }, []);
 
     return (
         <nav>
@@ -26,16 +19,8 @@ const NavBar = () => {
                     </button>
 
                     <span>|</span>
+                    <Profile></Profile>
 
-                    {!isLoggedIn ? (
-                        <Link to="/login" className="text-sm font-medium hover:underline">
-                            Sign In
-                        </Link>
-                    ) : (
-                        <button className="relative" aria-label="User profile">
-                            <img src={user} alt="User Icon" />
-                        </button>
-                    )}
                 </nav>
 
                 <nav>

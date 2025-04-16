@@ -1,7 +1,14 @@
-const RequireNoAuth = () => {
-    return (
-        <>
-        </>
-    );
-}
-export default RequireNoAuth;
+import { useAuth } from "../../context/AuthContext";
+import { Navigate } from "react-router-dom";
+
+const RequireAuth = ({ children }: { children: React.ReactNode }) => {
+    const { isAuthenticated } = useAuth();
+
+    if (isAuthenticated) {
+        return <Navigate to="/account" replace />;
+    }
+
+    return <>{children}</>;
+};
+
+export default RequireAuth;
