@@ -68,8 +68,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public User getAuthenticatedUser(HttpSession session) {
         User user = (User) session.getAttribute("authenticated_user");
-//        Hide password in frontend
-        user.setPassword(null);
         return user;
     }
 }
