@@ -34,7 +34,7 @@ import sg.nus.iss.spring.backend.model.User;
 		  methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}
 		)
 @RestController
-@RequestMapping("/api/cart")
+@RequestMapping("/api")
 public class CartController {
 	@Autowired
 	private CartService cartService;
@@ -134,7 +134,7 @@ public class CartController {
 	}
 		
 	//Done by Haziq:
-	@PostMapping("/add")
+	@PostMapping("/cart/add")
 	public ResponseEntity<String> addToCart(HttpSession session, @RequestParam int productId){
 		User user = getUser(session);
 		if (user==null) {
@@ -145,7 +145,7 @@ public class CartController {
 		return ResponseEntity.ok("Product added to cart");
 	}
 
-	@DeleteMapping("/remove/{productId}")
+	@DeleteMapping("/cart/remove/{productId}")
 	public ResponseEntity<String> removeProductFromCart(HttpSession session, @PathVariable int productId){
 		cartService.removeProductFromCart(getUser(session), productId);
 		return ResponseEntity.ok("Product removed from cart");
