@@ -13,9 +13,9 @@ public interface CartService {
 	CartItem updateCartOrderQty(CartItem cartItem);
 	void removeCart(User user);
 	Order saveOrderRecord(HttpSession session, List<CartItem> cartItems) throws Exception;
-	void addToCart(int cartId, int productId, int quantity);
-	void reduceProductQuantity(int cartId, int productId);
-	void removeProductFromCart(int cartId, int productId);
+	void addToCart(User user, int productId, int quantity);
+	void reduceProductQuantity(User user, int productId);
+	void removeProductFromCart(User user, int productId);
 	Cart getCartById(int cartId);
 }
 

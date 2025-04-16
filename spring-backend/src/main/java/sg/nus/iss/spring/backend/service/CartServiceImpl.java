@@ -131,12 +131,12 @@ public class CartServiceImpl implements CartService {
 	private ProductRepository productRepo;
 	
 	@Transactional
-	public void addToCart(int cartId, int productId, int quantity) {
+	public void addToCart(User user, int productId, int quantity) {
 		Product product = productRepo.findById(productId)
 			.orElseThrow(() -> new RuntimeException("Product not found"));
 
-		Cart cart = cartRepo.findById(cartId)
-			.orElseThrow(() -> new RuntimeException("Cart not found"));
+		Cart cart = cartRepo.findByUser(user)
+			.orElseThrow(() -> new RuntimeException("User not found"));
 
 		if (product.getQuantity() < quantity) {
 			throw new RuntimeException("Not enough stock");
@@ -170,8 +170,8 @@ public class CartServiceImpl implements CartService {
 	}
 	
 	@Transactional
-	public void reduceProductQuantity(int cartId, int productId) {
-	    Cart cart = cartRepo.findById(cartId).orElseThrow(() -> new RuntimeException("Cart not found"));
+	public void reduceProductQuantity(User user, int productId) {
+	    Cart cart = cartRepo.findByUser(user).orElseThrow(() -> new RuntimeException("Cart not found"));
 
 	    for (CartItem item : cart.getItems()) {
 	        if (item.getProduct().getId() == productId) {
@@ -188,8 +188,8 @@ public class CartServiceImpl implements CartService {
 	}
 	
 	@Transactional
-	public void removeProductFromCart(int cartId, int productId) {
-	    Cart cart = cartRepo.findById(cartId).orElseThrow(() -> new RuntimeException("Cart not found"));
+	public void removeProductFromCart(User user, int productId) {
+	    Cart cart = cartRepo.findByUser(user).orElseThrow(() -> new RuntimeException("Cart not found"));
 
 	    CartItem itemToRemove = null;
 
