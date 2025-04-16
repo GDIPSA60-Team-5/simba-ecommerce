@@ -4,6 +4,7 @@ import sg.nus.iss.spring.backend.model.Order;
 import sg.nus.iss.spring.backend.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,5 +33,15 @@ public class OrderService {
                 .filter(order -> dateFrom == null || !order.getDateTime().toLocalDate().isBefore(dateFrom))
                 .filter(order -> dateTo == null || !order.getDateTime().toLocalDate().isAfter(dateTo))
                 .toList();
+    }
+
+    // 保存订单（更新）
+    public void saveOrder(Order order) {
+        orderRepository.save(order);
+    }
+
+    // 删除订单
+    public void deleteOrder(int orderId) {
+        orderRepository.deleteById(orderId);
     }
 }
