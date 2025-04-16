@@ -4,14 +4,19 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import org.springframework.web.bind.annotation.RequestMethod;
 import com.stripe.exception.StripeException;
 
 import jakarta.servlet.http.HttpSession;
@@ -23,6 +28,11 @@ import sg.nus.iss.spring.backend.model.User;
 
 
 /* Written by Aung Myin Moe */
+@CrossOrigin(
+		  origins = "http://localhost:3000",
+		  allowCredentials = "true",
+		  methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}
+		)
 @RestController
 @RequestMapping("/api")
 public class CartController {
@@ -31,6 +41,8 @@ public class CartController {
 	
 	@Autowired
 	private PaymentService paymentService;
+	
+	private static final int DEFAULT_CART_QUANTITY = 1;
 	
 	// create a user object calling method to reduce duplication
 	private User getUser(HttpSession session) {
@@ -118,5 +130,26 @@ public class CartController {
 	@DeleteMapping("/cancel-order")
 	public void cancelOrder(HttpSession session) {
 		cartService.removeCart(getUser(session));
+		
 	}
+		
+	//Done by Haziq:
+	@PostMapping("/cart/add")
+	public ResponseEntity<String> addToCart(HttpSession session, @RequestParam int productId){
+		User user = getUser(session);
+		if (user==null) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to add to cart.");
+		}
+		System.out.println("Add to Cart. ProductId=" + productId + ", quantity=" + DEFAULT_CART_QUANTITY);
+		cartService.addToCart(user, productId, DEFAULT_CART_QUANTITY);
+		return ResponseEntity.ok("Product added to cart");
+	}
+
+	@DeleteMapping("/cart/remove/{productId}")
+	public ResponseEntity<String> removeProductFromCart(HttpSession session, @PathVariable int productId){
+		cartService.removeProductFromCart(getUser(session), productId);
+		return ResponseEntity.ok("Product removed from cart");
+	}
+
 }
+

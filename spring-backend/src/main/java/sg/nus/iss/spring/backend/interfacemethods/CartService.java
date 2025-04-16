@@ -12,4 +12,7 @@ public interface CartService {
 	CartItem updateCartOrderQty(CartItem cartItem);
 	void removeCart(User user);
 	Order saveOrderRecord(HttpSession session, List<CartItem> cartItems) throws Exception;
+	void addToCart(User user, int productId, int quantity);
+	void removeProductFromCart(User user, int productId);
 }
+

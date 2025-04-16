@@ -1,2 +1,13 @@
 .idea
 .vscode
+.project
+.settings/
+.factorypath
+.classpath
+target/
+HELP.md
+node_modules/
+dist/
+build/
+.DS_Store
+CHANGELOG.md

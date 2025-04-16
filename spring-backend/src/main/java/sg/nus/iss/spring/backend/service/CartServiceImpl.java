@@ -23,6 +23,7 @@ import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
 import sg.nus.iss.spring.backend.repository.OrderItemRepository;
 import sg.nus.iss.spring.backend.repository.OrderRepository;
 import sg.nus.iss.spring.backend.repository.PaymentTypeRepository;
+import sg.nus.iss.spring.backend.repository.ProductRepository;
 
 
 /* Written by Aung Myin Moe */
@@ -116,5 +117,52 @@ public class CartServiceImpl implements CartService {
 		}
 		
 		return savedOrder;
+	}
+	
+	
+	//written by Haziq
+	@Autowired
+	private ProductRepository productRepo;
+	
+	@Transactional
+	public void addToCart(User user, int productId, int quantity) {
+		Product product = productRepo.findById(productId)
+			.orElseThrow(() -> new RuntimeException("Product not found"));
+
+		Optional<CartItem> existingItemOpt = cartRepo.findByProductId(productId);
+
+		int existingQtyInCart = 0;
+
+		if (existingItemOpt.isPresent()) {
+		    existingQtyInCart = existingItemOpt.get().getQuantity();
+		}
+
+		int totalQty = existingQtyInCart + quantity;
+
+		if (totalQty > product.getQuantity()) {
+		    throw new RuntimeException("Not enough stock. You are requesting more than available (" + product.getQuantity() + ")");
+		}
+
+		if (existingItemOpt.isPresent()) {
+		    CartItem existingItem = existingItemOpt.get();
+		    existingItem.setQuantity(totalQty);
+		    cartRepo.save(existingItem);
+		} else {
+		    CartItem newItem = new CartItem(user, product, quantity);
+		    cartRepo.save(newItem);
+		}
+	}
+	
+	@Transactional
+	public void removeProductFromCart(User user, int productId) {
+	    Optional<CartItem> cart = cartRepo.findByProductId(productId);
+	    if (cart.isEmpty()) {
+	    	throw new RuntimeException("Cart not found");
+	    } else {
+	    	cartRepo.deleteByProductId(productId);
+	    }
+
+	
+	
 	}
 }
