@@ -45,10 +45,6 @@ public class CartServiceImpl implements CartService {
 	@Autowired
 	OrderItemRepository orderItemRepo;
 	
-	//haziq added this 
-//	@Autowired  
-//	CartItemRepository cartItemRepo;
-	
 	@Override
 	public List<CartItem> listCartItems(User user) {
 		return cartRepo.findAllByUser(user);
@@ -70,7 +66,7 @@ public class CartServiceImpl implements CartService {
 		 * extract parameters from the session and cartItems objects to create order and order_item records
 		 * get user info from session
 		 */
-		User user = (User) session.getAttribute("Authenticated");
+		User user = (User) session.getAttribute("authenticated_user");
 		
 		// get order data from session
 		OrderDetailsDTO orderData = (OrderDetailsDTO) session.getAttribute("order_data");
