@@ -6,7 +6,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -28,11 +27,7 @@ import sg.nus.iss.spring.backend.model.User;
 
 
 /* Written by Aung Myin Moe */
-@CrossOrigin(
-		  origins = "http://localhost:3000",
-		  allowCredentials = "true",
-		  methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE}
-		)
+
 @RestController
 @RequestMapping("/api")
 public class CartController {
@@ -86,7 +81,7 @@ public class CartController {
 	// draft implementation of payment success api
 	// ...
 	@GetMapping("/payment/success")
-	public String paymentSuccess(HttpSession session) throws Exception {
+	public String paymentSuccess(@RequestParam("payment_intent") String paymentIntentId, HttpSession session) throws Exception {
 		/*
 		 * upon successful payment, save the order details in the order table
 		 * to save order details, we will collect required attributes and save it to session
@@ -96,8 +91,8 @@ public class CartController {
 		List<CartItem> cartItems = cartService.listCartItems(getUser(session));
 		
 		// get stripe session id from session and find payment type from stripe server
-		String stripeSessionId = (String) session.getAttribute("stripe_session_id");
-		String paymentType = paymentService.getPaymentType(stripeSessionId);
+		// String stripeSessionId = (String) session.getAttribute("stripe_session_id");
+		String paymentType = paymentService.getPaymentType(paymentIntentId);
 	    
 	    // save payment type in session
 	    session.setAttribute("payment_type", paymentType);
