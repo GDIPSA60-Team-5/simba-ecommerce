@@ -2,6 +2,7 @@ package sg.nus.iss.spring.backend.service;
 
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
+import sg.nus.iss.spring.backend.dto.LoginRequest;
 import sg.nus.iss.spring.backend.exception.auth.InvalidCredentialsException;
 import sg.nus.iss.spring.backend.exception.auth.UserAlreadyExistsException;
 import sg.nus.iss.spring.backend.interfacemethods.AuthService;
@@ -36,18 +37,17 @@ public class AuthServiceImpl implements AuthService {
     /**
      * Authenticates a user based on username, password, and role, then stores the user in session.
      *
-     * @param username the username of the user
-     * @param password the password to validate
+     * @param loginRequest the DTO containing username and password
      * @param role     the required role for authentication (e.g. user, admin)
      * @param session  the HTTP session to store the authenticated user
      * @throws InvalidCredentialsException if username does not exist or password is incorrect
      */
     @Override
-    public void login(String username, String password, Role role, HttpSession session) {
-        User user = userRepository.findByUsernameAndRole(username, role);
+    public void login(LoginRequest loginRequest, Role role, HttpSession session) {
+        User user = userRepository.findByUsernameAndRole(loginRequest.getUsername(), role);
 
         if (user == null) throw new InvalidCredentialsException("Invalid login credentials");
-        if (!user.getPassword().equals(password)) throw new InvalidCredentialsException("Invalid login credentials");
+        if (!user.getPassword().equals(loginRequest.getPassword())) throw new InvalidCredentialsException("Invalid login credentials");
 
         session.setAttribute("authenticated_user", user);
     }
@@ -60,5 +60,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public void logout(HttpSession session) {
         session.invalidate();
+    }
+
+    /**
+     * Get current authenticated user from session
+     */
+    @Override
+    public User getAuthenticatedUser(HttpSession session) {
+        User user = (User) session.getAttribute("authenticated_user");
+//        Hide password in frontend
+        user.setPassword(null);
+        return user;
     }
 }
