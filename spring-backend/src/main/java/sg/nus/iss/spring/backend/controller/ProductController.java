@@ -1,10 +1,7 @@
 package sg.nus.iss.spring.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import sg.nus.iss.spring.backend.interfacemethods.ProductService;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.service.ProductServiceImpl;
@@ -12,7 +9,7 @@ import sg.nus.iss.spring.backend.service.ProductServiceImpl;
 import java.math.BigDecimal;
 import java.util.List;
 
-
+@CrossOrigin
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {

@@ -6,14 +6,15 @@ import ManageBooks from "../pages/admin/ManageBooks";
 import ManageCategories from "../pages/admin/ManageCategories";
 import ManageUsers from "../pages/admin/ManageUsers";
 import AdminLogin from "../pages/auth/AdminLogin";
-import AdminLogout from "../pages/auth/AdminLogout";
+import RequireNoAuth from "./guards/RequireNoAuth";
+import RequireAdmin from "./guards/RequireAdmin";
 
 const AdminRoutes: RouteObject[] = [
     {
         path: "/admin",
-        element: <AdminLayout />,
+        element: <RequireAdmin><AdminLayout /></RequireAdmin>,
         children: [
-            { index: true, element: <AdminDashboard /> },
+            { path: "dashboard", element: <AdminDashboard /> },
             { path: "orders", element: <ManageOrders /> },
             { path: "books", element: <ManageBooks /> },
             { path: "categories", element: <ManageCategories /> },
@@ -22,11 +23,7 @@ const AdminRoutes: RouteObject[] = [
     },
     {
         path: "/admin/login",
-        element: <AdminLogin />,
-    },
-    {
-        path: "/admin/logout",
-        element: <AdminLogout />,
+        element: <RequireNoAuth><AdminLogin /></RequireNoAuth>
     },
 ];
 
