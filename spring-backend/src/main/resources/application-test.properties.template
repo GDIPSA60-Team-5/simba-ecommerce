@@ -1,0 +1,17 @@
+spring.application.name=spring-backend
+
+# MySQL DB Connection
+spring.datasource.url=jdbc:mysql://localhost:3306/shopping
+spring.datasource.username=root
+spring.datasource.password=root
+spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+
+# JPA & Hibernate
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.properties.hibernate.format_sql=true
+
+# Optional logging
+spring.jpa.show-sql=true
+
+stripe.secret.key=sk_test_dummyKeyForTests
+stripe.public.key=pk_test_dummyKeyForTests
