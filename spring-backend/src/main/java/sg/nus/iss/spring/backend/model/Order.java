@@ -1,7 +1,6 @@
 package sg.nus.iss.spring.backend.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -34,6 +33,7 @@ public class Order {
     private float goodsServiceTax;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<OrderItem> orderItems;
 
     // Constructors

@@ -47,7 +47,6 @@ public class TestDataLoader {
             item2b.setQuantity(2);
             item2b.setThumbnail("https://example.com/mousepad.jpg");
             item2b.setOrder(order2);
-
             order2.setOrderItems(List.of(item2a, item2b));
 
             // Order 3
@@ -62,7 +61,6 @@ public class TestDataLoader {
             item3.setQuantity(1);
             item3.setThumbnail("https://example.com/monitor.jpg");
             item3.setOrder(order3);
-
             order3.setOrderItems(List.of(item3));
 
             // Order 4
@@ -83,7 +81,6 @@ public class TestDataLoader {
             item4b.setQuantity(1);
             item4b.setThumbnail("https://example.com/sleeve.jpg");
             item4b.setOrder(order4);
-
             order4.setOrderItems(List.of(item4a, item4b));
 
             // Order 5
@@ -98,12 +95,9 @@ public class TestDataLoader {
             item5.setQuantity(1);
             item5.setThumbnail("https://example.com/wmouse.jpg");
             item5.setOrder(order5);
-
             order5.setOrderItems(List.of(item5));
 
-
             repository.saveAll(List.of(order1, order2, order3, order4, order5));
-
             System.out.println("Test data inserted successfully!");
         };
     }
