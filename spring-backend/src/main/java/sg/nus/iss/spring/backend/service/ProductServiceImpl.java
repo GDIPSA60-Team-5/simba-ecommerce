@@ -7,7 +7,6 @@ import sg.nus.iss.spring.backend.interfacemethods.ProductService;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.repository.ProductRepository;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -17,14 +16,32 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
 
     @Override
-    public List<Product> list(Integer categoryId, BigDecimal minPrice, BigDecimal maxPrice, String keywords) {
+    public List<Product> list(Integer categoryId, Float minPrice, Float maxPrice, String keywords) {
         if ((categoryId==null) && (minPrice == null) && (maxPrice == null) && keywords==null) {
             return productRepository.findAll();
-        }else {
-            return productRepository.searchProducts(categoryId, minPrice, maxPrice,
-                    keywords );
         }
+        return productRepository.searchProducts(categoryId, minPrice, maxPrice, keywords);
 
+    }
+
+    @Override
+    public Product findProductById(Integer productId) {
+        return productRepository.findProductById(productId);
+    }
+
+    @Override
+    public Product createProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public Product editProduct(Product product) {
+        return productRepository.save(product);
+    }
+
+    @Override
+    public void deleteProduct(Integer productId) {
+        productRepository.deleteById(productId);
     }
 
 }

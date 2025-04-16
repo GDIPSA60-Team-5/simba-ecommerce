@@ -34,7 +34,7 @@ public class Product {
     private float rating;
 
     @ManyToOne
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_id", nullable = true)
     private Category category;
     
     @OneToMany(mappedBy="product")
