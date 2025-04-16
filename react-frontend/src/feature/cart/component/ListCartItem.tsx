@@ -1,20 +1,25 @@
 import { useEffect, useState } from 'react'
 import CartItem from './CartItem'
-import { CartItemType } from '../../../types/types'
+import { CartItemType, DeliveryType } from '../../../types/types'
 import axios, { AxiosResponse } from 'axios'
 import { useRef } from 'react'
 import { useNavigate } from "react-router-dom";
 
 
+// written by Aung Myin Moe & Haziq
 export default function ListCartItem() {
     const [myCart, updateMyCart] = useState<CartItemType[]>([]);
     const deliTypeElement = useRef<HTMLSelectElement>(null);
     const shippingAddressElement = useRef<HTMLTextAreaElement>(null);
     const navigate = useNavigate();
+    const [deliType, updateDeliType] = useState<DeliveryType[]>([]);
+    const [selectedDeliveryType, setSelectedDeliveryType] = useState<number | "">("");
+    const [deliveryFee, setDeliveryFee] = useState(0);
 
     useEffect(() => {
-        console.log("retrieving cart from server");
+        console.log("retrieving cart and delivery type from server");
         retrieveCart();
+        retrieveDeliType();
     }, []);
 
     function retrieveCart() {
@@ -29,6 +34,18 @@ export default function ListCartItem() {
             .catch(e => {
                 console.log(e);
             });
+    }
+
+    function retrieveDeliType() {
+        axios
+            .get("http://localhost:8080/api/deli-type")
+            .then((response: AxiosResponse) => {
+                console.log("delivery type response", response.data);
+                updateDeliType(response.data);
+            })
+            .catch(e => {
+                console.log(e);
+            })
     }
 
     async function handleSubmitOrder(e: any) {
@@ -56,45 +73,132 @@ export default function ListCartItem() {
         }
     }
 
+    function handleDeleteCart() {
+        axios.delete(`http://localhost:8080/api/delete-cart`, {
+            withCredentials: true
+        })
+            .then(() => {
+                retrieveCart();
+            })
+            .catch(err => {
+                alert(err.response?.data?.message || "Failed to delete cart");
+                console.error("Remove error:", err);
+            });
+    }
+
+    function calculateTotal() {
+        let total = 0;
+        myCart.forEach((myCartItem) => {
+            total += myCartItem.product.price * myCartItem.quantity;
+        });
+        return total;
+    }    
+
+    function calculateTax() {
+        const tax = calculateTotal() * 0.09;
+        return tax;
+    }   
+
     const listCartHtml = myCart.map((myCartItem) =>
-        <CartItem myCartItem={myCartItem} key={myCartItem.id} />
+        <CartItem myCartItem={myCartItem} key={myCartItem.id} retrieveCart={retrieveCart} />
     );
 
-    return(
-        <form>
-            <table>
+    return( 
+        <form style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem" }}>
+            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "2rem" }}>
+                <thead>
+                    <tr>
+                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Product</th>
+                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Unit Price (SGD)</th>
+                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Quantity</th>
+                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Total Price (SGD)</th>
+                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Action</th>
+                    </tr>
+                </thead>
                 <tbody>
                     {listCartHtml}
+                    <tr style={{ borderTop: "1px solid #ccc" }}>
+                        <td colSpan={3} style={{ textAlign: "right", paddingTop: "1rem", paddingBottom: "0.5rem", fontWeight: "bold" }}>
+                            Subtotal
+                        </td>
+                        <td style={{ textAlign: "right", paddingTop: "1rem", paddingBottom: "0.5rem", paddingRight: "2rem" }}>
+                            {calculateTotal().toFixed(2)}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan={3} style={{ textAlign: "right", paddingBottom: "0.5rem", fontWeight: "bold" }}>
+                            GST (9%)
+                        </td>
+                        <td style={{ textAlign: "right", paddingBottom: "0.5rem", paddingRight: "2rem" }}>
+                            {calculateTax().toFixed(2)}
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colSpan={3} style={{ textAlign: "right", paddingBottom: "0.5rem", fontWeight: "bold" }}>
+                            Delivery Fee
+                        </td>
+                        <td style={{ textAlign: "right", paddingBottom: "0.5rem", paddingRight: "2rem" }}>
+                            {deliveryFee.toFixed(2)}
+                        </td>
+                    </tr>
+                    <tr style={{ borderTop: "2px solid black" }}>
+                        <td colSpan={3} style={{ textAlign: "center", paddingTop: "1rem", fontWeight: "bold" }}>
+                            Grand Total
+                        </td>
+                        <td style={{ textAlign: "right", paddingTop: "1rem", paddingRight: "2rem", fontWeight: "bold" }}>
+                            SGD {(calculateTotal() + calculateTax() + deliveryFee).toFixed(2)}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
 
-            <h3>Choose Delivery Type</h3>
-            
-            <label htmlFor="deliveryType"><strong>Delivery Type</strong></label>
-            <select id="deliveryType" name="deliveryType" ref={deliTypeElement} required>
-                <option value="">
-                    -- Please choose an option --
-                </option>
-                <option value="Standard Delivery">
-                    Standard Delivery – Delivered within 3–5 working days ($3.50)
-                </option>
-                <option value="Express Delivery">
-                    Express Delivery – Delivered within 1–2 working days ($7.90)
-                </option>
-                <option value="Same-Day Delivery">
-                    Same-Day Delivery – Delivered on the same day if ordered before 12pm ($12.00)
-                </option>
-            </select>
-
-        
-            <h3>Shipping Address</h3>
-            <div>
-                <label htmlFor="shippingAddress">Address:</label><br/>
-                <textarea id="shippingAddress" name="shippingAddress" rows={4} cols={50} placeholder="Enter your shipping address" ref={shippingAddressElement} required></textarea>
+            <div style={{ marginBottom: "1.5rem" }}>
+                <label htmlFor="deliveryType"><strong>Delivery Type</strong></label><br/>
+                <select
+                    id="deliveryType"
+                    name="deliveryType"
+                    ref={deliTypeElement}
+                    required
+                    style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
+                    value={selectedDeliveryType}
+                    onChange={(e) => {
+                        const selectedId = parseInt(e.target.value);
+                        const selected = deliType.find(type => type.id === selectedId);
+                        setSelectedDeliveryType(selectedId);
+                        setDeliveryFee(selected ? selected.fee : 0);
+                    }}
+                >
+                    <option value="">-- Please choose an option --</option>
+                    {Array.isArray(deliType) && deliType.map((type) => (
+                        <option key={type.id} value={type.id}>
+                            {type.name} – {type.description} (${type.fee.toFixed(2)})
+                        </option>
+                    ))}
+                </select>
             </div>
-        
-            <br/>
-            <button onClick={handleSubmitOrder}>Submit Order</button>
-        </form>      
+
+            <div style={{ marginBottom: "2rem" }}>
+                <label htmlFor="shippingAddress"><strong>Shipping Address</strong></label><br/>
+                <textarea
+                    id="shippingAddress"
+                    name="shippingAddress"
+                    rows={4}
+                    cols={50}
+                    placeholder="Enter your shipping address"
+                    ref={shippingAddressElement}
+                    required
+                    style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
+                ></textarea>
+            </div>
+
+            <div style={{ display: "flex", gap: "1rem" }}>
+                <button type="button" onClick={handleSubmitOrder} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "4px" }}>
+                    Submit Order
+                </button>
+                <button type="button" onClick={handleDeleteCart} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "4px" }}>
+                    Delete Cart
+                </button>
+            </div>
+        </form>    
     )
 }
