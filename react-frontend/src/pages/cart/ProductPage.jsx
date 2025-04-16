@@ -22,7 +22,7 @@ export default function ProductPage({ cartId }) {
   }, []);
 
   const handleAddToCart = (productId) => {
-  axios.post(`http://localhost:8080/api/cart/${cartId}/add`, null, {
+  axios.post(`http://localhost:8080/api/cart/add`, null, {
     params: {
       productId: productId,
       quantity: 1

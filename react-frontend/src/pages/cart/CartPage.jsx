@@ -6,9 +6,9 @@ export default function CartPage({ cartId }) {
   const [loading, setLoading] = useState(true);
 
   const refreshCart = () => {
-    axios.get(`http://localhost:8080/api/cart/${cartId}`)
+    axios.get(`http://localhost:8080/api/cart`)
       .then(res => {
-        console.log("🛒 Cart data received:", res.data);
+        console.log("Cart data received:", res.data);
         setCart(res.data);
         setLoading(false);
       })
@@ -30,7 +30,7 @@ export default function CartPage({ cartId }) {
   };
 
   const handleReduce = (productId) => {
-    axios.put(`http://localhost:8080/api/cart/${cartId}/reduce/${productId}`)
+    axios.put(`http://localhost:8080/api/cart/reduce`)
       .then(() => {
         refreshCart();
       })
@@ -41,7 +41,7 @@ export default function CartPage({ cartId }) {
   };
   
   const handleRemove = (productId) => {
-    axios.delete(`http://localhost:8080/api/cart/${cartId}/remove/${productId}`)
+    axios.delete(`http://localhost:8080/api/cart/remove{productId}`)
       .then(() => {
         alert("Product removed");
         refreshCart();
@@ -53,7 +53,7 @@ export default function CartPage({ cartId }) {
   };
 
   const handleIncrease = (productId) => {
-    axios.post(`http://localhost:8080/api/cart/${cartId}/add`, null, {
+    axios.post(`http://localhost:8080/api/cart/add`, null, {
       params: {
         productId: productId,
         quantity: 1
