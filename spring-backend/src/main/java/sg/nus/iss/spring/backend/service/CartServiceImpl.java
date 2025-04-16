@@ -11,7 +11,6 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
-import sg.nus.iss.spring.backend.model.Cart;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.DeliveryType;
 import sg.nus.iss.spring.backend.model.Order;
@@ -19,7 +18,6 @@ import sg.nus.iss.spring.backend.model.OrderItem;
 import sg.nus.iss.spring.backend.model.PaymentType;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.model.User;
-import sg.nus.iss.spring.backend.repository.CartItemRepository;
 import sg.nus.iss.spring.backend.repository.CartRepository;
 import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
 import sg.nus.iss.spring.backend.repository.OrderItemRepository;
@@ -48,8 +46,8 @@ public class CartServiceImpl implements CartService {
 	OrderItemRepository orderItemRepo;
 	
 	//haziq added this 
-	@Autowired  
-	CartItemRepository cartItemRepo;
+//	@Autowired  
+//	CartItemRepository cartItemRepo;
 	
 	@Override
 	public List<CartItem> listCartItems(User user) {
@@ -58,7 +56,7 @@ public class CartServiceImpl implements CartService {
 	
 	@Override
 	public CartItem updateCartOrderQty(CartItem cartItem) {
-		return cartItemRepo.save(cartItem);
+		return cartRepo.save(cartItem);
 	}
 	
 	@Override
@@ -72,7 +70,7 @@ public class CartServiceImpl implements CartService {
 		 * extract parameters from the session and cartItems objects to create order and order_item records
 		 * get user info from session
 		 */
-		User user = (User) session.getAttribute("authenticated_user");
+		User user = (User) session.getAttribute("Authenticated");
 		
 		// get order data from session
 		OrderDetailsDTO orderData = (OrderDetailsDTO) session.getAttribute("order_data");
@@ -135,88 +133,40 @@ public class CartServiceImpl implements CartService {
 		Product product = productRepo.findById(productId)
 			.orElseThrow(() -> new RuntimeException("Product not found"));
 
-		Cart cart = cartRepo.findByUser(user)
-			.orElseThrow(() -> new RuntimeException("User not found"));
+		Optional<CartItem> existingItemOpt = cartRepo.findByProductId(productId);
 
-		if (product.getQuantity() < quantity) {
-			throw new RuntimeException("Not enough stock");
-		}
-
-		// Check if product already in cart
-		Optional<CartItem> existingItemOpt = cart.getItems().stream()
-			.filter(item -> item.getProduct().getId() == productId)
-			.findFirst();
-		
-		 int currentQtyInCart = existingItemOpt.map(CartItem::getQuantity).orElse(0);
-		 int totalRequestedQty = currentQtyInCart + quantity;
-		 if (totalRequestedQty > product.getQuantity()) {
-		        throw new RuntimeException("Not enough stock. You are requesting for more than what is available in stock (" + product.getQuantity() + ")");
-		 }
+		int existingQtyInCart = 0;
 
 		if (existingItemOpt.isPresent()) {
-			CartItem existingItem = existingItemOpt.get();
-			existingItem.setQuantity(existingItem.getQuantity() + quantity);
-		} else {
-			CartItem newItem = new CartItem();
-			newItem.setProduct(product);
-			newItem.setQuantity(quantity);
-			newItem.setCart(cart);
-			newItem.setUser(cart.getUser());
-
-			cart.getItems().add(newItem); // Cart must have cascade
+		    existingQtyInCart = existingItemOpt.get().getQuantity();
 		}
 
-		cartRepo.save(cart);
-	}
-	
-	@Transactional
-	public void reduceProductQuantity(User user, int productId) {
-	    Cart cart = cartRepo.findByUser(user).orElseThrow(() -> new RuntimeException("Cart not found"));
+		int totalQty = existingQtyInCart + quantity;
 
-	    for (CartItem item : cart.getItems()) {
-	        if (item.getProduct().getId() == productId) {
-	            if (item.getQuantity() > 1) {
-	                item.setQuantity(item.getQuantity() - 1);
-	            } else {
-	                throw new IllegalStateException("Cannot reduce quantity below 1. Use remove instead.");
-	            }
-	            break;
-	        }
-	    }
+		if (totalQty > product.getQuantity()) {
+		    throw new RuntimeException("Not enough stock. You are requesting more than available (" + product.getQuantity() + ")");
+		}
 
-	    cartRepo.save(cart);
+		if (existingItemOpt.isPresent()) {
+		    CartItem existingItem = existingItemOpt.get();
+		    existingItem.setQuantity(totalQty);
+		    cartRepo.save(existingItem);
+		} else {
+		    CartItem newItem = new CartItem(user, product, quantity);
+		    cartRepo.save(newItem);
+		}
 	}
 	
 	@Transactional
 	public void removeProductFromCart(User user, int productId) {
-	    Cart cart = cartRepo.findByUser(user).orElseThrow(() -> new RuntimeException("Cart not found"));
-
-	    CartItem itemToRemove = null;
-
-	    for (CartItem item : cart.getItems()) {
-	        if (item.getProduct().getId() == productId) {
-	            itemToRemove = item;
-	            break;
-	        }
+	    Optional<CartItem> cart = cartRepo.findByProductId(productId);
+	    if (cart.isEmpty()) {
+	    	throw new RuntimeException("Cart not found");
+	    } else {
+	    	cartRepo.deleteByProductId(productId);
 	    }
 
-	    if (itemToRemove != null) {
-	        cart.getItems().remove(itemToRemove); // orphanRemoval = true will delete it
-	    }
-
-	    cartRepo.save(cart);
+	
+	
 	}
-	
-	@Override
-	public Cart getCartById(int cartId) {
-	    return cartRepo.findById(cartId)
-	        .orElseThrow(() -> new RuntimeException("Cart not found"));
-	}
-	
-	
-	
-	
-	
-	
-	
 }

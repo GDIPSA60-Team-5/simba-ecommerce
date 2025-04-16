@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -17,8 +16,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.bind.annotation.RequestMethod;
 import com.stripe.exception.StripeException;
 
@@ -26,7 +23,6 @@ import jakarta.servlet.http.HttpSession;
 import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
-import sg.nus.iss.spring.backend.model.Cart;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.User;
 
@@ -137,14 +133,7 @@ public class CartController {
 		
 	}
 		
-	
-		//Done by Haziq:
-	
-//	@GetMapping("/{cartId}")
-//	public Cart getCart(@PathVariable int cartId) {
-//		return cartService.getCartById(cartId);
-//	}
-	
+	//Done by Haziq:
 	@PostMapping("/add")
 	public ResponseEntity<String> addToCart(HttpSession session, @RequestParam int productId){
 		User user = getUser(session);
@@ -155,20 +144,12 @@ public class CartController {
 		cartService.addToCart(user, productId, DEFAULT_CART_QUANTITY);
 		return ResponseEntity.ok("Product added to cart");
 	}
-	
-	
-//		@PutMapping("/reduce/{productId}")
-//		public ResponseEntity<String> reduceProductQuantity(HttpSession session, @PathVariable int productId){
-//			cartService.reduceProductQuantity(getUser(session), productId);
-//			return ResponseEntity.ok("Quantity reduced by 1");
-//		}
-		
-		@DeleteMapping("/remove/{productId}")
-		public ResponseEntity<String> removeProductFromCart(HttpSession session, @PathVariable int productId){
-			cartService.removeProductFromCart(getUser(session), productId);
-			return ResponseEntity.ok("Product removed from cart");
-		}
-		
-		
+
+	@DeleteMapping("/remove/{productId}")
+	public ResponseEntity<String> removeProductFromCart(HttpSession session, @PathVariable int productId){
+		cartService.removeProductFromCart(getUser(session), productId);
+		return ResponseEntity.ok("Product removed from cart");
 	}
+
+}
 
