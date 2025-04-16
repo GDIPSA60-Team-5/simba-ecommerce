@@ -1,16 +1,11 @@
 import { useState, ChangeEvent, FormEvent } from 'react';
-import axios from 'axios';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { useLogin, LoginRequest } from '../../hooks/useLogin';
 
-interface LoginForm {
-    username: string;
-    password: string;
-}
 
 const Login = () => {
-    const [form, setForm] = useState<LoginForm>({ username: '', password: '' });
-    const [error, setError] = useState<string>('');
-    const navigate = useNavigate();
+    const [form, setForm] = useState<LoginRequest>({ username: '', password: '' });
+    const { login, loading, error } = useLogin()
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -20,33 +15,21 @@ const Login = () => {
         }));
     };
 
-    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        setError('');
-
-        try {
-            await axios.post('/api/auth/login', form, {
-                withCredentials: true,
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            navigate('/account');
-        } catch (err: any) {
-            setError(err.response?.data || 'Login failed');
-        }
+        login(form);
     };
+
 
     return (
         <div className="flex items-center justify-center h-screen bg-gray-100">
             <form
                 onSubmit={handleSubmit}
-                className="bg-white shadow-md rounded-xl p-8 w-full max-w-sm space-y-4"
+                className="bg-white shadow-md rounded-xl p-8 w-full max-w-sm space-y-4 flex flex-col"
             >
                 <h2 className="text-2xl font-bold text-center text-gray-800">Login</h2>
 
-                {error && <p className="text-red-500 text-sm">{error}</p>}
+                {error && <p className="px-10 py-5 bg-gray-200 text rounded-[5px]">{error}</p>}
 
                 <div>
                     <label htmlFor="username" className="block text-sm font-medium text-gray-700">
@@ -80,9 +63,10 @@ const Login = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg-blue-600 cursor-pointer text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
+                    disabled={loading}
+                    className="align-self-center w-min bg-blue-600 cursor-pointer text-white py-2 px-4 rounded-md hover:bg-blue-700 transition"
                 >
-                    Login
+                    {loading ? 'Logging in...' : 'Login'}
                 </button>
 
                 <p className="text-sm text-center text-gray-600">

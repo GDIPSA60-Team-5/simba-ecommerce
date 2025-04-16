@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 
 interface User {
     id: number;
@@ -14,14 +13,12 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isAdmin: boolean;
     refreshUser: () => void;
-    logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
-    const navigate = useNavigate()
 
     const refreshUser = () => {
         axios.get<User>('/api/auth/me', { withCredentials: true })
@@ -29,21 +26,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             .catch(() => setUser(null));
     };
 
-    const logout = () => {
-        const role = user?.role;
-        axios.post('/api/auth/logout', {}, { withCredentials: true })
-            .then(() => {
-                setUser(null);
-                if (role === 'ADMIN') {
-                    navigate('/admin/login');
-                } else {
-                    navigate('/login');
-                }
-            })
-            .catch((error) => {
-                console.error('Logout failed:', error);
-            });
-    };
 
     useEffect(() => {
         refreshUser();
@@ -53,7 +35,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const isAdmin = user?.role === "ADMIN";
 
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, isAdmin, refreshUser, logout }}>
+        <AuthContext.Provider value={{ user, isAuthenticated, isAdmin, refreshUser }}>
             {children}
         </AuthContext.Provider>
     );

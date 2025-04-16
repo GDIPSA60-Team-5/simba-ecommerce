@@ -4,9 +4,7 @@ import { Navigate } from "react-router-dom";
 const RequireAdmin = ({ children }: { children: React.ReactNode }) => {
     const { isAdmin } = useAuth();
 
-    if (!isAdmin) {
-        return <Navigate to="/login" replace />;
-    }
+    if (!isAdmin) return <Navigate to="/login" replace />;
 
     return <>{children}</>;
 };

@@ -1,6 +1,5 @@
 import { useProducts, ProductCard } from "../feature/BrowseBooks";
 
-
 export default function BookList() {
     const { products, loading, error } = useProducts();
 
@@ -10,11 +9,16 @@ export default function BookList() {
     return (
         <div className="px-[300px] py-4">
             <h2 className="text-xl font-bold mb-6 text-center">Our Books</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-30">
-                {products.map((product) => (
-                    <ProductCard key={product.id} product={product} />
-                ))}
-            </div>
+
+            {products.length > 0 ? (
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                    {products.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))}
+                </div>
+            ) : (
+                <p className="text-center text-gray-500">No books found.</p>
+            )}
         </div>
     );
 }

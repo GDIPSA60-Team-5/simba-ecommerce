@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import user from "../assets/svgs/user.svg";
 import { Link } from "react-router-dom";
+import useLogout from "../hooks/useLogout";
 
 const Profile = () => {
-    const { isAuthenticated, logout } = useAuth();
+    const { isAuthenticated } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const logout = useLogout();
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
