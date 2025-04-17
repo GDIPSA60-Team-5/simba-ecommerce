@@ -57,6 +57,26 @@ export default function ListCartItem() {
         console.log("retrieving cart and delivery type from server");
         retrieveCart();
         retrieveDeliType();
+
+        // restore the delivery type and shipping information to cart page
+        const savedDeliveryType = sessionStorage.getItem("deliveryType");
+        const savedShippingAddress = sessionStorage.getItem("shippingAddress");
+
+        if (savedDeliveryType) {
+            try {
+                const parsed = JSON.parse(savedDeliveryType);
+                if (parsed) {
+                    setSelectedDeliveryType(parsed);
+                    setDeliveryFee(parsed.fee);
+                }
+            } catch (err) {
+                console.error("Failed to parse savedDeliveryType", err);
+            }
+        }
+
+        if (savedShippingAddress && shippingAddressElement.current) {
+            shippingAddressElement.current.value = savedShippingAddress;
+        }
     }, []);
 
     function retrieveCart() {
@@ -208,6 +228,8 @@ export default function ListCartItem() {
                         const selected = deliType.find(type => type.name === selectedName) || null;
                         setSelectedDeliveryType(selected);
                         setDeliveryFee(selected ? selected.fee : 0);
+                        // Save to sessionStorage
+                        sessionStorage.setItem("deliveryType", JSON.stringify(selected));
                     }}
                 >
                     <option value="">-- Please choose an option --</option>
@@ -230,6 +252,9 @@ export default function ListCartItem() {
                     ref={shippingAddressElement}
                     required
                     style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
+                    onChange={(e) => {
+                        sessionStorage.setItem("shippingAddress", e.target.value);
+                    }}
                 ></textarea>
             </div>
 
