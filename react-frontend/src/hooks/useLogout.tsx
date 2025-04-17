@@ -8,7 +8,7 @@ const useLogout = () => {
     const navigate = useNavigate();
 
     const handleLogout = useCallback(() => {
-        axios.post('/api/auth/logout', {}, { withCredentials: true })
+        axios.post('http://localhost:8080/api/auth/user/logout', {}, { withCredentials: true })
             .then(() => {
                 refreshUser();
 
