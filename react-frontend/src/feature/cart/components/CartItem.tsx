@@ -15,8 +15,9 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCar
   const [currentQty, changeQty] = useState(myCartItem.quantity);
   function handleReduce() {
     if (currentQty > 1) {
-      changeQty(currentQty - 1);
-      updateCartQtyState(myCartItem.id, currentQty);
+      const newQty = currentQty - 1;
+      changeQty(newQty);
+      updateCartQtyState(myCartItem.id, newQty);
     } else {
       alert("Minimum quantity is 1");
     }
@@ -25,8 +26,9 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCar
   function handleIncrease() {
     const productStock = myCartItem.product.quantity;
     if (currentQty < productStock) {
-      changeQty(currentQty + 1);
-      updateCartQtyState(myCartItem.id, currentQty);
+      const newQty = currentQty + 1;
+      changeQty(newQty);
+      updateCartQtyState(myCartItem.id, newQty);
     } else {
       alert("Maximum quantity is reached");
     }
@@ -37,7 +39,7 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCar
     const productStock = myCartItem.product.quantity;
     if (!isNaN(inputQty) && inputQty >= 1 && inputQty <= productStock) {
       changeQty(inputQty);
-      updateCartQtyState(myCartItem.id, currentQty);
+      updateCartQtyState(myCartItem.id, inputQty);
     } else if (inputQty > productStock) {
       alert("Not enough product stock");
     }
@@ -60,25 +62,6 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCar
     return (myCartItem.product.price * myCartItem.quantity).toFixed(2);
   }
 
-  function handleUpdateQty() {
-    const updatedCartItem: CartItemType = {
-      ...myCartItem,
-      quantity: currentQty
-    };
-    axios.put(
-      `http://localhost:8080/api/cart/update-quantity`,
-      updatedCartItem,
-      { withCredentials: true }
-    )
-    .then(() => {
-      retrieveCart();
-    })
-    .catch(err => {
-      alert(err.response?.data?.message || "Failed to update quantity");
-      console.error("Update quantity error:", err);
-    });
-  }
-
   return (
     <tr style={{ borderBottom: "1px solid #ccc", padding: "1rem 0" }}>
     <td style={{ padding: "1rem 0" }}>{myCartItem.product.name}</td>
@@ -99,35 +82,21 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCar
     </td>
     <td style={{ padding: "0 2rem", textAlign: "right" }}>{productTotal()}</td>
     <td style={{ display: "flex", gap: "0.5rem", paddingTop: "0.5rem" }}>
-  <button
-    type="button"
-    onClick={handleUpdateQty}
-    style={{
-      padding: "0.5rem 1rem",
-      backgroundColor: "#4CAF50", // green
-      color: "white",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer"
-    }}
-  >
-    Update
-  </button>
-  <button
-    type="button"
-    onClick={handleDeleteProduct}
-    style={{
-      padding: "0.5rem 1rem",
-      backgroundColor: "#f44336", // red
-      color: "white",
-      border: "none",
-      borderRadius: "4px",
-      cursor: "pointer"
-    }}
-  >
-    Delete
-  </button>
-</td>
+      <button
+        type="button"
+        onClick={handleDeleteProduct}
+        style={{
+          padding: "0.5rem 1rem",
+          backgroundColor: "#f44336", // red
+          color: "white",
+          border: "none",
+          borderRadius: "4px",
+          cursor: "pointer"
+        }}
+      >
+        Delete
+      </button>
+    </td>
   </tr>
   );
 };
