@@ -21,7 +21,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
 
     const refreshUser = () => {
-        axios.get<User>('/api/auth/me', { withCredentials: true })
+        axios.get<User>('http://localhost:8080/api/auth/user/me', { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch(() => setUser(null));
     };

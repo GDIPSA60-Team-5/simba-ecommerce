@@ -11,6 +11,7 @@ import Register from "../pages/auth/Register";
 import RequireNoAuth from "./guards/RequireNoAuth";
 import Cart from "../pages/Cart";
 import RequireAuth from "./guards/RequireAuth";
+import CheckoutPage from "../feature/stripe/components/StripeCheckoutPage"; 
 
 const PublicRoutes: RouteObject[] = [
     {
@@ -26,6 +27,7 @@ const PublicRoutes: RouteObject[] = [
 
             // User Only Routes 
             { path: "cart", element: <RequireAuth><Cart /></RequireAuth> },
+            { path: "checkout", element: <RequireAuth><CheckoutPage /></RequireAuth>},
 
             // Non-User Only Routes
             { path: "login", element: <RequireNoAuth><Login /></RequireNoAuth> },

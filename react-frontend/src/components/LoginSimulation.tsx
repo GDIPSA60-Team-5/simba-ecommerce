@@ -15,7 +15,7 @@ export default function LoginSimulation() {
 
         axios.post("http://localhost:8080/api/auth/user/login", qs.stringify(data), {
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                'Content-Type': 'application/json'
             }, 
             withCredentials: true
         })

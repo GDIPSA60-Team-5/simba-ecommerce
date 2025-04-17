@@ -15,14 +15,14 @@ export const useLogin = (isAdmin: boolean = false) => {
     const { refreshUser } = useAuth();
     const navigate = useNavigate();
 
-    const endpoint = isAdmin ? "/api/admin/auth/login" : "/api/auth/login";
-    const redirectPath = isAdmin ? "/admin/dashboard" : "/account";
+    const endpoint = isAdmin ? "/api/admin/auth/login" : "/api/auth/user/login";
+    const redirectPath = isAdmin ? "/dashboard" : "/account";
 
     const login = async (request: LoginRequest) => {
         setLoading(true);
         setError('');
         try {
-            const response = await axios.post(endpoint, request, {
+            const response = await axios.post('http://localhost:8080' + endpoint, request, {
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' },
             });

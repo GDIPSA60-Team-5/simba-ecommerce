@@ -26,3 +26,10 @@ export interface CartItemType {
     product: Product;
     quantity: number;
 }
+
+export interface DeliveryType {
+    id: number;
+    name: string;
+    description: string;
+    fee: number;
+}
