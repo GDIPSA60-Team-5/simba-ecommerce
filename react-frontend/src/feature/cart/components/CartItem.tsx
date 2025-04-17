@@ -13,7 +13,6 @@ interface CartItemProps {
 
 const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCartQtyState }) => {
   const [currentQty, changeQty] = useState(myCartItem.quantity);
-
   function handleReduce() {
     if (currentQty > 1) {
       changeQty(currentQty - 1);
