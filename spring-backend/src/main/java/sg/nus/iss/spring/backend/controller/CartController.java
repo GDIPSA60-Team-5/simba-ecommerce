@@ -15,14 +15,15 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.bind.annotation.RequestMethod;
 import com.stripe.exception.StripeException;
 
 import jakarta.servlet.http.HttpSession;
 import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
+import sg.nus.iss.spring.backend.interfacemethods.DeliveryService;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
 import sg.nus.iss.spring.backend.model.CartItem;
+import sg.nus.iss.spring.backend.model.DeliveryType;
 import sg.nus.iss.spring.backend.model.User;
 
 
@@ -36,6 +37,9 @@ public class CartController {
 	
 	@Autowired
 	private PaymentService paymentService;
+	
+	@Autowired
+	private DeliveryService deliService;
 	
 	private static final int DEFAULT_CART_QUANTITY = 1;
 	
@@ -122,10 +126,15 @@ public class CartController {
 	}
 		
 	// cancel order in cart page
-	@DeleteMapping("/cancel-order")
-	public void cancelOrder(HttpSession session) {
+	@DeleteMapping("/delete-cart")
+	public void deleteCart(HttpSession session) {
 		cartService.removeCart(getUser(session));
-		
+	}
+	
+	// get delivery type
+	@GetMapping("/deli-type")
+	public List<DeliveryType> getDeliType() {
+		return deliService.getDeliType();
 	}
 		
 	//Done by Haziq:
