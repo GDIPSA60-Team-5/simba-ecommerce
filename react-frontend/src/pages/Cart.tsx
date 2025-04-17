@@ -1,4 +1,4 @@
-import ListCartItem from "../feature/cart/component/ListCartItem";
+import ListCartItem from "../feature/cart/components/ListCartItem";
 
 const Cart = () => {
     return (
