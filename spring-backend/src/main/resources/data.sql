@@ -15,7 +15,6 @@ VALUES
     ('Dave Ramsey');
 
 -- Insert Books (Products)
-
 INSERT INTO products (name, description, price, quantity, image_url, rating, author_id, category_id, product_type)
 VALUES
     ('Harry Potter and the Philosopher''s Stone', 'Fantasy novel about a young wizard attending Hogwarts.', 15.99, 100, '/images/books/book-1.png', 4.9, 1, 1, 'BOOK'),
@@ -30,3 +29,17 @@ VALUES
     ('Spring in Action', 'A hands-on guide to Spring Framework.', 45.00, 100, '/images/books/book-3.png', 4.8, 2, 2, 'BOOK'),
     ('Europe Through the Back Door', 'Travel guide to Europe with tips for budget travelers.', 24.99, 60, '/images/books/book-4.png', 4.9, 3, 3, 'BOOK'),
     ('The Millionaire Next Door', 'A guide to understanding wealth and finances.', 21.99, 50, '/images/books/book-5.png', 4.7, 4, 4, 'BOOK');
+    
+-- Insert Delivery Types
+INSERT INTO delivery_type (name, description, fee)
+VALUES 
+    ('Standard Delivery', 'Delivered within 3–5 working days', 3.50),
+    ('Express Delivery', 'Delivered within 1–2 working days', 7.90),
+    ('Same-Day Delivery', 'Delivered on the same day if ordered before 12pm', 12.00);
+    
+-- Insert Users
+INSERT INTO users (first_name, last_name, username, password, phone_number, email, address, date_of_birth, role)
+VALUES
+    ('Alice', 'Tan', 'alice', 'pass123', '91234567', 'alice@example.com', '123 Orchard Rd', '1990-01-01', 'USER'),
+    ('Bob', 'Lee', 'bob', 'pass123', '98765432', 'bob@example.com', '456 Clementi Rd', '1985-05-15', 'ADMIN'),
+    ('Carol', 'Lim', 'carol', 'pass123', '92223333', 'carol@example.com', '789 Bukit Timah', '1992-07-10', 'USER');
