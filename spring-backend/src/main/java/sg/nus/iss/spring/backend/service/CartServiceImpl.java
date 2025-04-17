@@ -133,7 +133,7 @@ public class CartServiceImpl implements CartService {
 		Product product = productRepo.findById(productId)
 			.orElseThrow(() -> new RuntimeException("Product not found"));
 
-		Optional<CartItem> existingItemOpt = cartRepo.findByProductId(productId);
+		Optional<CartItem> existingItemOpt = cartRepo.findByUserAndProductId(user, productId);
 
 		int existingQtyInCart = 0;
 
@@ -159,7 +159,7 @@ public class CartServiceImpl implements CartService {
 	
 	@Transactional
 	public void removeProductFromCart(User user, int productId) {
-	    Optional<CartItem> cart = cartRepo.findByProductId(productId);
+	    Optional<CartItem> cart = cartRepo.findByUserAndProductId(user, productId);
 	    if (cart.isEmpty()) {
 	    	throw new RuntimeException("Cart not found");
 	    } else {
