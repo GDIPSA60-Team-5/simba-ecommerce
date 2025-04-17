@@ -154,6 +154,13 @@ public class CartController {
 		cartService.removeProductFromCart(getUser(session), productId);
 		return ResponseEntity.ok("Product removed from cart");
 	}
+	
+	@PutMapping("/cart/update-all")
+	public ResponseEntity<String> updateAllCartItems(@RequestBody List<CartItem> cartItems){
+		cartService.updateAllCartItems(cartItems);
+		return ResponseEntity.ok("Cart updated successfully");
+	}
+	
 
 }
 

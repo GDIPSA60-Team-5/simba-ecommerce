@@ -7,24 +7,25 @@ import axios from "axios";
 // Written by Aung Myin Moe & Haziq
 interface CartItemProps {
     myCartItem: CartItemType;
-    retrieveCart: () => void;
+    onQuantityChange: (id: number, newQuantity: number) => void;
+    onDelete: (productId: number) => void;
+    // retrieveCart: () => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
-  const [currentQty, changeQty] = useState(myCartItem.quantity);
+const CartItem: React.FC<CartItemProps> = ({ myCartItem, onQuantityChange, onDelete }) => {
+  const productStock = myCartItem.product.quantity;
 
   function handleReduce() {
-    if (currentQty > 1) {
-      changeQty(currentQty - 1);
+    if (myCartItem.quantity > 1) {
+      onQuantityChange(myCartItem.id, myCartItem.quantity - 1);
     } else {
       alert("Minimum quantity is 1");
     }
   }
 
   function handleIncrease() {
-    const productStock = myCartItem.product.quantity;
-    if (currentQty < productStock) {
-      changeQty(currentQty + 1);
+    if (myCartItem.quantity < productStock) {
+      onQuantityChange(myCartItem.id, myCartItem.quantity + 1);
     } else {
       alert("Maximum quantity is reached");
     }
@@ -32,49 +33,39 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
 
   function handleInputValue(e: React.ChangeEvent<HTMLInputElement>) {
     const inputQty = parseInt(e.target.value);
-    const productStock = myCartItem.product.quantity;
     if (!isNaN(inputQty) && inputQty >= 1 && inputQty <= productStock) {
-      changeQty(inputQty);
+      onQuantityChange(myCartItem.id,inputQty);
     } else if (inputQty > productStock) {
       alert("Not enough product stock");
     }
   }
 
   function handleDeleteProduct() {
-    axios.delete(`http://localhost:8080/api/cart/remove/${myCartItem.product.id}`, {
-      withCredentials: true
-    })
-      .then(() => {
-        retrieveCart();
-      })
-      .catch(err => {
-        alert(err.response?.data?.message || "Failed to remove product");
-        console.error("Remove error:", err);
-      });
+    onDelete(myCartItem.product.id);
   }
 
-  function productTotal() {
-    return (myCartItem.product.price * myCartItem.quantity).toFixed(2);
-  }
+  // function productTotal() {
+  //   return (myCartItem.product.price * myCartItem.quantity).toFixed(2);
+  // }
 
-  function handleUpdateQty() {
-    const updatedCartItem: CartItemType = {
-      ...myCartItem,
-      quantity: currentQty
-    };
-    axios.put(
-      `http://localhost:8080/api/cart/update-quantity`,
-      updatedCartItem,
-      { withCredentials: true }
-    )
-    .then(() => {
-      retrieveCart();
-    })
-    .catch(err => {
-      alert(err.response?.data?.message || "Failed to update quantity");
-      console.error("Update quantity error:", err);
-    });
-  }
+  // function handleUpdateQty() {
+  //   const updatedCartItem: CartItemType = {
+  //     ...myCartItem,
+  //     quantity: currentQty
+  //   };
+  //   axios.put(
+  //     `http://localhost:8080/api/cart/update-quantity`,
+  //     updatedCartItem,
+  //     { withCredentials: true }
+  //   )
+  //   .then(() => {
+  //     retrieveCart();
+  //   })
+  //   .catch(err => {
+  //     alert(err.response?.data?.message || "Failed to update quantity");
+  //     console.error("Update quantity error:", err);
+  //   });
+  // }
 
   return (
     <tr style={{ borderBottom: "1px solid #ccc", padding: "1rem 0" }}>
@@ -87,7 +78,7 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
           type="number"
           className="cart-quantity-input"
           onChange={handleInputValue}
-          value={currentQty}
+          value={myCartItem.quantity}
           min={1}
           max={myCartItem.product.quantity}
           style={{ width: '30px', textAlign: 'center', padding: "1rem 0" }}
@@ -95,9 +86,9 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
         <button type="button" onClick={handleIncrease} style={{ padding: "0.25rem 0.5rem" }}>+</button>
       </div>
     </td>
-    <td style={{ padding: "0 2rem", textAlign: "right" }}>{productTotal()}</td>
+    <td style={{ padding: "0 2rem", textAlign: "right" }}> {(myCartItem.product.price * myCartItem.quantity).toFixed(2)}</td>
     <td style={{ display: "flex", gap: "0.5rem", paddingTop: "0.5rem" }}>
-  <button
+  {/* <button
     type="button"
     onClick={handleUpdateQty}
     style={{
@@ -110,7 +101,7 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
     }}
   >
     Update
-  </button>
+  </button> */}
   <button
     type="button"
     onClick={handleDeleteProduct}

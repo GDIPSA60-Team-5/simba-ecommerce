@@ -15,6 +15,7 @@ export default function ListCartItem() {
     const [deliType, updateDeliType] = useState<DeliveryType[]>([]);
     const [selectedDeliveryType, setSelectedDeliveryType] = useState<DeliveryType | null>(null);
     const [deliveryFee, setDeliveryFee] = useState(0);
+    const [cartChanged, setCartChanged] = useState(false);
 
     useEffect(() => {
         console.log("retrieving cart and delivery type from server");
@@ -85,6 +86,19 @@ export default function ListCartItem() {
                 console.error("Remove error:", err);
             });
     }
+      
+      function handleDeleteProduct(productId: number) {
+        axios.delete(`http://localhost:8080/api/cart/remove/${productId}`, {
+          withCredentials: true
+        })
+        .then(() => {
+          retrieveCart(); // refresh cart after deletion
+        })
+        .catch(err => {
+          alert(err.response?.data?.message || "Failed to remove product");
+          console.error("Delete error:", err);
+        });
+      }
 
     function calculateTotal() {
         let total = 0;
@@ -100,12 +114,40 @@ export default function ListCartItem() {
     }   
 
     // function handleSaveCart() {
-
+async function handleSaveCart() {
+        try {
+          for (const item of myCart) {
+            await axios.put(`http://localhost:8080/api/cart/update-quantity`, item, {
+              withCredentials: true
+            });
+          }
+          setCartChanged(false); // cart is now up-to-date
+          alert("Cart saved successfully!");
+        } catch (err) {
+          alert("Failed to save cart.");
+          console.error("Save cart error:", err);
+        }
+      }
+    
     // }
+    function handleQtyChange(id: number, newQty: number) {
+        const updated = myCart.map(item =>
+          item.id === id ? { ...item, quantity: newQty } : item
+        );
+        updateMyCart(updated);
+        setCartChanged(true); // mark that the cart has unsaved changes
+      }
+      
+    
 
     const listCartHtml = myCart.map((myCartItem) =>
-        <CartItem myCartItem={myCartItem} key={myCartItem.id} retrieveCart={retrieveCart} />
-    );
+        <CartItem
+    key={myCartItem.id}
+    myCartItem={myCartItem}
+    onQuantityChange={handleQtyChange}
+    onDelete={handleDeleteProduct}
+  />
+);
 
     return( 
         <form style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem" }}>
@@ -196,10 +238,12 @@ export default function ListCartItem() {
             </div>
 
             <div style={{ display: "flex", gap: "1rem" }}>
-                <button type="button" onClick={handleSubmitOrder} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "4px" }}>
+                <button type="button" onClick={handleSubmitOrder} disabled={cartChanged} style={{ padding: "0.75rem 1.5rem", 
+                    backgroundColor: cartChanged? "#9e9e9e" : "#4CAF50", color: "white", border: "none", borderRadius: "4px" }}>
                     Submit Order
                 </button>
-                <button type="button" onClick={handleSubmitOrder} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#2196F3", color: "white", border: "none", borderRadius: "4px" }}>
+                <button type="button" onClick={handleSaveCart} disabled={!cartChanged} style={{ padding: "0.75rem 1.5rem", 
+                    backgroundColor: !cartChanged? "#9e9e9e" : "#2196F3", color: "white", border: "none", borderRadius: "4px" }}>
                     Save Cart
                 </button>
                 <button type="button" onClick={handleDeleteCart} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "4px" }}>

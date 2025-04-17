@@ -115,6 +115,17 @@ public class CartServiceImpl implements CartService {
 			// save each order_item instance in database
 			orderItemRepo.save(orderItem);
 		}
+		for (CartItem item : cartItems) {
+			Product product = item.getProduct();
+			int newStock = product.getQuantity() - item.getQuantity();
+			
+			if (newStock <0) {
+				throw new RuntimeException("Stock mismatch post checkout");
+			}
+			product.setQuantity(newStock);
+			productRepo.save(product);
+			}
+		
 		
 		return savedOrder;
 	}
@@ -165,8 +176,12 @@ public class CartServiceImpl implements CartService {
 	    } else {
 	    	cartRepo.deleteByProductId(productId);
 	    }
-
+	}
 	
-	
+	@Transactional
+	public void updateAllCartItems(List<CartItem> cartItems) {
+		for (CartItem item : cartItems) {
+			cartRepo.save(item);
+		}
 	}
 }
