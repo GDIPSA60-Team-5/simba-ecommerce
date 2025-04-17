@@ -8,14 +8,16 @@ import axios from "axios";
 interface CartItemProps {
     myCartItem: CartItemType;
     retrieveCart: () => void;
+    updateCartQtyState: (cartItemId: number, quantity: number) => void;
 }
 
-const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
+const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCartQtyState }) => {
   const [currentQty, changeQty] = useState(myCartItem.quantity);
 
   function handleReduce() {
     if (currentQty > 1) {
       changeQty(currentQty - 1);
+      updateCartQtyState(myCartItem.id, currentQty);
     } else {
       alert("Minimum quantity is 1");
     }
@@ -25,6 +27,7 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
     const productStock = myCartItem.product.quantity;
     if (currentQty < productStock) {
       changeQty(currentQty + 1);
+      updateCartQtyState(myCartItem.id, currentQty);
     } else {
       alert("Maximum quantity is reached");
     }
@@ -35,6 +38,7 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
     const productStock = myCartItem.product.quantity;
     if (!isNaN(inputQty) && inputQty >= 1 && inputQty <= productStock) {
       changeQty(inputQty);
+      updateCartQtyState(myCartItem.id, currentQty);
     } else if (inputQty > productStock) {
       alert("Not enough product stock");
     }
@@ -85,7 +89,6 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
         <button type="button" onClick={handleReduce} style={{ padding: "0.25rem 0.5rem" }}>−</button>
         <input
           type="number"
-          className="cart-quantity-input"
           onChange={handleInputValue}
           value={currentQty}
           min={1}

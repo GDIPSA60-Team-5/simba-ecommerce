@@ -15,6 +15,43 @@ export default function ListCartItem() {
     const [deliType, updateDeliType] = useState<DeliveryType[]>([]);
     const [selectedDeliveryType, setSelectedDeliveryType] = useState<DeliveryType | null>(null);
     const [deliveryFee, setDeliveryFee] = useState(0);
+    const [updatedQuantities, setUpdatedQuantities] = useState<{ [cartItemId: number]: number }>({});
+    const [isSaving, setIsSaving] = useState(false);
+
+    
+    const updateCartQtyState = (cartItemId: number, quantity: number) => {
+        setUpdatedQuantities(prev => ({ ...prev, [cartItemId]: quantity }));
+    }
+
+    const handleSaveClick = async() => {
+        setIsSaving(true);
+        await handleSaveCart();
+        setIsSaving(false);
+    };
+    
+    const handleSaveCart = async() => {
+        for (const myCartItem of myCart) {
+            const updatedItem = {
+                ...myCartItem,
+                quantity: updatedQuantities[myCartItem.id] ?? myCartItem.quantity,
+            };
+            try {
+                await axios.put(
+                    `http://localhost:8080/api/cart/update-quantity`,
+                    updatedItem,
+                    { withCredentials: true }
+                );
+            } catch (err: unknown) {
+                if (axios.isAxiosError(err)) {
+                    alert(err.response?.data?.message || "Failed to update quantity");
+                    console.error("Update quantity error:", err);
+                } else {
+                    alert("An unknown error occurred");
+                    console.error("Unknown error:", err);
+                }   
+            }
+        }
+    }
 
     useEffect(() => {
         console.log("retrieving cart and delivery type from server");
@@ -99,12 +136,8 @@ export default function ListCartItem() {
         return tax;
     }   
 
-    // function handleSaveCart() {
-
-    // }
-
     const listCartHtml = myCart.map((myCartItem) =>
-        <CartItem myCartItem={myCartItem} key={myCartItem.id} retrieveCart={retrieveCart} />
+        <CartItem myCartItem={myCartItem} key={myCartItem.id} retrieveCart={retrieveCart} updateCartQtyState={updateCartQtyState} />
     );
 
     return( 
@@ -199,8 +232,36 @@ export default function ListCartItem() {
                 <button type="button" onClick={handleSubmitOrder} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "4px" }}>
                     Submit Order
                 </button>
-                <button type="button" onClick={handleSubmitOrder} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#2196F3", color: "white", border: "none", borderRadius: "4px" }}>
-                    Save Cart
+                <button type="button" onClick={handleSaveClick} disabled={isSaving} 
+                    className={`px-6 py-3 rounded-md text-white transition-colors duration-300 ${isSaving ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'}`} 
+                >
+                    {isSaving ? (
+                        <div className="flex items-center gap-2">
+                        <svg
+                            className="animate-spin h-4 w-4 text-white"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                        >
+                            <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                            ></circle>
+                            <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8v8H4z"
+                            ></path>
+                        </svg>
+                        Saving...
+                        </div>
+                    ) : (
+                        "Save Cart"
+                    )}
                 </button>
                 <button type="button" onClick={handleDeleteCart} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "4px" }}>
                     Delete Cart
