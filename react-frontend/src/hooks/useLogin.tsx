@@ -16,7 +16,7 @@ export const useLogin = (isAdmin: boolean = false) => {
     const navigate = useNavigate();
 
     const endpoint = isAdmin ? "/api/admin/auth/login" : "/api/auth/login";
-    const redirectPath = isAdmin ? "/dashboard" : "/account";
+    const redirectPath = isAdmin ? "/admin/dashboard" : "/account";
 
     const login = async (request: LoginRequest) => {
         setLoading(true);

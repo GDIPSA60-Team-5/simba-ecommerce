@@ -2,8 +2,9 @@ import { useAuth } from "../../context/AuthContext";
 import { Navigate } from "react-router-dom";
 
 const RequireNoAuth = ({ children }: { children: React.ReactNode }) => {
-    const { isAuthenticated } = useAuth();
-    const { isAdmin } = useAuth();
+    const { isAuthenticated, isAdmin, loading } = useAuth();
+
+    if (loading) return <div>Loading...</div>;
 
     // Allow public users to access
     if (!isAuthenticated) return <>{children}</>;
