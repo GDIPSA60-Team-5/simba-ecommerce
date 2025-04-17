@@ -94,7 +94,10 @@ export default function ListCartItem() {
         }
 
         try {
-            // 1. send orderDetails to backend
+            // Save cart quantities before submitting the order
+            await handleSaveCart();
+
+            // Send orderDetails to backend
             const response = await axios.post("http://localhost:8080/api/cart/submit", orderDetails, {
                 withCredentials: true
             });
@@ -126,7 +129,9 @@ export default function ListCartItem() {
     function calculateTotal() {
         let total = 0;
         myCart.forEach((myCartItem) => {
-            total += myCartItem.product.price * myCartItem.quantity;
+            const updatedQty = updatedQuantities[myCartItem.id];
+            const quantityToUse = updatedQty !== undefined ? updatedQty : myCartItem.quantity;
+            total += myCartItem.product.price * quantityToUse;
         });
         return total;
     }    
@@ -208,7 +213,7 @@ export default function ListCartItem() {
                     <option value="">-- Please choose an option --</option>
                     {Array.isArray(deliType) && deliType.map((type) => (
                         <option key={type.id} value={type.name}>
-                            {type.name} – {type.description} (${type.fee.toFixed(2)})
+                            {type.name} – {type.description} (S${type.fee.toFixed(2)})
                         </option>
                     ))}
                 </select>

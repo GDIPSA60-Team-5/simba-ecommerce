@@ -59,7 +59,7 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCar
   }
 
   function productTotal() {
-    return (myCartItem.product.price * myCartItem.quantity).toFixed(2);
+    return (myCartItem.product.price * currentQty).toFixed(2);
   }
 
   return (
@@ -75,7 +75,7 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCar
           value={currentQty}
           min={1}
           max={myCartItem.product.quantity}
-          style={{ width: '30px', textAlign: 'center', padding: "1rem 0" }}
+          style={{ width: '50px', textAlign: 'center', padding: "1rem 0" }}
         />
         <button type="button" onClick={handleIncrease} style={{ padding: "0.25rem 0.5rem" }}>+</button>
       </div>
