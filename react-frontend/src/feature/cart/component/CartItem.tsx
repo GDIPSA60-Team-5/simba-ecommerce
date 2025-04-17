@@ -85,6 +85,7 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart }) => {
         <button type="button" onClick={handleReduce} style={{ padding: "0.25rem 0.5rem" }}>−</button>
         <input
           type="number"
+          className="cart-quantity-input"
           onChange={handleInputValue}
           value={currentQty}
           min={1}

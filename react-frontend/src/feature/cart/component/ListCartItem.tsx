@@ -13,7 +13,7 @@ export default function ListCartItem() {
     const shippingAddressElement = useRef<HTMLTextAreaElement>(null);
     const navigate = useNavigate();
     const [deliType, updateDeliType] = useState<DeliveryType[]>([]);
-    const [selectedDeliveryType, setSelectedDeliveryType] = useState<number | "">("");
+    const [selectedDeliveryType, setSelectedDeliveryType] = useState<DeliveryType | null>(null);
     const [deliveryFee, setDeliveryFee] = useState(0);
 
     useEffect(() => {
@@ -52,7 +52,7 @@ export default function ListCartItem() {
         e.preventDefault();
 
         const orderDetails = {
-            deliveryType: deliTypeElement.current?.value,
+            deliveryType: selectedDeliveryType?.name,
             shippingAddress: shippingAddressElement.current?.value
         }
 
@@ -98,6 +98,10 @@ export default function ListCartItem() {
         const tax = calculateTotal() * 0.09;
         return tax;
     }   
+
+    // function handleSaveCart() {
+
+    // }
 
     const listCartHtml = myCart.map((myCartItem) =>
         <CartItem myCartItem={myCartItem} key={myCartItem.id} retrieveCart={retrieveCart} />
@@ -160,17 +164,17 @@ export default function ListCartItem() {
                     ref={deliTypeElement}
                     required
                     style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
-                    value={selectedDeliveryType}
+                    value={selectedDeliveryType ? selectedDeliveryType.name : ""}
                     onChange={(e) => {
-                        const selectedId = parseInt(e.target.value);
-                        const selected = deliType.find(type => type.id === selectedId);
-                        setSelectedDeliveryType(selectedId);
+                        const selectedName = e.target.value;
+                        const selected = deliType.find(type => type.name === selectedName) || null;
+                        setSelectedDeliveryType(selected);
                         setDeliveryFee(selected ? selected.fee : 0);
                     }}
                 >
                     <option value="">-- Please choose an option --</option>
                     {Array.isArray(deliType) && deliType.map((type) => (
-                        <option key={type.id} value={type.id}>
+                        <option key={type.id} value={type.name}>
                             {type.name} – {type.description} (${type.fee.toFixed(2)})
                         </option>
                     ))}
@@ -194,6 +198,9 @@ export default function ListCartItem() {
             <div style={{ display: "flex", gap: "1rem" }}>
                 <button type="button" onClick={handleSubmitOrder} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "4px" }}>
                     Submit Order
+                </button>
+                <button type="button" onClick={handleSaveCart} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#2196F3", color: "white", border: "none", borderRadius: "4px" }}>
+                    Save Cart
                 </button>
                 <button type="button" onClick={handleDeleteCart} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "4px" }}>
                     Delete Cart
