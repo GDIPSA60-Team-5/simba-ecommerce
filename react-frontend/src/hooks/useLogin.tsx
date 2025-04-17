@@ -22,11 +22,7 @@ export const useLogin = (isAdmin: boolean = false) => {
         setLoading(true);
         setError('');
         try {
-<<<<<<< HEAD
             const response = await axios.post('http://localhost:8080' + endpoint, request, {
-=======
-            await axios.post('http://localhost:8080/api/auth/user/login', request, {
->>>>>>> d7e76bb (integrating cart to UI page)
                 withCredentials: true,
                 headers: { 'Content-Type': 'application/json' },
             });
