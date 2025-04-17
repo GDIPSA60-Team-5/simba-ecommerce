@@ -12,7 +12,6 @@ import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.repository.ProductRepository;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
