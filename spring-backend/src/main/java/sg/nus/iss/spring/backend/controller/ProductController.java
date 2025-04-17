@@ -2,29 +2,26 @@ package sg.nus.iss.spring.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import sg.nus.iss.spring.backend.dto.ProductFilterRequestDTO;
 import sg.nus.iss.spring.backend.interfacemethods.ProductService;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.service.ProductServiceImpl;
 import java.util.List;
 
+/* Written By Li Xing Bang */
 @RestController
 @RequestMapping("/api/products")
 public class ProductController {
-    @Autowired
     private ProductService productService;
 
     @Autowired
-    public void setListService(ProductServiceImpl productServiceImpl) {
+    public void setProductService(ProductServiceImpl productServiceImpl) {
         this.productService = productServiceImpl;
     }
 
-    //get product page
     @GetMapping
-    public List<Product> findAllProducts(@RequestParam(required = false) Integer categoryId,
-                                        @RequestParam(required = false) Float minPrice,
-                                        @RequestParam(required = false) Float maxPrice,
-                                        @RequestParam(required = false) String keywords) {
-        return productService.list(categoryId, minPrice, maxPrice, keywords);
+    public List<Product> findAllProducts(ProductFilterRequestDTO filters) {
+        return productService.list(filters);
     }
 
     @GetMapping("/{id}")

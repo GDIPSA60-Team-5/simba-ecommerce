@@ -1,4 +1,4 @@
-package sg.nus.iss.spring.backend.stripe.configuration;
+package sg.nus.iss.spring.backend.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
