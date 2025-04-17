@@ -7,15 +7,17 @@ export default function BookList() {
     if (error) return <p className="text-center text-red-500">{error}</p>;
 
     return (
-        <div className="px-[300px] py-4">
-            <h2 className="text-xl font-bold mb-6 text-center">Our Books</h2>
+        <div className="py-4">
+            <h2 className="text-xl font-medium mb-15 text-center">BOOK CATALOGUE</h2>
+
 
             {products.length > 0 ? (
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+                <div className="mx-[200px] grid gap-8 grid-cols-[repeat(auto-fill,minmax(200px,1fr))] justify-items-center">
                     {products.map((product) => (
                         <ProductCard key={product.id} product={product} />
                     ))}
                 </div>
+
             ) : (
                 <p className="text-center text-gray-500">No books found.</p>
             )}

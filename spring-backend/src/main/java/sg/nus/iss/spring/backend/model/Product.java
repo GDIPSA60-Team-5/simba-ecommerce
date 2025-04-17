@@ -5,6 +5,8 @@ import java.util.List;
 import jakarta.persistence.*;
 
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "product_type", discriminatorType = DiscriminatorType.STRING)
 @Table(name = "products")
 public class Product {
 
@@ -17,9 +19,6 @@ public class Product {
 
     @Column(length = 1000)
     private String description;
-
-    @Column(length = 100)
-    private String brand;
 
     @Column(nullable = false)
     private float price;
@@ -47,11 +46,9 @@ public class Product {
     public Product() {
     }
 
-    public Product(String name, String description, Category category, String brand,
-                   float price, int quantity, String imageUrl, float rating) {
+    public Product(String name, String description, Category category, float price, int quantity, String imageUrl, float rating) {
         this.name = name;
         this.description = description;
-        this.brand = brand;
         this.price = price;
         this.quantity = quantity;
         this.imageUrl = imageUrl;
@@ -90,14 +87,6 @@ public class Product {
 
     public void setCategory(Category category) {
         this.category = category;
-    }
-
-    public String getBrand() {
-        return brand;
-    }
-
-    public void setBrand(String brand) {
-        this.brand = brand;
     }
 
     public float getPrice() {
