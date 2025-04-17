@@ -3,10 +3,28 @@ import StarRating from "./StarRating";
 import ProductCategoryTag from "./ProductCategoryTag";
 import cartIcon from "@assets/svgs/add-to-cart-icon.svg";
 import { Link } from "react-router-dom";
-import eyeIcon from "@assets/svgs/eye.svg";
+import eyeIcon from "@assets/svgs/eye.svg"
+import axios from "axios";
 
 
 function ProductCard({ product }: { product: Product }) {
+
+  const handleAddToCart = (productId:number) => {
+    axios.post(`http://localhost:8080/api/cart/add`, null, {
+      params: {
+        productId: productId
+      },
+      withCredentials: true
+      })
+    .then(() => {
+      alert("Product added to cart!");
+    })
+    .catch(err => {
+      alert(err.response?.data?.message || "Failed to add to cart.");
+      console.error("Add to cart error:", err);
+    });
+  };
+
   return (
     <div className="product-card w-[180px]">
       <Link to={`/books/${product.id}`} className="relative block transition-transform duration-300 hover:scale-105">
@@ -39,7 +57,7 @@ function ProductCard({ product }: { product: Product }) {
           ${product.price.toFixed(2)}
         </div>
       </div>
-      <button className="bg-black cursor-pointer flex gap-2 px-5 py-2 justify-center items-center mt-2 text-white">
+      <button onClick={() => handleAddToCart(product.id)} className="bg-black cursor-pointer flex gap-2 px-5 py-2 justify-center items-center mt-2 text-white">
         Add
         <img src={cartIcon} width={20} alt="" />
       </button>
