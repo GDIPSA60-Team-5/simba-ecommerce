@@ -1,25 +1,28 @@
-// src/pages/user/PurchaseHistory.tsx
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../../context/AuthContext";
 
 const PurchaseHistory = () => {
+  const { user } = useAuth();
   const [purchaseHistory, setPurchaseHistory] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('All');
 
   useEffect(() => {
-    axios
-      .get("/api/order/user/1")  
-      .then((response) => {
-        setPurchaseHistory(response.data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        setError("Failed to fetch purchase history");
-        setLoading(false);
-      });
-  }, []);
+    if (user) { 
+      axios
+        .get(`/api/orders/user/${user.id}`)
+        .then((response) => {
+          setPurchaseHistory(response.data);
+          setLoading(false);
+        })
+        .catch((err) => {
+          setError("Failed to fetch purchase history");
+          setLoading(false);
+        });
+    }
+  }, [user]);
 
   const filterOrders = (status: string) => {
     setFilter(status);
