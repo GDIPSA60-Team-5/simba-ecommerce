@@ -5,7 +5,7 @@ import StarRating from "./StarRating";
 import ProductCategoryTag from "./ProductCategoryTag";
 
 import eyeIcon from "@assets/svgs/eye.svg";
-import { AddToCartButton } from "../../../components/Buttons";
+import { AddToCartButton } from "../../../components/ui/Buttons";
 
 
 export function ProductCard({ product }: { product: Product }) {

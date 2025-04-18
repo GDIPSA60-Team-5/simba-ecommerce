@@ -2,12 +2,15 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Product } from "../../../types/Product";
 import { useFilters } from "../../../context/FilterContext";
+import { PageResponseDTO } from "../../../types/PageResponseDTO";
 
 const API_URL = "/api/products";
 
 export function useProducts() {
     const { filters } = useFilters();
     const [products, setProducts] = useState<Product[]>([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [totalElements, setTotalElements] = useState(0);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -24,9 +27,12 @@ export function useProducts() {
 
         const timer = setTimeout(() => {
             axios
-                .get<Product[]>(`${API_URL}?${query.toString()}`)
+                .get<PageResponseDTO<Product>>(`${API_URL}?${query.toString()}`)
                 .then((response) => {
-                    setProducts(response.data);
+                    const page = response.data;
+                    setProducts(page.content);
+                    setTotalPages(page.totalPages);
+                    setTotalElements(page.totalElements);
                     setLoading(false);
                 })
                 .catch((err) => {
@@ -39,5 +45,11 @@ export function useProducts() {
         return () => clearTimeout(timer);
     }, [filters]);
 
-    return { products, loading, error };
+    return {
+        products,
+        totalPages,
+        totalElements,
+        loading,
+        error
+    };
 }

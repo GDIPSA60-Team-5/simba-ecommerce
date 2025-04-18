@@ -1,4 +1,4 @@
-import { AddToCartButton } from "../../../components/Buttons";
+import { AddToCartButton } from "../../../components/ui/Buttons";
 import StarRating from "../../../feature/BrowseBooks/components/StarRating";
 import { useSingleProduct } from "../../../feature/BrowseBooks/hooks/useSingleProduct";
 

@@ -3,6 +3,7 @@ package sg.nus.iss.spring.backend.service;
 import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -22,7 +23,7 @@ public class ProductServiceImpl implements ProductService {
     ProductRepository productRepository;
 
     @Override
-    public List<Product> list(ProductFilterRequestDTO filters) {
+    public Page<Product> list(ProductFilterRequestDTO filters) {
 
         Sort.Direction direction = Sort.Direction.fromString(filters.getSortDir().toUpperCase());
         Sort sort = Sort.by(direction, filters.getSortBy());

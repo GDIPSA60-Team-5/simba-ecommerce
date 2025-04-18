@@ -9,11 +9,13 @@ export type FilterParams = {
     sortBy?: string;
     sortDir?: string;
     itemsPerPage: number;
+    pageNo: number;
 };
 
 type FilterContextType = {
     filters: FilterParams;
     updateFilter: (name: keyof FilterParams, value: any) => void;
+    updateFilters: (updates: Partial<FilterParams>) => void;
 };
 
 const FilterContext = createContext<FilterContextType | undefined>(undefined);
@@ -29,6 +31,7 @@ export const useFilters = () => {
 export const FilterProvider = ({ children }: { children: ReactNode }) => {
     const [searchParams, setSearchParams] = useSearchParams();
 
+
     const filters = useMemo<FilterParams>(() => {
         return {
             categoryId: searchParams.get('categoryId') ? Number(searchParams.get('categoryId')) : undefined,
@@ -38,6 +41,7 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
             sortBy: searchParams.get('sortBy') || 'name',
             sortDir: searchParams.get('sortDir') || 'asc',
             itemsPerPage: Number(searchParams.get('itemsPerPage')) || 9,
+            pageNo: Number(searchParams.get('pageNo')) || 1,
         };
     }, [searchParams]);
 
@@ -48,11 +52,25 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
         } else {
             newParams.set(name, String(value));
         }
-        setSearchParams(newParams);
+        setSearchParams(newParams, { replace: true });
+    };
+
+    const updateFilters = (updates: Partial<FilterParams>) => {
+        const newParams = new URLSearchParams(searchParams.toString());
+
+        Object.entries(updates).forEach(([key, value]) => {
+            if (value === undefined || value === '') {
+                newParams.delete(key);
+            } else {
+                newParams.set(key, String(value));
+            }
+        });
+
+        setSearchParams(newParams, { replace: true });
     };
 
     return (
-        <FilterContext.Provider value={{ filters, updateFilter }}>
+        <FilterContext.Provider value={{ filters, updateFilter, updateFilters }}>
             {children}
         </FilterContext.Provider>
     );

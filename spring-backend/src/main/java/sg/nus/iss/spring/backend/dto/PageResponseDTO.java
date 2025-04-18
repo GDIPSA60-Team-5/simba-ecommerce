@@ -2,13 +2,22 @@ package sg.nus.iss.spring.backend.dto;
 
 import java.util.List;
 
-public class PageReponseDTO<T> {
+public class PageResponseDTO<T> {
     private List<T> content;
     private int pageNumber;
     private int pageSize;
     private long totalElements;
     private int totalPages;
     private boolean last;
+
+    public PageResponseDTO(List<T> content, int pageNumber, int pageSize, long totalElements, int totalPages, boolean last) {
+        this.content = content;
+        this.pageNumber = pageNumber;
+        this.pageSize = pageSize;
+        this.totalElements = totalElements;
+        this.totalPages = totalPages;
+        this.last = last;
+    }
 
     public List<T> getContent() {
         return content;

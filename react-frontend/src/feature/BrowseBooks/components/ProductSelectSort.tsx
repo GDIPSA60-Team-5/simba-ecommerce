@@ -31,7 +31,6 @@ export const ProductSelectSort = () => {
                 <option value="price">Price</option>
                 <option value="name">Title</option>
             </select>
-
         </div>
     );
 };

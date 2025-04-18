@@ -27,7 +27,7 @@ export const PriceFilter = () => {
                 <section className="price-filter flex flex-col gap-3">
                     <div className="price-group flex-col gap-1">
                         <label htmlFor="minPrice">Min.</label>
-                        <input className="border border-black"
+                        <input className="border border-black/30 px-2 py-2 w-full hover:border-black hover:border-2 transition-colors duration-300"
                             type="number"
                             name="minPrice"
                             id="minPrice"
@@ -35,8 +35,8 @@ export const PriceFilter = () => {
                             onChange={(e) => debouncedUpdate("minPrice", e.target.value)} />
                     </div>
                     <div className="price-group">
-                        <label htmlFor="minPrice">Min.</label>
-                        <input className="border border-black"
+                        <label htmlFor="minPrice">Max.</label>
+                        <input className="border border-black/30 px-2 py-2 w-full hover:border-black hover:border-2 transition-colors duration-300"
                             type="number" name="" id="minPrice" value={filters.maxPrice}
                             onChange={(e) => debouncedUpdate("maxPrice", e.target.value)} />
                     </div>

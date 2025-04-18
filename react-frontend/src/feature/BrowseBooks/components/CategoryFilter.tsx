@@ -26,7 +26,7 @@ export const CategoryFilter = () => {
             </div>
 
             {showGenres && (
-                <ul className="space-y-2 list-disc mt-2">
+                <ul className="space-y-2 list-disc mt-2 pl-10">
                     {loading ? (
                         <li>Loading...</li>
                     ) : (
