@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS payment_types;
 DROP TABLE IF EXISTS categories;
 DROP TABLE IF EXISTS authors;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS wishlists;
 
 /* ---------- USERS ---------- */
 CREATE TABLE IF NOT EXISTS users (
@@ -110,3 +111,13 @@ CREATE TABLE IF NOT EXISTS order_items (
                                            CONSTRAINT fk_orderitems_product
                                                FOREIGN KEY (product_id) REFERENCES products(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+/* ---------- WISHLISTS ---------- */
+CREATE TABLE wishlists (
+                           id INT AUTO_INCREMENT PRIMARY KEY,
+                           add_at DATETIME NOT NULL,
+                           product_id INT NOT NULL,
+                           user_id INT NOT NULL,
+                           CONSTRAINT FK_wishlist_product FOREIGN KEY (product_id) REFERENCES products(id),
+                           CONSTRAINT FK_wishlist_user FOREIGN KEY (user_id) REFERENCES users(id)
+);

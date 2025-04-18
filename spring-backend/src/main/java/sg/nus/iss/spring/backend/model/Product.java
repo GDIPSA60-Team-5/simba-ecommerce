@@ -35,12 +35,12 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
-    
+
+//    @OneToMany(mappedBy="product")
+//    private List<CartItem> cartItems;
+
     @OneToMany(mappedBy="product")
-    private List<CartItem> cartItems;
-    
-    @OneToMany(mappedBy="product")
-    private List<OrderItem> orderItems;
+    private List<OrderItem> SoldItems;
 
     // Constructors
     public Product() {

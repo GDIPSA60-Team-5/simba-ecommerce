@@ -98,3 +98,11 @@ VALUES
     (1, 1, 2, 15.99),  -- Order 1: 2 Harry Potter books
     (1, 2, 1, 35.99),  -- Order 1: 1 copy of Java How to Program
     (2, 3, 1, 21.99);  -- Order 2: 1 Rick Steves' Europe: Belgium
+
+--Insert Wishlists
+INSERT INTO wishlists (user_id, product_id, add_at)
+VALUES
+    (1, 1, NOW()),
+    (1, 2, NOW()),
+    (2, 3, NOW()),
+    (2, 4, NOW());
