@@ -66,7 +66,7 @@ public class CartController {
 	// click the submit order button to go to payment gateway page
 	@PostMapping("/cart/submit")
 	public Map<String, Object> formPayment(@RequestBody OrderDetailsDTO orderDetailsDTO, HttpSession session) 
-			throws StripeException {
+			throws StripeException, Exception {
 		/*
 		 * To do
 		 * validate input data deliType and shippingAddress

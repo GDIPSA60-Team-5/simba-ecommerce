@@ -106,14 +106,23 @@ public class CartServiceImpl implements CartService {
 		// create order_item records for each cart_item
 		for (CartItem cartItem : cartItems) {
 			Product product = cartItem.getProduct();
-			int quantity = cartItem.getQuantity();
+			int orderQuantity = cartItem.getQuantity();
 			float unitPriceAtTransaction = product.getPrice();
 			
 			// create an order_item instance
-			OrderItem orderItem = new OrderItem(savedOrder, product, quantity, unitPriceAtTransaction);
+			OrderItem orderItem = new OrderItem(savedOrder, product, orderQuantity, unitPriceAtTransaction);
 			
 			// save each order_item instance in database
 			orderItemRepo.save(orderItem);
+			
+			// update product stock for each confirmed product order
+			int newStock = product.getQuantity() - orderQuantity;
+			
+			if (newStock < 0) {
+				throw new RuntimeException("Stock mismatch post checkout");
+			}
+			product.setQuantity(newStock);
+			productRepo.save(product);
 		}
 		
 		return savedOrder;

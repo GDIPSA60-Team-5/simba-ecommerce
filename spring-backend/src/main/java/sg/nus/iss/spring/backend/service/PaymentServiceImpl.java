@@ -1,10 +1,13 @@
 package sg.nus.iss.spring.backend.service;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -19,8 +22,11 @@ import com.stripe.param.PaymentIntentRetrieveParams;
 import com.stripe.param.checkout.SessionCreateParams;
 
 import jakarta.servlet.http.HttpSession;
+import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
 import sg.nus.iss.spring.backend.model.CartItem;
+import sg.nus.iss.spring.backend.model.DeliveryType;
+import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
 
 
 /* Written by Aung Myin Moe */
@@ -29,8 +35,11 @@ public class PaymentServiceImpl implements PaymentService {
 	@Value("${stripe.secret.key}")
     private String stripeSecretKey;
 	
+	@Autowired
+	private DeliveryTypeRepository deliRepo;
+	
 	public Map<String, Object> createStripeCheckoutSession(List<CartItem> cartItems, HttpSession session) 
-			throws StripeException {
+			throws StripeException, Exception {
 //		// implement Stripe payment gateway for customer to make payment
 //		String BASE_URL = "http://localhost:8080/api/payment";
 //		SessionCreateParams.Builder builder = SessionCreateParams.builder()
@@ -77,16 +86,35 @@ public class PaymentServiceImpl implements PaymentService {
 		
 		Stripe.apiKey = stripeSecretKey; // move to config ideally
 
-	    long totalAmount = 0;
-
-	    for (CartItem item : cartItems) {
-	        long priceInCents = BigDecimal.valueOf(item.getProduct().getPrice())
-	                                .multiply(BigDecimal.valueOf(100)).longValue();
-	        totalAmount += priceInCents * item.getQuantity();
+	    BigDecimal subTotal = BigDecimal.ZERO;
+	    BigDecimal deliFee = BigDecimal.ZERO;
+	    BigDecimal GST_RATE = new BigDecimal("0.09"); // 9% GST
+	    
+	    // get delivery type from session object
+	    OrderDetailsDTO orderDetails = (OrderDetailsDTO) session.getAttribute("order_data");
+	    Optional<DeliveryType> deliType = deliRepo.findByName(orderDetails.getDeliveryType());
+	    if (deliType.isPresent()) {
+	    	deliFee = BigDecimal.valueOf(deliType.get().getFee());
+	    } else {
+	    	throw new Exception("Invalid DeliveryType");
 	    }
 
+	    for (CartItem item : cartItems) {
+	    	BigDecimal unitPrice = BigDecimal.valueOf(item.getProduct().getPrice());
+	        BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
+	        subTotal = subTotal.add(unitPrice.multiply(quantity).setScale(2, RoundingMode.HALF_UP));
+	    }
+	    // Compute GST separately from subtotal
+	    BigDecimal gstAmount = subTotal.multiply(GST_RATE).setScale(2, RoundingMode.HALF_UP);
+
+	    // Final total
+	    BigDecimal grandTotal = subTotal.add(gstAmount).add(deliFee);
+
+	    // Convert to cents for Stripe
+	    long amountInCents = grandTotal.multiply(BigDecimal.valueOf(100)).longValue();
+
 	    PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-	        .setAmount(totalAmount)
+	        .setAmount(amountInCents)
 	        .setCurrency("sgd")
 	        .setAutomaticPaymentMethods(
 	            PaymentIntentCreateParams.AutomaticPaymentMethods.builder().setEnabled(true).build()

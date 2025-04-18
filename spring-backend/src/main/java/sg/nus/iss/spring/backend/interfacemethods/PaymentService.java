@@ -9,6 +9,6 @@ import jakarta.servlet.http.HttpSession;
 import sg.nus.iss.spring.backend.model.CartItem;
 
 public interface PaymentService {
-	Map<String, Object> createStripeCheckoutSession(List<CartItem> cartItems, HttpSession session) throws StripeException;
+	Map<String, Object> createStripeCheckoutSession(List<CartItem> cartItems, HttpSession session) throws StripeException, Exception;
 	String getPaymentType(String stripeSessionId) throws StripeException;
 }
