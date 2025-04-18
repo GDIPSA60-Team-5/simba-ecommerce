@@ -1,11 +1,9 @@
 package sg.nus.iss.spring.backend.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
+import jakarta.persistence.*;
 
 @Entity
+@Table(name = "authors")
 public class Author {
 
     @Id
