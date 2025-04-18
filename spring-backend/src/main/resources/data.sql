@@ -1,5 +1,5 @@
 -- Insert Categories
-INSERT INTO category (name)
+INSERT INTO categories (name)
 VALUES
     ('Fiction'),
     ('Coding'),
@@ -13,7 +13,7 @@ VALUES
     ('Fantasy');
 
 -- Insert Authors
-INSERT INTO author (name)
+INSERT INTO authors (name)
 VALUES
     ('J.K. Rowling'),
     ('Herbert Schildt'),
@@ -37,7 +37,6 @@ VALUES
     ('Esther Yi');
 
 -- Insert Books (Products)
-
 INSERT INTO products (name, description, price, quantity, image_url, rating, author_id, category_id, product_type)
 VALUES
     ('Harry Potter and the Philosopher''s Stone', 'Fantasy novel about a young wizard attending Hogwarts.', 15.99, 100, '/images/books/book-1.png', 4.9, 1, 1, 'BOOK'),
@@ -61,41 +60,41 @@ VALUES
     ('The Wager', 'A tale of shipwreck, mutiny, and murder.', 19.99, 90, '/images/books/book-19.png', 4.7, 19, 1, 'BOOK'),
     ('The Covenant of Water', 'A novel about a family’s secrets and legacy.', 24.99, 80, '/images/books/book-20.png', 4.8, 20, 1, 'BOOK');
 
-/* ---------- USERS ---------- */
+-- Insert Users
 INSERT INTO users (username, password, first_name, last_name, phone_number, email, address, date_of_birth, role)
 VALUES
     ('john_doe', 'password123', 'John', 'Doe', '123456789', 'john@example.com', '123 Main St', '1990-01-01', 'USER'),
     ('admin_user', 'adminpass', 'Admin', 'User', '987654321', 'admin@example.com', '456 Admin Rd', '1985-05-15', 'ADMIN');
 
-/* ---------- DELIVERY TYPE ---------- */
-INSERT INTO delivery_type (name, description, fee)
+-- Insert Delivery Types
+INSERT INTO delivery_types (name, description, fee)
 VALUES
     ('Standard Delivery', '5-7 business days', 5.99),
     ('Express Delivery', '1-2 business days', 15.99);
 
-/* ---------- PAYMENT TYPE ---------- */
-INSERT INTO payment_type (name)
+-- Insert Payment Types
+INSERT INTO payment_types (name)
 VALUES
     ('Credit Card'),
     ('PayPal'),
     ('Bank Transfer');
 
-/* ---------- CART ITEM ---------- */
-INSERT INTO cart_item (user_id, product_id, quantity)
+-- Insert Cart Items
+INSERT INTO cart_items (user_id, product_id, quantity)
 VALUES
     (1, 1, 2),   -- John Doe adds 2 Harry Potter books
-    (1, 2, 1),   -- John Doe adds 1 copy of 1984
-    (2, 3, 1);   -- Admin adds 1 Smartphone
+    (1, 2, 1),   -- John Doe adds 1 copy of Java How to Program
+    (2, 3, 1);   -- Admin adds 1 Rick Steves' Europe: Belgium
 
-/* ---------- ORDERS ---------- */
+-- Insert Orders
 INSERT INTO orders (user_id, payment_type_id, delivery_type_id, status, date_time, shipping_address, goods_service_tax)
 VALUES
     (1, 1, 1, 'Processing', NOW(), '123 Main St', 0.09),
     (2, 2, 2, 'Shipped', NOW(), '456 Admin Rd', 0.09);
 
-/* ---------- ORDER ITEM ---------- */
-INSERT INTO order_item (order_id, product_id, quantity, unit_price_at_transaction)
+-- Insert Order Items
+INSERT INTO order_items (order_id, product_id, quantity, unit_price_at_transaction)
 VALUES
-    (1, 1, 2, 19.99),  -- Order 1: 2 Harry Potter books
-    (1, 2, 1, 14.99),  -- Order 1: 1 copy of 1984
-    (2, 3, 1, 499.99); -- Order 2: 1 Smartphone
+    (1, 1, 2, 15.99),  -- Order 1: 2 Harry Potter books
+    (1, 2, 1, 35.99),  -- Order 1: 1 copy of Java How to Program
+    (2, 3, 1, 21.99);  -- Order 2: 1 Rick Steves' Europe: Belgium

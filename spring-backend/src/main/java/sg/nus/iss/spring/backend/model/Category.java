@@ -3,7 +3,7 @@ package sg.nus.iss.spring.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "category")
+@Table(name = "categories")
 public class Category {
 
     @Id

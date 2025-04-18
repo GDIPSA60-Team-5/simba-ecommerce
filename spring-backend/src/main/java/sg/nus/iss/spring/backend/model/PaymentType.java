@@ -3,7 +3,7 @@ package sg.nus.iss.spring.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "payment_type")
+@Table(name = "payment_types")
 public class PaymentType {
 
     @Id
