@@ -24,7 +24,10 @@ import sg.nus.iss.spring.backend.interfacemethods.DeliveryService;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.DeliveryType;
+import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.model.User;
+import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
+import sg.nus.iss.spring.backend.repository.ProductRepository;
 
 
 /* Written by Aung Myin Moe */
@@ -40,6 +43,12 @@ public class CartController {
 	
 	@Autowired
 	private DeliveryService deliService;
+	
+	@Autowired 
+	private ProductRepository pRepo;
+	
+	@Autowired 
+	private DeliveryTypeRepository deliveryRepo;
 	
 	private static final int DEFAULT_CART_QUANTITY = 1;
 	
@@ -57,29 +66,58 @@ public class CartController {
 	
 	// adjust the quantity of products in the cart
 	@PutMapping("/cart/update-quantity")
-	public CartItem reviseOrderQty(@RequestBody CartItem cartItem) {
+	public ResponseEntity<?> reviseOrderQty(@RequestBody CartItem cartItem) {
 		// validate product quantity with the stock quantity
+		Product product = cartItem.getProduct();
+		Product latestProduct = pRepo.findById(product.getId()).orElseThrow(() -> new RuntimeException("Product not found"));
+		
+		if (cartItem.getQuantity() < 1) {
+	        return ResponseEntity.badRequest().body("Quantity must be at least 1");
+	    }
+		if (cartItem.getQuantity() > latestProduct.getQuantity()) {
+			return ResponseEntity.badRequest().body("Not enough stock available");
+		}
+		
 		// ...
-		return cartService.updateCartOrderQty(cartItem);
+		return ResponseEntity.ok(cartService.updateCartOrderQty(cartItem));
 	}
 	
 	// click the submit order button to go to payment gateway page
 	@PostMapping("/cart/submit")
-	public Map<String, Object> formPayment(@RequestBody OrderDetailsDTO orderDetailsDTO, HttpSession session) 
+	public ResponseEntity<?> formPayment(@RequestBody OrderDetailsDTO orderDetailsDTO, HttpSession session) 
 			throws StripeException {
 		/*
 		 * To do
 		 * validate input data deliType and shippingAddress
 		 * validate submitting no cart item to stripe
 		 */
+		String deliveryType = orderDetailsDTO.getDeliveryType();
+		if (deliveryType == null || deliveryType.trim().isEmpty()) {
+			return ResponseEntity.badRequest().body("Delivery type required");
+		}
+		
+		DeliveryType selectedType = deliveryRepo.findByName(deliveryType).orElse(null);
+		if (selectedType ==null) {
+			return ResponseEntity.badRequest().body("Invalid delivery type selected");
+		}
+		
+		String address = orderDetailsDTO.getShippingAddress();
+		if (address ==null || address.trim().isEmpty()) {
+			return ResponseEntity.badRequest().body("Shipping address cannot be empty");
+		}
 		
 		// save form input data into session
 		session.setAttribute("order_data", orderDetailsDTO);
 		
 		// get the cart items of the user
 		List<CartItem> cartItems = cartService.listCartItems(getUser(session));
-			
-		return paymentService.createStripeCheckoutSession(cartItems, session);
+			//validation for empty cart
+		if (cartItems.isEmpty()) {
+			return ResponseEntity.badRequest().body("Cart cannot be empty");
+		}
+		
+		Map<String, Object>response = paymentService.createStripeCheckoutSession(cartItems, session);
+		return ResponseEntity.ok(response);
 	}
 	
 	// draft implementation of payment success api

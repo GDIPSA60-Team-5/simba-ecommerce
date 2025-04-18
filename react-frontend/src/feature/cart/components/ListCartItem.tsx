@@ -127,11 +127,17 @@ export default function ListCartItem() {
             // Navigate to checkout page and pass clientSecret via state
             navigate("/checkout", { state: { clientSecret } });
         }
-        catch (error) {
-            console.error("Error:", error);
-            alert("Failed to process order.");
+        catch (error: any) {
+            if (axios.isAxiosError(error)) {
+                const message = typeof error.response?.data === "string" ? error.response.data : "Failed to process order";
+                alert(message);
+                console.error("submit order error:", error);
+            }else {
+                alert("Unknown error");
+                console.error("Unexpected error: ", error);
+            }
+            }
         }
-    }
 
     function handleDeleteCart() {
         axios.delete(`http://localhost:8080/api/delete-cart`, {
