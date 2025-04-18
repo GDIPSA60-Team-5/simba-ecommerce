@@ -4,6 +4,7 @@ import { CartItemType, DeliveryType } from '../../../types/types'
 import axios, { AxiosResponse } from 'axios'
 import { useRef } from 'react'
 import { useNavigate } from "react-router-dom"
+import { Link } from 'react-router-dom';
 
 
 // written by Aung Myin Moe & Haziq
@@ -171,15 +172,29 @@ export default function ListCartItem() {
     );
 
     return( 
-        <form style={{ maxWidth: "800px", margin: "0 auto", padding: "2rem" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse", marginBottom: "2rem" }}>
+        <form style={{ maxWidth: "70%", margin: "0 auto", padding: "2rem" }}>
+            <div className="flex items-center justify-between mb-15 relative">
+                <Link
+                    type="button"
+                    to="/books"
+                    className="text-gray-700 hover:text-gray-900 active:text-gray-900 font-medium transition-colors duration-200 transform hover:scale-110 active:scale-100"
+                >
+                    &#x25c0; BACK TO SHOPPING
+                </Link>
+
+                {/* Title centered absolutely */}
+                <h1 className="absolute left-1/2 transform -translate-x-1/2 text-3xl font-light text-center">
+                    My Cart
+                </h1>
+            </div>
+            <table style={{ width: "70%", borderCollapse: "collapse", marginBottom: "2rem" }}>
                 <thead>
-                    <tr>
-                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Product</th>
-                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Unit Price (SGD)</th>
-                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Quantity</th>
-                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Total Price (SGD)</th>
-                        <th style={{ textAlign: "left", paddingBottom: "1rem" }}>Action</th>
+                    <tr className="text-gray-500 font-normal text-center pb-4">
+                        <td className="w-1/5 pb-4">BOOK</td>
+                        <td className="w-1/5 pb-4">PRICE (SGD)</td>
+                        <td className="w-1/5 pb-4">QUANTITY</td>
+                        <td className="w-1/5 pb-4">TOTAL (SGD)</td>
+                        <td className="w-1/5 pb-4">ACTION</td>
                     </tr>
                 </thead>
                 <tbody>
