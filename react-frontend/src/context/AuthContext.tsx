@@ -15,31 +15,45 @@ interface AuthContextType {
     refreshUser: () => void;
 }
 
+interface AuthContextType {
+    user: User | null;
+    isAuthenticated: boolean;
+    isAdmin: boolean;
+    refreshUser: () => void;
+    loading: boolean;
+}
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState<User | null>(null);
+    const [loading, setLoading] = useState(true);
 
     const refreshUser = () => {
+        setLoading(true);
         axios.get<User>('/api/auth/me', { withCredentials: true })
             .then((res) => setUser(res.data))
-            .catch(() => setUser(null));
+            .catch(() => setUser(null))
+            .finally(() => setLoading(false));
     };
-
 
     useEffect(() => {
         refreshUser();
     }, []);
 
-    const isAuthenticated = !!user;
-    const isAdmin = user?.role === "ADMIN";
-
     return (
-        <AuthContext.Provider value={{ user, isAuthenticated, isAdmin, refreshUser }}>
+        <AuthContext.Provider value={{
+            user,
+            isAuthenticated: !!user,
+            isAdmin: user?.role === "ADMIN",
+            refreshUser,
+            loading
+        }}>
             {children}
         </AuthContext.Provider>
     );
 };
+
 
 export const useAuth = (): AuthContextType => {
     const context = useContext(AuthContext);

@@ -16,7 +16,8 @@ public interface ProductRepository extends JpaRepository<Product, Integer> {
             "AND (:maxPrice IS NULL OR p.price <= :maxPrice) " +
             "AND (:keywords IS NULL OR :keywords = '' OR " +
             "p.name LIKE %:keywords% OR " +
-            "p.category.name LIKE %:keywords%)")
+            "p.category.name LIKE %:keywords% OR " +
+            "(TYPE(p) = Book AND LOWER(TREAT(p AS Book).author.name) LIKE %:keywords%))")
     List<Product> searchProductsUsingFilters(@Param("categoryId") Integer categoryId,
                                 @Param("minPrice") Float minPrice,
                                 @Param("maxPrice") Float maxPrice,

@@ -1,5 +1,6 @@
 package sg.nus.iss.spring.backend.service;
 
+import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +11,7 @@ import sg.nus.iss.spring.backend.dto.ProductFilterRequestDTO;
 import sg.nus.iss.spring.backend.interfacemethods.ProductService;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.repository.ProductRepository;
+import sg.nus.iss.spring.backend.utils.ResourceQueryUtils;
 
 import java.util.List;
 
@@ -21,19 +23,13 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public List<Product> list(ProductFilterRequestDTO filters) {
-        String sortBy = (filters.getSortBy() == null || filters.getSortBy().isBlank())
-                ? "name"
-                : filters.getSortBy();
 
-        String sortDir = (filters.getSortDir() == null || filters.getSortDir().isBlank())
-                ? "ASC"
-                : filters.getSortDir().toUpperCase();
-        int pageNo = (filters.getPageNo() == null || filters.getPageNo() < 1) ? 0 : filters.getPageNo() - 1;
-        int itemsPerPage = (filters.getItemsPerPage() == null || filters.getItemsPerPage() <= 0) ? 10 : filters.getItemsPerPage();
+        Sort.Direction direction = Sort.Direction.fromString(filters.getSortDir().toUpperCase());
+        Sort sort = Sort.by(direction, filters.getSortBy());
 
-        Sort.Direction direction = Sort.Direction.fromString(sortDir.toUpperCase());
+        int pageNo = ResourceQueryUtils.sanitizePageNo(filters.getPageNo());
+        int itemsPerPage = ResourceQueryUtils.sanitizeItemsPerPage(filters.getItemsPerPage());
 
-        Sort sort = Sort.by(direction, sortBy);
         Pageable pageable = PageRequest.of(pageNo, itemsPerPage, sort);
 
         return productRepository.searchProductsUsingFilters(
@@ -44,7 +40,6 @@ public class ProductServiceImpl implements ProductService {
                 pageable
         );
     }
-
 
     @Override
     public Product findProductById(Integer productId) {
