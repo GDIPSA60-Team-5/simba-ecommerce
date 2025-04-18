@@ -38,7 +38,7 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
             keywords: searchParams.get('keywords') || '',
             minPrice: searchParams.get('minPrice') ? Number(searchParams.get('minPrice')) : undefined,
             maxPrice: searchParams.get('maxPrice') ? Number(searchParams.get('maxPrice')) : undefined,
-            sortBy: searchParams.get('sortBy') || 'name',
+            sortBy: searchParams.get('sortBy') || 'id',
             sortDir: searchParams.get('sortDir') || 'asc',
             itemsPerPage: Number(searchParams.get('itemsPerPage')) || 9,
             pageNo: Number(searchParams.get('pageNo')) || 1,
