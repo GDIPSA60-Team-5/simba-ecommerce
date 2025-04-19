@@ -25,6 +25,7 @@ VALUES
     ('Rebecca Yarros'),
     ('Jonathan Eig'),
     ('Nathan Hill'),
+---    10
     ('Ann Napolitano'),
     ('S.A. Cosby'),
     ('Jean M. Twenge'),
@@ -34,7 +35,29 @@ VALUES
     ('Lauren Groff'),
     ('Mariana Enriquez'),
     ('Teju Cole'),
-    ('Esther Yi');
+    ('Esther Yi'),
+---     20
+    ('Nick Morgan'),
+    ('Jeff Duntemann'),
+    ('Donald Knuth'),
+    ('Y.DANIEL LIANG'),
+    ('Diana Wynne Jones'),
+    ('Mike Unwin'),
+    ('Planet Lonely'),
+    ('Vera Storme'),
+    ('Anthony Doerr'),
+    ('Tom Turcich'),
+---     30
+    ('Jennifer Wintgens'),
+    ('Daniel Kahneman'),
+    ('Parmy Olson'),
+    ('Erik Haugom'),
+    ('Bill Davies'),
+    ('E L James'),
+    ('Lee Child'),
+    ('Teresa Driscoll'),
+    ('Kelly Rimmer');
+
 
 -- Insert Books (Products)
 INSERT INTO products (name, description, price, quantity, image_url, rating, author_id, category_id, product_type)
@@ -58,7 +81,26 @@ VALUES
     ('All the Sinners Bleed', 'A Southern Gothic serial killer mystery.', 20.99, 140, '/images/books/book-17.png', 4.8, 17, 1, 'BOOK'),
     ('Generations', 'Exploring the real differences between Gen Z, Millennials, Gen X, Boomers, and Silents.', 23.99, 110, '/images/books/book-18.png', 4.6, 18, 4, 'BOOK'),
     ('The Wager', 'A tale of shipwreck, mutiny, and murder.', 19.99, 90, '/images/books/book-19.png', 4.7, 19, 1, 'BOOK'),
-    ('The Covenant of Water', 'A novel about a family’s secrets and legacy.', 24.99, 80, '/images/books/book-20.png', 4.8, 20, 1, 'BOOK');
+    ('The Covenant of Water', 'A novel about a family’s secrets and legacy.', 24.99, 80, '/images/books/book-20.png', 4.8, 20, 1, 'BOOK'),
+    ('JavaScript for Kids', 'A Playful Introduction to Programming', 50, 60, '/images/books/book-21.png', 4.6, 21, 2, 'BOOK'),
+    ('Assembly Language Step-by-Step: Programming with Linux','A very beginning explaining for assembly language',81,30,'/images/books/book-22.png',4.4,22,2,'BOOK'),
+    ('Art of Computer Programming','The: MMIX -- A RISC Computer for the New Millennium',38.55,40,'/images/books/book-23.png',4.4,23,2,'BOOK'),
+    ('Introduction to Java Programming and Data Structures', 'Introduction to Java Programming and Data Structures', 7.99, 50, '/images/books/book-24.png', 4.6, 24, 2, 'BOOK'),
+    ('Howl’s Moving Castle','Humorous Fiction for Young Adults', 14.44, 50, '/images/books/book-25.png', 4.8, 25, 10, 'BOOK'),
+    ('Around the World in 50 Birds: 1000 Piece Jigsaw','Spot birds from across the globe with this 1000-piece puzzle',38,70,'/images/books/book-26.png',4.8,26,3,'BOOK'),
+    ('Lonely Planet Japan','Lonely Planet''s local travel experts reveal all you need to know to plan the trip of a lifetime to Japan',37.05,30,'/images/books/book-27.png',4.2,27,3,'BOOK'),
+    ('Iceland Travel Guide 2025','With this guide, you’ll see more than just the famous places in Iceland.',27.10,80,'/images/books/book-28.png',3.5,28,3,'BOOK'),
+    ('Four Seasons in Rome','a "dazzling" (Azar Nafisi, author of Reading Lolita in Tehran) memoir about art and adventures in Rome.',22.54,50,'/images/books/book-29.png',4.4,29,3,'BOOK'),
+    ('The World Walk','The invigorating true story of a man and his dog who circled the globe on foot.',36.10,40,'/images/books/book-30.png',4.9,30,3,'BOOK'),
+    ('Chile','Introduction of Chile',27.79,50,'/images/books/book-31.png',4.6,31,3,'BOOK'),
+    ('Thinking, Fast and Slow','Help you change the way we think about thinking',11.9,50,'/images/books/book-32.png',4.6,32,4,'BOOK'),
+    ('Supremacy: AI, ChatGPT and the Race That Will Change the World','Description of battle between two AI companies',26,40,'/images/books/book-33.png',4.3,33,4,'BOOK'),
+    ('Essentials of Pricing Analytics: Tools and Implementation with Excel','This book provides a broad introduction to the field of pricing',78,40,'/images/books/book-34.png',4.6,34,4,'BOOK'),
+    ('Essential Business Law and Practice for SQE1','explains the key principles of business law and practice as required for theSQE Part 1',63.83,60,'/images/books/book-35.png',4.5,35,4,'BOOK'),
+    ('Fifty Shades of Grey: Book 1 of the Fifty Shades trilogy','A provocative contemporary romance',23.83,70,'/images/books/book-36.png',4.0,36,1,'BOOK'),
+    ('Killing Floor: 1','A complex thriller with layer upon layer of mystery and violence and intrigue',17.99,100,'/images/books/book-37.png',4.6,37,9,'BOOK'),
+    ('I Am Watching You','Perhaps one of the best psychological thrillers released this year',18,80,'/images/books/book-38.png',4.5,38,9,'BOOK'),
+    ('The Things We Cannot Say: A WWII Historical Fiction Novel','An intense story of survival, hardship, and heartbreak',21.74,60,'/images/books/book-39.png',4.8,39,8,'BOOK');
 
 -- Insert Users
 INSERT INTO users (username, password, first_name, last_name, phone_number, email, address, date_of_birth, role)
