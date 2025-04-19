@@ -1,22 +1,29 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import CartItem from './CartItem'
-import { CartItemType, DeliveryType } from '../../../types/types'
-import axios, { AxiosResponse } from 'axios'
-import { useRef } from 'react'
+import axios from 'axios'
 import { useNavigate } from "react-router-dom"
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router-dom'
+import { useCart } from '../../../hooks/useCart';
 
 
 // written by Aung Myin Moe & Haziq
 export default function ListCartItem() {
-    const [myCart, updateMyCart] = useState<CartItemType[]>([]);
+    const {
+        myCart,
+        deliveryFee,
+        setDeliveryFee,
+        updatedQuantities,
+        setUpdatedQuantities,
+        retrieveCart,
+        deliType, 
+        retrieveDeliType,
+        selectedDeliveryType,
+        setSelectedDeliveryType
+    } = useCart();
+
     const deliTypeElement = useRef<HTMLSelectElement>(null);
     const shippingAddressElement = useRef<HTMLTextAreaElement>(null);
     const navigate = useNavigate();
-    const [deliType, updateDeliType] = useState<DeliveryType[]>([]);
-    const [selectedDeliveryType, setSelectedDeliveryType] = useState<DeliveryType | null>(null);
-    const [deliveryFee, setDeliveryFee] = useState(0);
-    const [updatedQuantities, setUpdatedQuantities] = useState<{ [cartItemId: number]: number }>({});
     const [isSaving, setIsSaving] = useState(false);
     const [cartChanged, setCartChanged] = useState(false);
     const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
@@ -83,32 +90,6 @@ export default function ListCartItem() {
             shippingAddressElement.current.value = savedShippingAddress;
         }
     }, []);
-
-    function retrieveCart() {
-        axios
-            .get("http://localhost:8080/api/cart", {
-                withCredentials: true
-            })
-            .then((response: AxiosResponse) => {
-                console.log("server response:", response.data);
-                updateMyCart(response.data);
-            })
-            .catch(e => {
-                console.log(e);
-            });
-    }
-
-    function retrieveDeliType() {
-        axios
-            .get("http://localhost:8080/api/deli-type")
-            .then((response: AxiosResponse) => {
-                console.log("delivery type response", response.data);
-                updateDeliType(response.data);
-            })
-            .catch(e => {
-                console.log(e);
-            })
-    }
 
     async function handleSubmitOrder(e: any) {
         e.preventDefault();
@@ -177,7 +158,7 @@ export default function ListCartItem() {
     );
 
     return( 
-        <form style={{ maxWidth: "75%", margin: "0 auto", padding: "2rem" }}>
+        <form className="max-w-[75%] mx-auto p-8">
             <div className="flex items-center justify-between mb-15 relative">
                 <Link
                     type="button"
@@ -210,21 +191,14 @@ export default function ListCartItem() {
                     </table>
                     <div className="flex gap-6 mt-6">
                         {myCart.length > 0 && (
-                            <button type="button" onClick={handleSaveClick} disabled={isSaving || !cartChanged}
-                                className={`px-6 py-4 text-white transition-colors duration-300 
-                                    ${isSaving ? 'bg-gray-300 cursor-not-allowed' : cartChanged ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`} 
-                            >
-                                {isSaving ? (
-                                    <div className="flex items-center gap-2">
-                                    <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                                    </svg>
-                                        Saving...
-                                    </div>
-                                ) : (
-                                    "SAVE CART"
-                                )}
+                            <button
+                                type="button"
+                                onClick={handleSaveClick}
+                                disabled={isSaving || !cartChanged}
+                                className={`px-4 py-3 text-white font-semibold transition-all duration-200 block mt-1
+                                    ${isSaving ? 'bg-gray-300 cursor-not-allowed' : cartChanged ? 'bg-green-600 hover:contrast-[115%] cursor-pointer active:scale-[0.98] active:brightness-90' : 'bg-gray-400 cursor-not-allowed'}`}
+                                >
+                                    SAVE CART
                             </button>
                         )}
                         
@@ -232,7 +206,7 @@ export default function ListCartItem() {
                             <button
                                 type="button"
                                 onClick={handleDeleteCart}
-                                className="py-4 px-6 bg-red-600 text-white border-none hover:bg-red-700 active:bg-red-800 transition duration-200"
+                                className="px-4 py-3 bg-red-600 text-white font-semibold cursor-pointer transition-all duration-200 hover:contrast-[115%] active:brightness-90 active:scale-[0.98] block mt-1"
                             >
                                 DELETE CART
                             </button>
@@ -360,7 +334,7 @@ export default function ListCartItem() {
                         <button
                             type="button"
                             onClick={handleSubmitOrder}
-                            className="px-6 py-4 bg-black text-white border-none rounded-none hover:bg-gray-800 active:bg-gray-900 transition duration-200"
+                            className="px-4 py-3 bg-black text-white font-semibold cursor-pointer transition-all duration-200 hover:contrast-[115%] active:brightness-90 active:scale-[0.98] block mt-4"
                             >
                             CHECKOUT
                         </button>
