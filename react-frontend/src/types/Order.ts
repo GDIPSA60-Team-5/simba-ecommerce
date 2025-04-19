@@ -1,4 +1,4 @@
-import { Product } from "./Product";
+import { OrderItem } from "./OrderItem";
 import { User } from "./User";
 
 export interface Order {
@@ -9,5 +9,5 @@ export interface Order {
   shippingAddress: string;
   goodsServiceTax: number;
   totalAmount: number;
-  orderItems: Product[];
+  orderItems: OrderItem[];
 }

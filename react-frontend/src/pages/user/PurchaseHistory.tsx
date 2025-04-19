@@ -15,25 +15,25 @@ const PurchaseHistory = () => {
 
 
   useEffect(() => {
-    if(!user) return;
+    if (!user) return;
 
     setLoading(true);
     setError(null);
 
     axios.get(`/api/orders/user/${user.id}`)
-    .then((response) => {
-      setOrders(response.data)
-    }).catch((error) => {
-      setError("Failed to fetch orders");
-      console.error(error);
-    }).finally(() => {
-      setLoading(false);
-    });
+      .then((response) => {
+        setOrders(response.data)
+      }).catch((error) => {
+        setError("Failed to fetch orders");
+        console.error(error);
+      }).finally(() => {
+        setLoading(false);
+      });
   }, []);
 
   const filterOrders = (status: string) => {
     setFilter(status);
-    setActiveButton(status); 
+    setActiveButton(status);
   };
 
   const handleButtonClick = (buttonName: string) => {
@@ -101,36 +101,36 @@ const PurchaseHistory = () => {
             </div>
 
             <div className="flex justify-evenly w-full mb-6">
-              <button 
-                onClick={() => filterOrders('All')} 
+              <button
+                onClick={() => filterOrders('All')}
                 className={`w-1/5 text-center relative ${activeButton === 'All' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
               >
                 All
                 {activeButton === 'All' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
               </button>
-              <button 
-                onClick={() => filterOrders('Shipped')} 
+              <button
+                onClick={() => filterOrders('Shipped')}
                 className={`w-1/5 text-center relative ${activeButton === 'Shipped' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
               >
                 Shipped
                 {activeButton === 'Shipped' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
               </button>
-              <button 
-                onClick={() => filterOrders('Delivered')} 
+              <button
+                onClick={() => filterOrders('Delivered')}
                 className={`w-1/5 text-center relative ${activeButton === 'Delivered' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
               >
                 Delivered
                 {activeButton === 'Delivered' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
               </button>
-              <button 
-                onClick={() => filterOrders('Cancelled')} 
+              <button
+                onClick={() => filterOrders('Cancelled')}
                 className={`w-1/5 text-center relative ${activeButton === 'Cancelled' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
               >
                 Cancelled
                 {activeButton === 'Cancelled' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
               </button>
-              <button 
-                onClick={() => filterOrders('Returned')} 
+              <button
+                onClick={() => filterOrders('Returned')}
                 className={`w-1/5 text-center relative ${activeButton === 'Returned' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
               >
                 Returned
@@ -139,49 +139,50 @@ const PurchaseHistory = () => {
             </div>
 
             {
-            filteredOrders.length > 0 ? (
-              filteredOrders.map((order, index) => (
-                <div key={index} className="border p-6 my-4 rounded-lg shadow-lg bg-white border-gray-300">
-                  <div className="flex justify-between items-center">
-                    <div className="text-gray-700 font-bold text-[11px]">Order Status:</div>
-                    <div className="text-gray-700 text-[14px]">{order.status}</div>
-                  </div>
+              filteredOrders.length > 0 ? (
+                filteredOrders.map((order, index) => (
+                  <div key={index} className="border p-6 my-4 rounded-lg shadow-lg bg-white border-gray-300">
+                    <div className="flex justify-between items-center">
+                      <div className="text-gray-700 font-bold text-[11px]">Order Status:</div>
+                      <div className="text-gray-700 text-[14px]">{order.status}</div>
+                    </div>
 
-                  <div className="flex space-x-4 mt-4">
-                    <img
-                      src={order.orderItems[1].imageUrl}
-                      alt={order.orderItems[1].name}
-                      className="w-32 h-48 object-cover"
-                    />
-                    <div className="space-y-2 ml-4">
-                      <p className="text-gray-600">Order No: #{order.id}</p>
-                      <p className="text-gray-600">Order Date: {order.dateTime}</p>
-                      <p className="text-gray-600">Books Total: {order.orderItems.length}</p>
-                      <p className="text-gray-800 text-[18px]">Total Price: ${order.totalAmount}</p>
+                    <div className="flex space-x-4 mt-4">
+                      <img
+                        src={order.orderItems[1].product.imageUrl}
+                        alt={order.orderItems[1].product.name}
+                        className="w-32 h-48 object-cover"
+                      />
+
+                      <div className="space-y-2 ml-4">
+                        <p className="text-gray-600">Order No: #{order.id}</p>
+                        <p className="text-gray-600">Order Date: {order.dateTime}</p>
+                        <p className="text-gray-600">Books Total: {order.orderItems.length}</p>
+                        <p className="text-gray-800 text-[18px]">Total Price: ${order.totalAmount}</p>
+                      </div>
+                    </div>
+
+                    <div className="border-t-2 my-4 border-gray-400"></div>
+                    <div className="flex space-x-4 mt-4">
+                      <button
+                        onClick={() => handleCancel(order.id)}
+                        className="w-full text-black border-2 border-black px-6 py-2 rounded-[5px] bg-white hover:bg-gray-200"
+                      >
+                        Cancel
+                      </button>
+
+                      <button
+                        onClick={() => handleView(order.id)}
+                        className="w-full text-white border-2 border-black px-6 py-2 rounded-[5px] bg-black hover:bg-gray-200"
+                      >
+                        View
+                      </button>
                     </div>
                   </div>
-
-                  <div className="border-t-2 my-4 border-gray-400"></div>
-                  <div className="flex space-x-4 mt-4">
-                    <button 
-                      onClick={() => handleCancel(order.id)} 
-                      className="w-full text-black border-2 border-black px-6 py-2 rounded-[5px] bg-white hover:bg-gray-200"
-                    >
-                      Cancel
-                    </button>
-
-                    <button 
-                      onClick={() => handleView(order.id)} 
-                      className="w-full text-white border-2 border-black px-6 py-2 rounded-[5px] bg-black hover:bg-gray-200"
-                    >
-                      View
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <p>No purchase history found.</p>
-            )}
+                ))
+              ) : (
+                <p>No purchase history found.</p>
+              )}
           </>
         )}
       </div>
