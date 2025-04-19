@@ -1,7 +1,9 @@
 package sg.nus.iss.spring.backend.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
+import sg.nus.iss.spring.backend.dto.PageResponseDTO;
 import sg.nus.iss.spring.backend.dto.ProductFilterRequestDTO;
 import sg.nus.iss.spring.backend.interfacemethods.ProductService;
 import sg.nus.iss.spring.backend.model.Product;
@@ -20,8 +22,15 @@ public class ProductController {
     }
 
     @GetMapping
-    public List<Product> findAllProducts(ProductFilterRequestDTO filters) {
-        return productService.list(filters);
+    public PageResponseDTO<Product> findAllProducts(ProductFilterRequestDTO filters) {
+        Page<Product> page =  productService.list(filters);
+        return new PageResponseDTO<>(page.getContent(),
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.isLast()
+        );
     }
 
     @GetMapping("/{id}")

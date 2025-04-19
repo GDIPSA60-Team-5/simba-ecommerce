@@ -1,9 +1,9 @@
 package sg.nus.iss.spring.backend.model;
 
 import jakarta.persistence.*;
-
 import java.time.LocalDateTime;
 import java.util.List;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "orders")
@@ -27,39 +27,36 @@ public class Order {
 
     private String status;
 
-    
     private LocalDateTime dateTime;
 
     private String shippingAddress;
 
     private float goodsServiceTax;
 
-    @OneToMany(mappedBy="order")
+    private float totalAmount;
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
     private List<OrderItem> orderItems;
 
-    // Constructors
     public Order() {
-    	
     }
 
-    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime,
-    		String shippingAddress) {
-		this.user = user;
-		this.paymentType = paymentType;
-		this.deliveryType = deliveryType;
-		this.status = status;
-		this.dateTime = dateTime;
-		this.shippingAddress = shippingAddress;
-		this.goodsServiceTax = 0.09f;
-	}
+    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime, String shippingAddress) {
+        this.user = user;
+        this.paymentType = paymentType;
+        this.deliveryType = deliveryType;
+        this.status = status;
+        this.dateTime = dateTime;
+        this.shippingAddress = shippingAddress;
+    }
 
-	// Getters and Setters
-    public int getOrderId() {
+    public int getId() {
         return id;
     }
 
-    public void setOrderId(int orderId) {
-        this.id = orderId;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public User getUser() {
@@ -116,5 +113,21 @@ public class Order {
 
     public void setGoodsServiceTax(float goodsServiceTax) {
         this.goodsServiceTax = goodsServiceTax;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public float getTotalAmount() {
+        return totalAmount;
+    }
+
+    public void setTotalAmount(float totalAmount) {
+        this.totalAmount = totalAmount;
     }
 }

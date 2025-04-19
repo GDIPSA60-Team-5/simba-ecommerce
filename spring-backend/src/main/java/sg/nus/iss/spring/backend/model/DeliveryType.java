@@ -3,7 +3,7 @@ package sg.nus.iss.spring.backend.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "delivery_type")
+@Table(name = "delivery_types")
 public class DeliveryType {
 
     @Id

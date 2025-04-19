@@ -1,9 +1,6 @@
 package sg.nus.iss.spring.backend.model;
 
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 
 @Entity
 @DiscriminatorValue("BOOK")
