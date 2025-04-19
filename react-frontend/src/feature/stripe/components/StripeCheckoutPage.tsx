@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 
 
 // Written by Aung Myin Moe
-const stripePromise = loadStripe('pk_test_51RBtJ5GBEBEiOSMS84fM0Eozu7inX60wlw19XZ8RmsFlXDdyYIgINu1R8BsdCKfD2o3v6TEGUEDqtC0N0KPZdVAd00BGENAvN7');
+const stripePromise = await loadStripe('pk_test_51RBtJ5GBEBEiOSMS84fM0Eozu7inX60wlw19XZ8RmsFlXDdyYIgINu1R8BsdCKfD2o3v6TEGUEDqtC0N0KPZdVAd00BGENAvN7');
 const GST = 0.09;
 
 export default function CheckoutPage() {
