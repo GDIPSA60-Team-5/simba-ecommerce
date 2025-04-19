@@ -64,48 +64,6 @@ const CartItem: React.FC<CartItemProps> = ({ myCartItem, retrieveCart, updateCar
   }
 
   return (
-  //   <tr style={{ borderBottom: "1px solid #ccc", padding: "1rem 0" }}>
-  //     <td style={{ padding: "1rem 0" }}>
-  //       <img
-  //         src={myCartItem.product.imageUrl}
-  //         alt={myCartItem.product.name}
-  //         className="card-img object-cover w-full h-[160px]" />
-  //         {myCartItem.product.name}
-  //       </td>
-  //     <td style={{ padding: "0 2rem", textAlign: "right" }}>{myCartItem.product.price}</td>
-  //     <td>
-  //       <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-  //         <button type="button" onClick={handleReduce} style={{ padding: "0.25rem 0.5rem" }}>−</button>
-  //         <input
-  //           type="number"
-  //           onChange={handleInputValue}
-  //           value={currentQty}
-  //           min={1}
-  //           max={myCartItem.product.quantity}
-  //           style={{ width: '50px', textAlign: 'center', padding: "1rem 0" }}
-  //         />
-  //         <button type="button" onClick={handleIncrease} style={{ padding: "0.25rem 0.5rem" }}>+</button>
-  //       </div>
-  //     </td>
-  //     <td style={{ padding: "0 2rem", textAlign: "right" }}>{productTotal()}</td>
-  //     <td style={{ display: "flex", gap: "0.5rem", paddingTop: "0.5rem" }}>
-  //       <button
-  //         type="button"
-  //         onClick={handleDeleteProduct}
-  //         style={{
-  //           padding: "0.5rem 1rem",
-  //           backgroundColor: "#f44336", // red
-  //           color: "white",
-  //           border: "none",
-  //           borderRadius: "4px",
-  //           cursor: "pointer"
-  //         }}
-  //     >
-  //       Delete
-  //     </button>
-  //   </td>
-  // </tr>
-
   <tr className="border-y border-gray-300 align-top">
     <td className="py-4">
       <div className="flex flex-col items-center gap-4">
