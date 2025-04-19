@@ -43,7 +43,7 @@ public class PaymentServiceImpl implements PaymentService {
 							SessionCreateParams.LineItem.PriceData.builder()
 								.setCurrency("sgd")
 								.setUnitAmount(BigDecimal.valueOf(item.getProduct().getPrice())
-									.multiply(BigDecimal.valueOf(100)).longValue()) // Stripe needs amount in cents in long data type
+									.multiply(BigDecimal.valueOf(100)).longValue())
 								.setProductData(
 									SessionCreateParams.LineItem.PriceData.ProductData.builder()
 										.setName(item.getProduct().getName())
