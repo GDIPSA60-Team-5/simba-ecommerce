@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../../context/AuthContext";
+import { Order } from "../../types/Order";
 
 const PurchaseHistory = () => {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('All');
@@ -137,7 +138,8 @@ const PurchaseHistory = () => {
               </button>
             </div>
 
-            {filteredOrders.length > 0 ? (
+            {
+            filteredOrders.length > 0 ? (
               filteredOrders.map((order, index) => (
                 <div key={index} className="border p-6 my-4 rounded-lg shadow-lg bg-white border-gray-300">
                   <div className="flex justify-between items-center">
@@ -147,29 +149,29 @@ const PurchaseHistory = () => {
 
                   <div className="flex space-x-4 mt-4">
                     <img
-                      src={order.bookImageUrl}
-                      alt={order.bookTitle}
+                      src={order.orderItems[1].imageUrl}
+                      alt={order.orderItems[1].name}
                       className="w-32 h-48 object-cover"
                     />
                     <div className="space-y-2 ml-4">
-                      <p className="text-gray-600">Order No: #{order.orderNumber}</p>
-                      <p className="text-gray-600">Order Date: {order.orderDate}</p>
-                      <p className="text-gray-600">Books Total: {order.booksTotal}</p>
-                      <p className="text-gray-800 text-[18px]">Total Price: ${order.totalPrice}</p>
+                      <p className="text-gray-600">Order No: #{order.id}</p>
+                      <p className="text-gray-600">Order Date: {order.dateTime}</p>
+                      <p className="text-gray-600">Books Total: {order.orderItems.length}</p>
+                      <p className="text-gray-800 text-[18px]">Total Price: ${order.totalAmount}</p>
                     </div>
                   </div>
 
                   <div className="border-t-2 my-4 border-gray-400"></div>
                   <div className="flex space-x-4 mt-4">
                     <button 
-                      onClick={() => handleCancel(order.orderNumber)} 
+                      onClick={() => handleCancel(order.id)} 
                       className="w-full text-black border-2 border-black px-6 py-2 rounded-[5px] bg-white hover:bg-gray-200"
                     >
                       Cancel
                     </button>
 
                     <button 
-                      onClick={() => handleView(order.orderNumber)} 
+                      onClick={() => handleView(order.id)} 
                       className="w-full text-white border-2 border-black px-6 py-2 rounded-[5px] bg-black hover:bg-gray-200"
                     >
                       View
