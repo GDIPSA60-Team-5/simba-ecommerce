@@ -25,10 +25,11 @@ public class OrderController {
         this.orderService = orderService;
     }
 
+
     @GetMapping("/user/{user}")
     public ResponseEntity<List<Order>> getAllOrders(
             @PathVariable(required = false) User user,
-            @RequestParam(required = false) OrderStatus status,
+            @RequestParam(required = false) String status,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
             @RequestParam(required = false) Integer page,
@@ -64,4 +65,5 @@ public class OrderController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
+
 }
