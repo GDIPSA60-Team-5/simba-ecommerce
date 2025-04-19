@@ -45,7 +45,7 @@ export default function Login() {
       )}
 
       <div className="flex flex-col items-center gap-5">
-        <img src="images/library2.png" width={500} alt="" />
+        <img src="/images/library2.png" width={500} alt="" />
         <div className="body max-w-[300px] text-center">
           <h2 className="uppercase text-3xl font-normal">Become A Member</h2>
           <p>You can unlock special discounts by signing our membership</p>
