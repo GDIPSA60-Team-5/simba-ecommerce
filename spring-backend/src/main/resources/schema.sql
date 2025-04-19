@@ -91,6 +91,7 @@ CREATE TABLE IF NOT EXISTS orders (
                                       status           VARCHAR(50) NOT NULL,
                                       date_time        DATETIME    NOT NULL,
                                       shipping_address VARCHAR(255),
+                                      total_amount DECIMAL(10, 2) NOT NULL,
                                       goods_service_tax FLOAT      NOT NULL,
                                       CONSTRAINT fk_orders_user
                                           FOREIGN KEY (user_id)          REFERENCES users(id),

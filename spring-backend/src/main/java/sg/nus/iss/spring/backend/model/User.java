@@ -1,6 +1,7 @@
 package sg.nus.iss.spring.backend.model;
 
 import jakarta.persistence.*;
+import sg.nus.iss.spring.backend.enums.Role;
 
 import java.io.Serializable;
 import java.util.Date;

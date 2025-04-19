@@ -29,11 +29,11 @@ export function ProductCard({ product }: { product: Product }) {
   };
   return (
     <div className="product-card w-full">
-      <Link to={`/books/${product.id}`} className="relative block transition-transform duration-300 hover:scale-105">
+      <Link to={`/books/${product.id}`} className="h-[350px] relative block transition-transform duration-300 hover:scale-105">
         <img
           src={product.imageUrl}
           alt={product.name}
-          className="card-img object-cover w-full min-h-[250px]" />
+          className="card-img object-cover w-full h-full" />
 
         <div className="absolute inset-0 flex bg-black/50 justify-center items-center opacity-0 hover:opacity-100  transition-opacity">
           <span className="text-white text-lg opacity-100">

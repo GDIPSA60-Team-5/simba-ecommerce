@@ -55,7 +55,10 @@ export const Pagination = ({
 
             <div className="flex items-center gap-2">
                 <div className="text-sm ">
-                    <span className="font-semibold">{currentPage} - {filters.itemsPerPage}</span> of {totalElements} results
+                    <div className="text-sm ">
+                        <span className="font-semibold"> {(currentPage - 1) * filters.itemsPerPage + 1}{" "}-{" "}{Math.min(currentPage * filters.itemsPerPage, totalElements)}</span>{" "}
+                        of {totalElements} results
+                    </div>
                 </div>
                 <button
                     onClick={() => handleClick(currentPage - 1)}
