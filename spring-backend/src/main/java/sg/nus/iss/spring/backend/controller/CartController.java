@@ -1,11 +1,13 @@
 package sg.nus.iss.spring.backend.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,13 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stripe.exception.StripeException;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
 import sg.nus.iss.spring.backend.interfacemethods.DeliveryService;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.DeliveryType;
+import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.model.User;
+import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
+import sg.nus.iss.spring.backend.repository.ProductRepository;
 
 
 /* Written by Aung Myin Moe */
@@ -40,6 +46,12 @@ public class CartController {
 	
 	@Autowired
 	private DeliveryService deliService;
+	
+	@Autowired 
+	private ProductRepository pRepo;
+	
+	@Autowired 
+	private DeliveryTypeRepository deliveryRepo;
 	
 	private static final int DEFAULT_CART_QUANTITY = 1;
 	
@@ -57,29 +69,62 @@ public class CartController {
 	
 	// adjust the quantity of products in the cart
 	@PutMapping("/cart/update-quantity")
-	public CartItem reviseOrderQty(@RequestBody CartItem cartItem) {
+	public ResponseEntity<?> reviseOrderQty(@RequestBody CartItem cartItem) {
 		// validate product quantity with the stock quantity
+		Product product = cartItem.getProduct();
+		Product latestProduct = pRepo.findById(product.getId()).orElseThrow(() -> new RuntimeException("Product not found"));
+		
+		if (cartItem.getQuantity() < 1) {
+	        return ResponseEntity.badRequest().body("Quantity must be at least 1");
+	    }
+		if (cartItem.getQuantity() > latestProduct.getQuantity()) {
+			return ResponseEntity.badRequest().body("Not enough stock available");
+		}
+		
 		// ...
-		return cartService.updateCartOrderQty(cartItem);
+		return ResponseEntity.ok(cartService.updateCartOrderQty(cartItem));
 	}
 	
 	// click the submit order button to go to payment gateway page
 	@PostMapping("/cart/submit")
-	public Map<String, Object> formPayment(@RequestBody OrderDetailsDTO orderDetailsDTO, HttpSession session) 
+	public ResponseEntity<?> formPayment(@Valid @RequestBody OrderDetailsDTO orderDetailsDTO, BindingResult result, HttpSession session) 
 			throws StripeException, Exception {
 		/*
 		 * To do
 		 * validate input data deliType and shippingAddress
 		 * validate submitting no cart item to stripe
 		 */
+		Map<String, String> errors = new HashMap<>();
+		 if (result.hasErrors()) {
+		        result.getFieldErrors().forEach(err ->
+		            errors.put(err.getField(), err.getDefaultMessage())
+		        );
+		    }
 		
+		String deliveryType = orderDetailsDTO.getDeliveryType();
+		if (deliveryType != null) { 
+		
+		DeliveryType selectedType = deliveryRepo.findByName(deliveryType).orElse(null);
+		if (selectedType ==null) {
+			errors.put("deliveryType","Invalid delivery type selected");
+		}
+		}
 		// save form input data into session
 		session.setAttribute("order_data", orderDetailsDTO);
 		
 		// get the cart items of the user
 		List<CartItem> cartItems = cartService.listCartItems(getUser(session));
-			
-		return paymentService.createStripeCheckoutSession(cartItems, session);
+			//validation for empty cart
+		if (cartItems.isEmpty()) {
+			errors.put("cart","Cart cannot be empty");
+		}
+		
+		if (!errors.isEmpty()) {
+			return ResponseEntity.badRequest().body(errors);
+		}
+		
+		Map<String, Object>response = paymentService.createStripeCheckoutSession(cartItems, session);
+		return ResponseEntity.ok(response);
 	}
 	
 	// draft implementation of payment success api
