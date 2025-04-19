@@ -98,3 +98,17 @@ VALUES
     (1, 1, 2, 15.99),  -- Order 1: 2 Harry Potter books
     (1, 2, 1, 35.99),  -- Order 1: 1 copy of Java How to Program
     (2, 3, 1, 21.99);  -- Order 2: 1 Rick Steves' Europe: Belgium
+
+-- Insert Reviews
+INSERT INTO reviews (product_id, user_id, comment, rating)
+VALUES
+    (1, 1, 'Absolutely magical! A must-read for all ages.', 5.0),
+    (2, 1, 'Great book for Java learners. Very detailed.', 4.5),
+    (3, 2, 'Helped me plan my entire trip to Belgium. Excellent!', 5.0),
+    (4, 2, 'Good financial advice, though a bit repetitive.', 4.0),
+    (5, 1, 'Life-changing habits explained in a simple way.', 4.8),
+    (6, 2, 'Exciting and full of fantasy action.', 4.7),
+    (7, 1, 'Touching memoir with lots of emotion.', 4.6),
+    (8, 2, 'A fun and quirky story about a strong woman in science.', 4.7),
+    (9, 1, 'Could not put it down! Twists at every corner.', 4.5),
+    (10, 2, 'Lighthearted romance with relatable characters.', 4.6);
