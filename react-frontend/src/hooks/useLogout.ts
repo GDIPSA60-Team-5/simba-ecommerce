@@ -12,7 +12,7 @@ const useLogout = () => {
         sessionStorage.removeItem('shippingAddress');
         sessionStorage.removeItem('deliveryType');
 
-        axios.post('http://localhost:8080/api/auth/user/logout', {}, { withCredentials: true })
+        axios.post('/api/auth/logout', {}, { withCredentials: true })
             .then(() => {
                 refreshUser();
 
