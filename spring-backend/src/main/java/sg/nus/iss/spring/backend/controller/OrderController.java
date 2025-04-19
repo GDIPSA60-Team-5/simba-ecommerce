@@ -1,12 +1,16 @@
 package sg.nus.iss.spring.backend.controller;
 
+import jakarta.servlet.http.HttpSession;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
+import sg.nus.iss.spring.backend.exception.auth.UserNotAuthenticatedException;
 import sg.nus.iss.spring.backend.model.Order;
 import sg.nus.iss.spring.backend.enums.OrderStatus;
 import sg.nus.iss.spring.backend.model.User;
 import sg.nus.iss.spring.backend.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import sg.nus.iss.spring.backend.util.SessionUtils;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -46,12 +50,18 @@ public class OrderController {
 
 
     @GetMapping("/{orderId}")
-    public ResponseEntity<Order> getOrderDetails(@PathVariable("orderId") int orderId) {
-        Order order = orderService.getOrderDetails(orderId);
-        if (order == null) {
-            return ResponseEntity.notFound().build();
-        }
-        return ResponseEntity.ok(order);
-    }
+    public ResponseEntity<Order> getOrderDetails(@PathVariable("orderId") int orderId, HttpSession session) {
+        try {
+            User user = SessionUtils.getUserFromSession(session);
 
+            Order order = orderService.getOrderDetails(orderId);
+            if (order == null) return ResponseEntity.notFound().build();
+
+            if (order.getUser().getId() != user.getId()) return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+
+            return ResponseEntity.ok(order);
+        } catch (UserNotAuthenticatedException e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
 }

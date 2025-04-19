@@ -1,35 +1,14 @@
-import { useEffect, useState } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { useAuth } from "../../context/AuthContext";
-import { Order } from "../../types/Order";
+import { useUserOrders } from "../../feature/order-history/hooks/useUserOrders";
 
-const PurchaseHistory = () => {
+const OrderHistory = () => {
   const { user } = useAuth();
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [filter, setFilter] = useState('All');
   const [activeButton, setActiveButton] = useState('All');
   const [showOrders, setShowOrders] = useState(false);
 
-
-
-  useEffect(() => {
-    if (!user) return;
-
-    setLoading(true);
-    setError(null);
-
-    axios.get(`/api/orders/user/${user.id}`)
-      .then((response) => {
-        setOrders(response.data)
-      }).catch((error) => {
-        setError("Failed to fetch orders");
-        console.error(error);
-      }).finally(() => {
-        setLoading(false);
-      });
-  }, []);
+  const { orders, loading, error } = useUserOrders(user?.id);
 
   const filterOrders = (status: string) => {
     setFilter(status);
@@ -198,4 +177,4 @@ const handleView = (orderNumber: number) => {
   console.log(`View order #${orderNumber}`);
 };
 
-export default PurchaseHistory;
+export default OrderHistory;
