@@ -120,7 +120,7 @@ export default function CheckoutPage() {
                                 </tr>
                             ))}
                             <tr className="align-top text-left">
-                                <td className="py-3 pr-6 border-t border-gray-800"></td>
+                                <td className="py-3 pr-6"></td>
                                 <td className="w-2/3 pt-4 font-medium border-t border-gray-800">Subtotal</td>
                                 <td className="pt-4 text-right font-medium border-t border-gray-800">
                                     {calculateTotal().toFixed(2)}
