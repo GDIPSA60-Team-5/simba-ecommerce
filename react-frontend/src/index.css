@@ -3,8 +3,8 @@
 :root {
     --light-grey: #f6f9fc;
     --dark-terminal-color: #0a2540;
-    --accent-color: #635bff;
-    --radius: 3px;
+    --accent-color: #000000;
+    /* --radius: 3px; */
 }
 
 .stripe-button {

@@ -12,6 +12,7 @@ import RequireNoAuth from "./guards/RequireNoAuth";
 import Cart from "../pages/Cart";
 import RequireAuth from "./guards/RequireAuth";
 import CheckoutPage from "../feature/stripe/components/StripeCheckoutPage"; 
+import { CartProvider } from "../context/CartContext";
 
 const PublicRoutes: RouteObject[] = [
     {
@@ -26,8 +27,8 @@ const PublicRoutes: RouteObject[] = [
             { path: "contact", element: <Contact /> },
 
             // User Only Routes 
-            { path: "cart", element: <RequireAuth><Cart /></RequireAuth> },
-            { path: "checkout", element: <RequireAuth><CheckoutPage /></RequireAuth>},
+            { path: "cart", element: <RequireAuth><CartProvider><Cart /></CartProvider></RequireAuth> },
+            { path: "checkout", element: <RequireAuth><CartProvider><CheckoutPage /></CartProvider></RequireAuth>},
 
             // Non-User Only Routes
             { path: "login", element: <RequireNoAuth><Login /></RequireNoAuth> },
