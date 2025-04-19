@@ -17,6 +17,7 @@ export default function ListCartItem() {
     const [deliveryFee, setDeliveryFee] = useState(0);
     const [updatedQuantities, setUpdatedQuantities] = useState<{ [cartItemId: number]: number }>({});
     const [isSaving, setIsSaving] = useState(false);
+    const [validationErrors, setValidationErrors] = useState<{[key: string]: string}>({});
 
     
     const updateCartQtyState = (cartItemId: number, quantity: number) => {
@@ -128,10 +129,8 @@ export default function ListCartItem() {
             navigate("/checkout", { state: { clientSecret } });
         }
         catch (error: any) {
-            if (axios.isAxiosError(error)) {
-                const message = typeof error.response?.data === "string" ? error.response.data : "Failed to process order";
-                alert(message);
-                console.error("submit order error:", error);
+            if (axios.isAxiosError(error) && typeof error.response?.data === 'object') {
+                setValidationErrors(error.response.data);
             }else {
                 alert("Unknown error");
                 console.error("Unexpected error: ", error);
@@ -219,6 +218,11 @@ export default function ListCartItem() {
                     </tr>
                 </tbody>
             </table>
+            {validationErrors.cart && (
+    <div style={{ color: "red", marginBottom: "1rem" }}>
+        {validationErrors.cart}
+    </div>
+            )}
 
             <div style={{ marginBottom: "1.5rem" }}>
                 <label htmlFor="deliveryType"><strong>Delivery Type</strong></label><br/>
@@ -245,6 +249,13 @@ export default function ListCartItem() {
                         </option>
                     ))}
                 </select>
+                {validationErrors.deliveryType && (
+        <div style={{ color: "red", marginTop: "0.5rem" }}>
+            {validationErrors.deliveryType}
+        </div>
+    )}
+
+
             </div>
 
             <div style={{ marginBottom: "2rem" }}>
@@ -262,6 +273,12 @@ export default function ListCartItem() {
                         sessionStorage.setItem("shippingAddress", e.target.value);
                     }}
                 ></textarea>
+                {validationErrors.shippingAddress && (
+        <div style={{ color: "red", marginTop: "0.5rem" }}>
+            {validationErrors.shippingAddress}
+        </div>
+    )}
+
             </div>
 
             <div style={{ display: "flex", gap: "1rem" }}>

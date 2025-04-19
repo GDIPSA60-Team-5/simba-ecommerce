@@ -1,11 +1,13 @@
 package sg.nus.iss.spring.backend.controller;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.stripe.exception.StripeException;
 
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.Valid;
 import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
 import sg.nus.iss.spring.backend.interfacemethods.DeliveryService;
@@ -84,28 +87,28 @@ public class CartController {
 	
 	// click the submit order button to go to payment gateway page
 	@PostMapping("/cart/submit")
-	public ResponseEntity<?> formPayment(@RequestBody OrderDetailsDTO orderDetailsDTO, HttpSession session) 
+	public ResponseEntity<?> formPayment(@Valid @RequestBody OrderDetailsDTO orderDetailsDTO, BindingResult result, HttpSession session) 
 			throws StripeException {
 		/*
 		 * To do
 		 * validate input data deliType and shippingAddress
 		 * validate submitting no cart item to stripe
 		 */
+		Map<String, String> errors = new HashMap<>();
+		 if (result.hasErrors()) {
+		        result.getFieldErrors().forEach(err ->
+		            errors.put(err.getField(), err.getDefaultMessage())
+		        );
+		    }
+		
 		String deliveryType = orderDetailsDTO.getDeliveryType();
-		if (deliveryType == null || deliveryType.trim().isEmpty()) {
-			return ResponseEntity.badRequest().body("Delivery type required");
-		}
+		if (deliveryType != null) { 
 		
 		DeliveryType selectedType = deliveryRepo.findByName(deliveryType).orElse(null);
 		if (selectedType ==null) {
-			return ResponseEntity.badRequest().body("Invalid delivery type selected");
+			errors.put("deliveryType","Invalid delivery type selected");
 		}
-		
-		String address = orderDetailsDTO.getShippingAddress();
-		if (address ==null || address.trim().isEmpty()) {
-			return ResponseEntity.badRequest().body("Shipping address cannot be empty");
 		}
-		
 		// save form input data into session
 		session.setAttribute("order_data", orderDetailsDTO);
 		
@@ -113,7 +116,11 @@ public class CartController {
 		List<CartItem> cartItems = cartService.listCartItems(getUser(session));
 			//validation for empty cart
 		if (cartItems.isEmpty()) {
-			return ResponseEntity.badRequest().body("Cart cannot be empty");
+			errors.put("cart","Cart cannot be empty");
+		}
+		
+		if (!errors.isEmpty()) {
+			return ResponseEntity.badRequest().body(errors);
 		}
 		
 		Map<String, Object>response = paymentService.createStripeCheckoutSession(cartItems, session);
