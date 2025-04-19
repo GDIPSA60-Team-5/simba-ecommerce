@@ -12,7 +12,8 @@ export const ProductDetailCard = () => {
         <div className="flex gap-30 mt-10 product-details mb-40">
             <img
                 src={product.imageUrl}
-                alt="product image" />
+                alt={product.name}
+                className="card-img object-cover w-[250px] min-h-[250px]" />
             <div className="product-content flex flex-col justify-between">
                 <div className="detail-group">
 

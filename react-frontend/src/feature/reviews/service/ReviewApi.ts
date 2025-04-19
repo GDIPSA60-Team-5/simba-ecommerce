@@ -1,4 +1,3 @@
-// reviewApi.ts
 import { apiClient } from "../../../service/apiClient";
 import { Review } from "../../../types/Review";
 

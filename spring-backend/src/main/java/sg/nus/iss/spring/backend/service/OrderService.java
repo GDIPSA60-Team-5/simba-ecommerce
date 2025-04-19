@@ -1,6 +1,7 @@
 package sg.nus.iss.spring.backend.service;
 
 import sg.nus.iss.spring.backend.model.Order;
+import sg.nus.iss.spring.backend.enums.OrderStatus;
 import sg.nus.iss.spring.backend.model.User;
 import sg.nus.iss.spring.backend.repository.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,14 @@ public class OrderService {
         return orderRepository.findById(orderId).orElse(null);
     }
 
-    public List<Order> getOrdersByUserAndStatus(int userId, String status) {
+    public List<Order> getOrdersByUserAndStatus(int userId, OrderStatus status) {
         return orderRepository.findByUserIdAndStatus(userId, status);
     }
 
-    public List<Order> getAllOrdersFiltered(User user, String status, LocalDate dateFrom, LocalDate dateTo) {
+    public List<Order> getAllOrdersFiltered(User user, OrderStatus status, LocalDate dateFrom, LocalDate dateTo) {
         return orderRepository.findAll().stream()
                 .filter(order -> user == null || order.getUser() == user)
-                .filter(order -> status == null || order.getStatus().equalsIgnoreCase(status))
+                .filter(order -> status == null || order.getStatus() == status)
                 .filter(order -> dateFrom == null || !order.getDateTime().toLocalDate().isBefore(dateFrom))
                 .filter(order -> dateTo == null || !order.getDateTime().toLocalDate().isAfter(dateTo))
                 .toList();

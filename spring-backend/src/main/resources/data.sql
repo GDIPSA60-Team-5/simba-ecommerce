@@ -133,17 +133,26 @@ VALUES
     (2, 3, 1);   -- Admin adds 1 Rick Steves' Europe: Belgium
 
 -- Insert Orders
-INSERT INTO orders (user_id, payment_type_id, delivery_type_id, status, date_time, shipping_address, goods_service_tax)
+INSERT INTO orders (
+    user_id,
+    payment_type_id,
+    delivery_type_id,
+    status,
+    date_time,
+    shipping_address,
+    goods_service_tax,
+    total_amount
+)
 VALUES
-    (1, 1, 1, 'Processing', NOW(), '123 Main St', 0.09),
-    (2, 2, 2, 'Shipped', NOW(), '456 Admin Rd', 0.09);
+    (1, 1, 1, 'SHIPPING', NOW(), '123 Main St', 0.09, 67.97),
+    (2, 2, 2, 'CANCELLED', NOW(), '456 Admin Rd', 0.09, 120.00);
 
 -- Insert Order Items
 INSERT INTO order_items (order_id, product_id, quantity, unit_price_at_transaction)
 VALUES
-    (1, 1, 2, 15.99),  -- Order 1: 2 Harry Potter books
-    (1, 2, 1, 35.99),  -- Order 1: 1 copy of Java How to Program
-    (2, 3, 1, 21.99);  -- Order 2: 1 Rick Steves' Europe: Belgium
+    (1, 1, 2, 15.99),
+    (1, 2, 1, 35.99),
+    (2, 3, 1, 21.99);
 
 -- Insert Reviews
 INSERT INTO reviews (product_id, user_id, comment, rating)

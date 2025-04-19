@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import sg.nus.iss.spring.backend.enums.OrderStatus;
 
 @Entity
 @Table(name = "orders")
@@ -25,7 +26,9 @@ public class Order {
     @JoinColumn(name = "delivery_type_id", nullable = false)
     private DeliveryType deliveryType;
 
-    private String status;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private OrderStatus status;
 
     private LocalDateTime dateTime;
 
@@ -42,7 +45,7 @@ public class Order {
     public Order() {
     }
 
-    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, String status, LocalDateTime dateTime, String shippingAddress) {
+    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, OrderStatus status, LocalDateTime dateTime, String shippingAddress) {
         this.user = user;
         this.paymentType = paymentType;
         this.deliveryType = deliveryType;
@@ -83,11 +86,11 @@ public class Order {
         this.deliveryType = deliveryType;
     }
 
-    public String getStatus() {
+    public OrderStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(OrderStatus status) {
         this.status = status;
     }
 
