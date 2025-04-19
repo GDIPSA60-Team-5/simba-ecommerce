@@ -1,7 +1,7 @@
 import { useState } from "react";
 import axios from "axios";
 
-import { useProducts } from "../../feature/BrowseBooks";
+import { useProducts } from "../../feature/book-list";
 
 
 const API_URL = "api/products";

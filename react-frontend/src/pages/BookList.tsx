@@ -1,5 +1,5 @@
 import { FilterProvider } from "../context/FilterContext";
-import { ProductFilterSideBar, ProductSearchBar, ProductSelectSort, ProductGrid } from "../feature/BrowseBooks";
+import { ProductFilterSideBar, ProductSearchBar, ProductSelectSort, ProductGrid } from "../feature/book-list";
 
 export default function BookList() {
 
@@ -12,7 +12,7 @@ export default function BookList() {
                 <FilterProvider>
                     <ProductFilterSideBar />
 
-                    <div className="right-contentflex flex-col w-2/3">
+                    <div className="right-content flex flex-col w-2/3">
                         <div className="flex justify-between mb-15">
                             <ProductSelectSort />
                             <ProductSearchBar />

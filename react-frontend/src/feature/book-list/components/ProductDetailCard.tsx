@@ -1,6 +1,6 @@
 import { AddToCartButton } from "../../../components/ui/Buttons";
-import StarRating from "../../../feature/BrowseBooks/components/StarRating";
-import { useSingleProduct } from "../../../feature/BrowseBooks/hooks/useSingleProduct";
+import StarRating from "../../../feature/book-list/components/StarRating";
+import { useSingleProduct } from "../../../feature/book-list/hooks/useSingleProduct";
 
 export const ProductDetailCard = () => {
     const { product, loading, error } = useSingleProduct();
@@ -9,7 +9,7 @@ export const ProductDetailCard = () => {
     if (!product) return <div>Book not found</div>;
 
     return (
-        <div className="flex gap-30 mt-10 product-details">
+        <div className="flex gap-30 mt-10 product-details mb-40">
             <img
                 src={product.imageUrl}
                 alt="product image" />
