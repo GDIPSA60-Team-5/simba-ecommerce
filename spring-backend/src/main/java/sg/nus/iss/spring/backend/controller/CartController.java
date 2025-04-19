@@ -103,11 +103,10 @@ public class CartController {
 		
 		String deliveryType = orderDetailsDTO.getDeliveryType();
 		if (deliveryType != null) { 
-		
-		DeliveryType selectedType = deliveryRepo.findByName(deliveryType).orElse(null);
-		if (selectedType ==null) {
-			errors.put("deliveryType","Invalid delivery type selected");
-		}
+			DeliveryType selectedType = deliveryRepo.findByName(deliveryType).orElse(null);
+			if (selectedType == null) {
+				errors.put("deliveryType","Invalid delivery type selected");
+			}
 		}
 		// save form input data into session
 		session.setAttribute("order_data", orderDetailsDTO);
