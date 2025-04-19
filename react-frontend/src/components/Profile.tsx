@@ -8,13 +8,13 @@ const Profile = () => {
     const { user, isAuthenticated } = useAuth();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const logout = useLogout();
+    const navigate = useNavigate();
 
     const toggleDropdown = () => {
         setIsDropdownOpen(!isDropdownOpen);
     };
 
     const handleAccount = () => {
-        const navigate = useNavigate();
         navigate("/account");
     }
 
