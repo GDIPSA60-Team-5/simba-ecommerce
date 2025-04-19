@@ -14,7 +14,7 @@ export default function ProductCategoryTag({ category }: ProductCategoryTagProps
     const bgColor = categoryColors[category] || categoryColors.Default;
 
     return (
-        <p className={`${bgColor} w-min px-5 py-1 mt-5 text-xs`}>
+        <p className={`${bgColor} w-min px-5 py-1 mt-5 text-xs whitespace-nowrap`}>
             {category}
         </p>
     );

@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS order_items;
 DROP TABLE IF EXISTS cart_items;
+DROP TABLE IF EXISTS reviews;
 DROP TABLE IF EXISTS orders;
 DROP TABLE IF EXISTS products;
 DROP TABLE IF EXISTS delivery_types;
@@ -10,16 +11,17 @@ DROP TABLE IF EXISTS users;
 
 /* ---------- USERS ---------- */
 CREATE TABLE IF NOT EXISTS users (
-                                     id              INT AUTO_INCREMENT PRIMARY KEY,
-                                     username        VARCHAR(50)  NOT NULL UNIQUE,
-                                     password        VARCHAR(255) NOT NULL,
-                                     first_name      VARCHAR(50)  NOT NULL,
-                                     last_name       VARCHAR(50)  NOT NULL,
-                                     phone_number    VARCHAR(20),
-                                     email           VARCHAR(255) NOT NULL UNIQUE,
-                                     address         VARCHAR(255),
-                                     date_of_birth   DATE,
-                                     role            VARCHAR(20)  NOT NULL  -- stores Enum Role as STRING
+                                     id                  INT AUTO_INCREMENT PRIMARY KEY,
+                                     username            VARCHAR(50)  NOT NULL UNIQUE,
+                                     password            VARCHAR(255) NOT NULL,
+                                     first_name          VARCHAR(50)  NOT NULL,
+                                     last_name           VARCHAR(50)  NOT NULL,
+                                     phone_number        VARCHAR(20),
+                                     email               VARCHAR(255) NOT NULL UNIQUE,
+                                     address             VARCHAR(255),
+                                     date_of_birth       DATE,
+                                     role                VARCHAR(20)  NOT NULL,
+                                     profile_picture_url VARCHAR(512)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 /* ---------- AUTHORS ---------- */
@@ -109,4 +111,22 @@ CREATE TABLE IF NOT EXISTS order_items (
                                                FOREIGN KEY (order_id)   REFERENCES orders(id)    ON DELETE CASCADE,
                                            CONSTRAINT fk_orderitems_product
                                                FOREIGN KEY (product_id) REFERENCES products(id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+/* ---------- REVIEWS ---------- */
+CREATE TABLE IF NOT EXISTS reviews (
+                                       id INT AUTO_INCREMENT PRIMARY KEY,
+                                       product_id INT NOT NULL,
+                                       user_id INT NOT NULL,
+                                       comment TEXT,
+                                       rating FLOAT,
+                                       created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+                                       CONSTRAINT fk_review_product
+                                           FOREIGN KEY (product_id) REFERENCES products(id)
+                                               ON DELETE CASCADE,
+
+                                       CONSTRAINT fk_review_user
+                                           FOREIGN KEY (user_id) REFERENCES users(id)
+                                               ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

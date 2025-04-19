@@ -39,7 +39,13 @@ public class User implements Serializable {
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
-    
+
+    @Column(name = "profile_picture_url")
+    private String profilePictureUrl;
+
+    @OneToMany(mappedBy = "user")
+    private List<Review> reviews;
+
     // One to many mapping for UserCart
     @OneToMany(mappedBy = "user")
     private List<CartItem> cartItems;

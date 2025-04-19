@@ -27,7 +27,7 @@ export const ProductSelectSort = () => {
                 className="focus:outline-none box-content border-b-2 border-transparent focus:border-black hover:border-black transition-all duration-200"
             >
                 <option value="rating">Popular</option>
-                <option value="">Latest Arrivals</option>
+                <option value="id">Arrival Date</option>
                 <option value="price">Price</option>
                 <option value="name">Title</option>
             </select>

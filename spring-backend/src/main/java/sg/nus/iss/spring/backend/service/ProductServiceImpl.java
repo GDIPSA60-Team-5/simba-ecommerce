@@ -1,6 +1,5 @@
 package sg.nus.iss.spring.backend.service;
 
-import jakarta.annotation.Resource;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,9 +11,7 @@ import sg.nus.iss.spring.backend.dto.ProductFilterRequestDTO;
 import sg.nus.iss.spring.backend.interfacemethods.ProductService;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.repository.ProductRepository;
-import sg.nus.iss.spring.backend.utils.ResourceQueryUtils;
-
-import java.util.List;
+import sg.nus.iss.spring.backend.util.ResourceQueryUtils;
 
 @Service
 @Transactional

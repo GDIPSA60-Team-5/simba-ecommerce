@@ -1,4 +1,4 @@
-package sg.nus.iss.spring.backend.utils;
+package sg.nus.iss.spring.backend.util;
 
 /* Written By Paul */
 public class ResourceQueryUtils {
