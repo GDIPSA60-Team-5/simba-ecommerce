@@ -172,7 +172,7 @@ export default function ListCartItem() {
     );
 
     return( 
-        <form style={{ maxWidth: "70%", margin: "0 auto", padding: "2rem" }}>
+        <form style={{ maxWidth: "75%", margin: "0 auto", padding: "2rem" }}>
             <div className="flex items-center justify-between mb-15 relative">
                 <Link
                     type="button"
@@ -187,104 +187,155 @@ export default function ListCartItem() {
                     My Cart
                 </h1>
             </div>
-            <table style={{ width: "70%", borderCollapse: "collapse", marginBottom: "2rem" }}>
-                <thead>
-                    <tr className="text-gray-500 font-normal text-center pb-4">
-                        <td className="w-1/5 pb-4">BOOK</td>
-                        <td className="w-1/5 pb-4">PRICE (SGD)</td>
-                        <td className="w-1/5 pb-4">QUANTITY</td>
-                        <td className="w-1/5 pb-4">TOTAL (SGD)</td>
-                        <td className="w-1/5 pb-4">ACTION</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    {listCartHtml}
-                    <tr style={{ borderTop: "1px solid #ccc" }}>
-                        <td colSpan={3} style={{ textAlign: "right", paddingTop: "1rem", paddingBottom: "0.5rem", fontWeight: "bold" }}>
-                            Subtotal
-                        </td>
-                        <td style={{ textAlign: "right", paddingTop: "1rem", paddingBottom: "0.5rem", paddingRight: "2rem" }}>
-                            {calculateTotal().toFixed(2)}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colSpan={3} style={{ textAlign: "right", paddingBottom: "0.5rem", fontWeight: "bold" }}>
-                            GST (9%)
-                        </td>
-                        <td style={{ textAlign: "right", paddingBottom: "0.5rem", paddingRight: "2rem" }}>
-                            {calculateTax().toFixed(2)}
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colSpan={3} style={{ textAlign: "right", paddingBottom: "0.5rem", fontWeight: "bold" }}>
-                            Delivery Fee
-                        </td>
-                        <td style={{ textAlign: "right", paddingBottom: "0.5rem", paddingRight: "2rem" }}>
-                            {deliveryFee.toFixed(2)}
-                        </td>
-                    </tr>
-                    <tr style={{ borderTop: "2px solid black" }}>
-                        <td colSpan={3} style={{ textAlign: "center", paddingTop: "1rem", fontWeight: "bold" }}>
-                            Grand Total
-                        </td>
-                        <td style={{ textAlign: "right", paddingTop: "1rem", paddingRight: "2rem", fontWeight: "bold" }}>
-                            SGD {(calculateTotal() + calculateTax() + deliveryFee).toFixed(2)}
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
 
-            <div style={{ marginBottom: "1.5rem" }}>
-                <label htmlFor="deliveryType"><strong>Delivery Type</strong></label><br/>
-                <select
-                    id="deliveryType"
-                    name="deliveryType"
-                    ref={deliTypeElement}
-                    required
-                    style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
-                    value={selectedDeliveryType ? selectedDeliveryType.name : ""}
-                    onChange={(e) => {
-                        const selectedName = e.target.value;
-                        const selected = deliType.find(type => type.name === selectedName) || null;
-                        setSelectedDeliveryType(selected);
-                        setDeliveryFee(selected ? selected.fee : 0);
-                        // Save to sessionStorage
-                        sessionStorage.setItem("deliveryType", JSON.stringify(selected));
-                    }}
-                >
-                    <option value="">-- Please choose an option --</option>
-                    {Array.isArray(deliType) && deliType.map((type) => (
-                        <option key={type.id} value={type.name}>
-                            {type.name} – {type.description} (S${type.fee.toFixed(2)})
-                        </option>
-                    ))}
-                </select>
+            <div className="flex justify-between gap-8 mb-8">
+                {/* Table on the left */}
+                <table className="w-[70%] mr-6 border-collapse">
+                    <thead>
+                    <tr className="text-sm text-gray-600 font-medium text-center pb-4">
+                        <th className="w-1/5 pb-4">BOOK</th>
+                        <th className="w-1/5 pb-4">PRICE (SGD)</th>
+                        <th className="w-1/5 pb-4">QUANTITY</th>
+                        <th className="w-1/5 pb-4">TOTAL (SGD)</th>
+                        <th className="w-1/5 pb-4">ACTION</th>
+                    </tr>
+                    </thead>
+                    <tbody>{listCartHtml}</tbody>
+                </table>
+                
+                {/* Totals on the right with delivery inputs */}
+                <div className="w-[30%] min-w-[220px] border-t-18 border-black ml-5 mt-2 pt-4">
+                    <table className="w-full border-collapse text-sm">
+                        <tbody>
+                            <tr>
+                                <td className="w-2/4 text-left pt-4 pb-2 font-normal">CART TOTAL</td>
+                                <td className="w-2/4 text-right pt-4 pb-2 font-normal">{calculateTotal().toFixed(2)}</td>
+                                <td className="w-1/4"></td>
+                            </tr>
+                            <tr>
+                                <td className="text-left py-2 font-normal">GST (9%)</td>
+                                <td className="text-right py-2 font-normal">{calculateTax().toFixed(2)}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td className="text-left pt-2 pb-4 font-normal">DELIVERY FEE</td>
+                                <td className="text-right pt-2 pb-4 font-normal">{deliveryFee.toFixed(2)}</td>
+                                <td></td>
+                            </tr>
+                            <tr>
+                                <td className="border-t border-gray-400 text-left py-4 font-medium text-gray-800">TOTAL</td>
+                                <td className="border-t border-gray-400 text-right py-4 font-medium text-gray-800">
+                                    SGD {(calculateTotal() + calculateTax() + deliveryFee).toFixed(2)}
+                                </td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
-            <div style={{ marginBottom: "2rem" }}>
-                <label htmlFor="shippingAddress"><strong>Shipping Address</strong></label><br/>
-                <textarea
-                    id="shippingAddress"
-                    name="shippingAddress"
-                    rows={4}
-                    cols={50}
-                    placeholder="Enter your shipping address"
-                    ref={shippingAddressElement}
-                    required
-                    style={{ width: "100%", padding: "0.5rem", marginTop: "0.5rem" }}
-                    onChange={(e) => {
-                        sessionStorage.setItem("shippingAddress", e.target.value);
-                    }}
-                ></textarea>
+            {/* Delivery Type
+            <div className="mt-8 mb-10">
+            <label htmlFor="deliveryType" className="block text-sm text-gray-600 font-medium mb-2 tracking-wide uppercase">
+                Delivery Type
+            </label>
+            <select
+                id="deliveryType"
+                name="deliveryType"
+                ref={deliTypeElement}
+                required
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition ease-in-out"
+                value={selectedDeliveryType ? selectedDeliveryType.name : ""}
+                onChange={(e) => {
+                const selectedName = e.target.value;
+                const selected = deliType.find(type => type.name === selectedName) || null;
+                setSelectedDeliveryType(selected);
+                setDeliveryFee(selected ? selected.fee : 0);
+                sessionStorage.setItem("deliveryType", JSON.stringify(selected));
+                }}
+            >
+                <option value="" className="text-gray-400">
+                    Please select a delivery type
+                </option>
+                {Array.isArray(deliType) &&
+                deliType.map((type) => (
+                    <option key={type.id} value={type.name}>
+                        {`${type.name} (${type.fee.toFixed(2)} SGD) - ${type.description}`}   
+                    </option>
+                ))}
+            </select>
+            </div> */}
+
+            <div className="mt-8 mb-10">
+            <label
+                htmlFor="deliveryType"
+                className="block text-sm text-gray-600 font-medium mb-2 tracking-wide uppercase"
+            >
+                Delivery Type
+            </label>
+            <select
+                id="deliveryType"
+                name="deliveryType"
+                ref={deliTypeElement}
+                required
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition ease-in-out"
+                value={selectedDeliveryType ? selectedDeliveryType.name : ""}
+                onChange={(e) => {
+                const selectedName = e.target.value;
+                const selected = deliType.find(type => type.name === selectedName) || null;
+                setSelectedDeliveryType(selected);
+                setDeliveryFee(selected ? selected.fee : 0);
+                sessionStorage.setItem("deliveryType", JSON.stringify(selected));
+                }}
+            >
+                <option value="" className="text-gray-400">
+                Please select a delivery type
+                </option>
+                {Array.isArray(deliType) &&
+                deliType.map((type) => (
+                    <option
+                    key={type.id}
+                    value={type.name}
+                    className="text-gray-700 bg-white hover:bg-gray-100" // `hover:bg-*` often has limited support for `<option>`
+                    >
+                    {`${type.name} (${type.fee.toFixed(2)} SGD) - ${type.description}`}
+                    </option>
+                ))}
+            </select>
+            </div>
+
+
+
+            {/* Shipping Address */}
+            <div className="mt-8 mb-10">
+            <label htmlFor="shippingAddress" className="block text-sm text-gray-600 font-medium mb-2 tracking-wide uppercase">
+                Shipping Address
+            </label>
+            <textarea
+                id="shippingAddress"
+                name="shippingAddress"
+                rows={4}
+                placeholder="Enter your shipping address"
+                ref={shippingAddressElement}
+                required
+                className="w-full p-3 bg-white border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition ease-in-out resize-none"
+                onChange={(e) => {
+                sessionStorage.setItem("shippingAddress", e.target.value);
+                }}
+            ></textarea>
             </div>
 
             <div style={{ display: "flex", gap: "1rem" }}>
-                <button type="button" onClick={handleSubmitOrder} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#4CAF50", color: "white", border: "none", borderRadius: "4px" }}>
-                    Submit Order
+                <button
+                    type="button"
+                    onClick={handleSubmitOrder}
+                    className="px-6 py-4 bg-black text-white border-none rounded-none hover:bg-gray-800 active:bg-gray-900 transition duration-200"
+                    >
+                    CHECKOUT
                 </button>
                 <button type="button" onClick={handleSaveClick} disabled={isSaving || !cartChanged}
-                    className={`px-6 py-3 rounded-md text-white transition-colors duration-300 
-                        ${isSaving ? 'bg-blue-300 cursor-not-allowed' : cartChanged ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-400 cursor-not-allowed'}`} 
+                    className={`px-6 py-4 text-white transition-colors duration-300 
+                        ${isSaving ? 'bg-gray-300 cursor-not-allowed' : cartChanged ? 'bg-gray-500 hover:bg-gray-600' : 'bg-gray-400 cursor-not-allowed'}`} 
                 >
                     {isSaving ? (
                         <div className="flex items-center gap-2">
@@ -295,11 +346,15 @@ export default function ListCartItem() {
                             Saving...
                         </div>
                     ) : (
-                        "Save Cart"
+                        "SAVE CART"
                     )}
                 </button>
-                <button type="button" onClick={handleDeleteCart} style={{ padding: "0.75rem 1.5rem", backgroundColor: "#f44336", color: "white", border: "none", borderRadius: "4px" }}>
-                    Delete Cart
+                <button
+                    type="button"
+                    onClick={handleDeleteCart}
+                    className="py-4 px-6 bg-red-600 text-white border-none hover:bg-red-700 active:bg-red-800 transition duration-200"
+                    >
+                    DELETE CART
                 </button>
             </div>
         </form>    
