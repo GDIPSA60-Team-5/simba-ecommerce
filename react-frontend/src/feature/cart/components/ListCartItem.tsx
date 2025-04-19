@@ -209,31 +209,47 @@ export default function ListCartItem() {
                         <tbody>{listCartHtml}</tbody>
                     </table>
                     <div className="flex gap-6 mt-6">
-                        <button type="button" onClick={handleSaveClick} disabled={isSaving || !cartChanged}
-                            className={`px-6 py-4 text-white transition-colors duration-300 
-                                ${isSaving ? 'bg-gray-300 cursor-not-allowed' : cartChanged ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`} 
-                        >
-                            {isSaving ? (
-                                <div className="flex items-center gap-2">
-                                <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
-                                </svg>
-                                    Saving...
-                                </div>
-                            ) : (
-                                "SAVE CART"
-                            )}
-                        </button>
-                        
-                        <button
-                            type="button"
-                            onClick={handleDeleteCart}
-                            className="py-4 px-6 bg-red-600 text-white border-none hover:bg-red-700 active:bg-red-800 transition duration-200"
+                        {myCart.length > 0 && (
+                            <button type="button" onClick={handleSaveClick} disabled={isSaving || !cartChanged}
+                                className={`px-6 py-4 text-white transition-colors duration-300 
+                                    ${isSaving ? 'bg-gray-300 cursor-not-allowed' : cartChanged ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`} 
                             >
-                            DELETE CART
-                        </button>
+                                {isSaving ? (
+                                    <div className="flex items-center gap-2">
+                                    <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z" />
+                                    </svg>
+                                        Saving...
+                                    </div>
+                                ) : (
+                                    "SAVE CART"
+                                )}
+                            </button>
+                        )}
+                        
+                        {myCart.length > 0 && (
+                            <button
+                                type="button"
+                                onClick={handleDeleteCart}
+                                className="py-4 px-6 bg-red-600 text-white border-none hover:bg-red-700 active:bg-red-800 transition duration-200"
+                            >
+                                DELETE CART
+                            </button>
+                        )}
                     </div>
+
+                    {myCart.length === 0 && (
+                        <div className="text-center">
+                            <img 
+                                src="/images/empty-cart.png" 
+                                alt="Empty Cart" 
+                                className="mx-auto w-80 h-80 mb-4"
+                            />
+                            <h1 className="text-3xl font-bold text-gray-600">Your Cart is <span className="text-3xl font-bold text-red-600">Empty!</span></h1>
+                            <p className="my-7 font-normal text-gray-600">Must add items on the cart before you proceed to checkout.</p>
+                        </div>
+                    )}
                 </div>
                 
                 {/* Totals on the right with delivery inputs */}
