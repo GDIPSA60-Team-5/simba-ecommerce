@@ -26,6 +26,8 @@ public class Order {
     @JoinColumn(name = "delivery_type_id", nullable = false)
     private DeliveryType deliveryType;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private OrderStatus status;
 
     private LocalDateTime dateTime;
