@@ -145,7 +145,7 @@ INSERT INTO orders (
 )
 VALUES
     (1, 1, 1, 'SHIPPING', NOW(), '123 Main St', 0.09, 67.97),
-    (2, 2, 2, 'CANCELED', NOW(), '456 Admin Rd', 0.09, 120.00);
+    (2, 2, 2, 'CANCELLED', NOW(), '456 Admin Rd', 0.09, 120.00);
 
 -- Insert Order Items
 INSERT INTO order_items (order_id, product_id, quantity, unit_price_at_transaction)
