@@ -74,10 +74,6 @@ const Login = () => {
                         </div>
                     </div>
 
-                    <Link to="/signup" className="text-gray-600 hover:underline text-sm">
-                        Forgot your password?
-                    </Link>
-
                     <button
                         type="submit"
                         disabled={loading}
