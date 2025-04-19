@@ -8,7 +8,11 @@ const useLogout = () => {
     const navigate = useNavigate();
 
     const handleLogout = useCallback(() => {
-        axios.post('/api/auth/logout', {}, { withCredentials: true })
+        // clear session for delivery type and address in cart page when user logs out
+        sessionStorage.removeItem('shippingAddress');
+        sessionStorage.removeItem('deliveryType');
+
+        axios.post('http://localhost:8080/api/auth/user/logout', {}, { withCredentials: true })
             .then(() => {
                 refreshUser();
 

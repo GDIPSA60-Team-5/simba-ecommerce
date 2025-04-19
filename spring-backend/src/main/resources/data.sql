@@ -106,13 +106,17 @@ VALUES
 INSERT INTO users (username, password, first_name, last_name, phone_number, email, address, date_of_birth, role)
 VALUES
     ('john_doe', 'password123', 'John', 'Doe', '123456789', 'john@example.com', '123 Main St', '1990-01-01', 'USER'),
-    ('admin_user', 'adminpass', 'Admin', 'User', '987654321', 'admin@example.com', '456 Admin Rd', '1985-05-15', 'ADMIN');
+    ('admin_user', 'adminpass', 'Admin', 'User', '987654321', 'admin@example.com', '456 Admin Rd', '1985-05-15', 'ADMIN'),
+    ('alice', 'pass123', 'Alice', 'Tan', '91234567', 'alice@example.com', '123 Orchard Rd', '1990-01-01', 'USER'),
+    ('bob', 'pass123', 'Bob', 'Lee', '98765432', 'bob@example.com', '456 Clementi Rd', '1985-05-15', 'ADMIN'),
+    ('carol', 'pass123', 'Carol', 'Lim', '92223333', 'carol@example.com', '789 Bukit Timah', '1992-07-10', 'USER');
 
 -- Insert Delivery Types
 INSERT INTO delivery_types (name, description, fee)
 VALUES
-    ('Standard Delivery', '5-7 business days', 5.99),
-    ('Express Delivery', '1-2 business days', 15.99);
+    ('Standard Delivery', 'Delivered within 3–5 working days', 3.50),
+    ('Express Delivery', 'Delivered within 1–2 working days', 7.90),
+    ('Same-Day Delivery', 'Delivered on the same day if ordered before 12pm', 12.00);
 
 -- Insert Payment Types
 INSERT INTO payment_types (name)
@@ -154,3 +158,5 @@ VALUES
     (8, 2, 'A fun and quirky story about a strong woman in science.', 4.7),
     (9, 1, 'Could not put it down! Twists at every corner.', 4.5),
     (10, 2, 'Lighthearted romance with relatable characters.', 4.6);
+    
+    

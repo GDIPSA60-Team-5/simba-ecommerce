@@ -106,14 +106,23 @@ public class CartServiceImpl implements CartService {
 		// create order_item records for each cart_item
 		for (CartItem cartItem : cartItems) {
 			Product product = cartItem.getProduct();
-			int quantity = cartItem.getQuantity();
+			int orderQuantity = cartItem.getQuantity();
 			float unitPriceAtTransaction = product.getPrice();
 			
 			// create an order_item instance
-			OrderItem orderItem = new OrderItem(savedOrder, product, quantity, unitPriceAtTransaction);
+			OrderItem orderItem = new OrderItem(savedOrder, product, orderQuantity, unitPriceAtTransaction);
 			
 			// save each order_item instance in database
 			orderItemRepo.save(orderItem);
+			
+			// update product stock for each confirmed product order
+			int newStock = product.getQuantity() - orderQuantity;
+			
+			if (newStock < 0) {
+				throw new RuntimeException("Stock mismatch post checkout");
+			}
+			product.setQuantity(newStock);
+			productRepo.save(product);
 		}
 		
 		return savedOrder;
@@ -129,7 +138,9 @@ public class CartServiceImpl implements CartService {
 		Product product = productRepo.findById(productId)
 			.orElseThrow(() -> new RuntimeException("Product not found"));
 
-		Optional<CartItem> existingItemOpt = cartRepo.findByProductId(productId);
+		int userId = user.getId();
+		Optional<CartItem> existingItemOpt = cartRepo.findByProductIdAndUserId(productId, userId);
+;
 
 		int existingQtyInCart = 0;
 
@@ -155,7 +166,9 @@ public class CartServiceImpl implements CartService {
 	
 	@Transactional
 	public void removeProductFromCart(User user, int productId) {
-	    Optional<CartItem> cart = cartRepo.findByProductId(productId);
+		int userId = user.getId();
+	    Optional<CartItem> cart = cartRepo.findByProductIdAndUserId(productId, userId);
+;
 	    if (cart.isEmpty()) {
 	    	throw new RuntimeException("Cart not found");
 	    } else {

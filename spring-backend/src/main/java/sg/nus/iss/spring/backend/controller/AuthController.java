@@ -14,7 +14,8 @@ import sg.nus.iss.spring.backend.service.AuthServiceImpl;
 
 /* Written by Phyo Nyi Nyi Paing */
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/auth/")
+@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class AuthController {
 
     private final Role DEFAULT_ROLE = Role.USER;

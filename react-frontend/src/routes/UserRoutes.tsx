@@ -9,8 +9,8 @@ const UserRoutes: RouteObject[] = [
         element: <Layout />,
         children: [
             { path: "", element: <RequireAuth><PurchaseHistory /></RequireAuth> },
-        ],
-    },
+        ]
+    }
 ];
 
 export default UserRoutes;
