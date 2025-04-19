@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
 import sg.nus.iss.spring.backend.dto.LoginRequest;
 import sg.nus.iss.spring.backend.exception.auth.InvalidCredentialsException;
 import sg.nus.iss.spring.backend.interfacemethods.AuthService;
-import sg.nus.iss.spring.backend.model.Role;
+import sg.nus.iss.spring.backend.enums.Role;
 import sg.nus.iss.spring.backend.service.AuthServiceImpl;
 
 @RestController

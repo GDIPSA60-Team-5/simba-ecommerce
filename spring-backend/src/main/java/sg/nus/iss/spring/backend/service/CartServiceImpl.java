@@ -10,14 +10,9 @@ import org.springframework.stereotype.Service;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
+import sg.nus.iss.spring.backend.enums.OrderStatus;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
-import sg.nus.iss.spring.backend.model.CartItem;
-import sg.nus.iss.spring.backend.model.DeliveryType;
-import sg.nus.iss.spring.backend.model.Order;
-import sg.nus.iss.spring.backend.model.OrderItem;
-import sg.nus.iss.spring.backend.model.PaymentType;
-import sg.nus.iss.spring.backend.model.Product;
-import sg.nus.iss.spring.backend.model.User;
+import sg.nus.iss.spring.backend.model.*;
 import sg.nus.iss.spring.backend.repository.CartRepository;
 import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
 import sg.nus.iss.spring.backend.repository.OrderItemRepository;
@@ -93,14 +88,13 @@ public class CartServiceImpl implements CartService {
 		}
 		
 		// set status of order
-		String status = "Order Confirmed";
-		
+
 		// get dateTime of order and shipping address from order data
 		LocalDateTime dateTime = LocalDateTime.now();
 		String shippingAddress = orderData.getShippingAddress();
 				
 		// now create an order instance and save it to database
-		Order order = new Order(user, pType, dType, status, dateTime, shippingAddress);
+		Order order = new Order(user, pType, dType, OrderStatus.SHIPPING, dateTime, shippingAddress);
 		Order savedOrder = orderRepo.save(order);	
 
 		// create order_item records for each cart_item

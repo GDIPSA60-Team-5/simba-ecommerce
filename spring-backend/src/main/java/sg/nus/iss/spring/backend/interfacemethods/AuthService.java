@@ -2,7 +2,7 @@ package sg.nus.iss.spring.backend.interfacemethods;
 
 import jakarta.servlet.http.HttpSession;
 import sg.nus.iss.spring.backend.dto.LoginRequest;
-import sg.nus.iss.spring.backend.model.Role;
+import sg.nus.iss.spring.backend.enums.Role;
 import sg.nus.iss.spring.backend.model.User;
 
 public interface AuthService {

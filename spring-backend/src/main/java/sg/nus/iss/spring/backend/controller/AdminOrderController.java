@@ -2,6 +2,7 @@ package sg.nus.iss.spring.backend.controller;
 
 import sg.nus.iss.spring.backend.model.Order;
 import sg.nus.iss.spring.backend.model.OrderItem;
+import sg.nus.iss.spring.backend.enums.OrderStatus;
 import sg.nus.iss.spring.backend.service.OrderService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,7 +21,7 @@ public class AdminOrderController {
 
 
     @PatchMapping("/{orderId}/status")
-    public ResponseEntity<Order> updateOrderStatus(@PathVariable("orderId") int orderId, @RequestParam String status) {
+    public ResponseEntity<Order> updateOrderStatus(@PathVariable("orderId") int orderId, @RequestParam OrderStatus status) {
         Order order = orderService.getOrderDetails(orderId);
         if (order == null) {
             return ResponseEntity.notFound().build();
