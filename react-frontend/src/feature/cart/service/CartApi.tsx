@@ -8,6 +8,14 @@ const CartApi = {
         return response.data;
     },
 
+    async addCartItem(productId: number) {
+        const response = await apiClient.post("/cart/add", null, {
+            params: { productId }
+        });
+        return response.data;
+    },
+
+
     async updateQuantity(item: CartItem) {
         const response = await apiClient.put("/cart/update-quantity", item);
         return response.data;
