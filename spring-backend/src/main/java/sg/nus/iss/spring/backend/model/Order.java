@@ -45,13 +45,15 @@ public class Order {
     public Order() {
     }
 
-    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, OrderStatus status, LocalDateTime dateTime, String shippingAddress) {
+    public Order(User user, PaymentType paymentType, DeliveryType deliveryType, OrderStatus status, LocalDateTime dateTime, String shippingAddress, float totalAmount) {
         this.user = user;
         this.paymentType = paymentType;
         this.deliveryType = deliveryType;
         this.status = status;
         this.dateTime = dateTime;
         this.shippingAddress = shippingAddress;
+        this.totalAmount = totalAmount;
+        this.goodsServiceTax = 0.09f;
     }
 
     public int getId() {

@@ -81,9 +81,12 @@ public class CartServiceImpl implements CartService {
 		// get dateTime of order and shipping address from order data
 		LocalDateTime dateTime = LocalDateTime.now();
 		String shippingAddress = orderData.getShippingAddress();
+		
+		// get orderGrandTotal from session
+		float orderGrandTotal = (float) session.getAttribute("order_grand_total");
 				
 		// now create an order instance and save it to database
-		Order order = new Order(user, pType, dType, OrderStatus.SHIPPING, dateTime, shippingAddress);
+		Order order = new Order(user, pType, dType, OrderStatus.SHIPPING, dateTime, shippingAddress, orderGrandTotal);
 		Order savedOrder = orderRepo.save(order);	
 
 		// create order_item records for each cart_item

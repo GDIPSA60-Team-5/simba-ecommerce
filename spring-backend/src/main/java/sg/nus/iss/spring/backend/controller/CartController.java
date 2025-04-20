@@ -84,11 +84,7 @@ public class CartController {
 	@PostMapping("/cart/submit")
 	public ResponseEntity<?> formPayment(@Valid @RequestBody CheckoutRequestDTO checkoutRequestDTO, BindingResult result, HttpSession session)
 			throws StripeException, Exception {
-		/*
-		 * To do
-		 * validate input data deliType and shippingAddress
-		 * validate submitting no cart item to stripe
-		 */
+
 		Map<String, String> errors = new HashMap<>();
 		 if (result.hasErrors()) {
 		        result.getFieldErrors().forEach(err ->
@@ -119,20 +115,18 @@ public class CartController {
 		return ResponseEntity.ok(response);
 	}
 	
-	// draft implementation of payment success api
-	// ...
-	@GetMapping("/payment/success")
-	public String paymentSuccess(@RequestParam("payment_intent") String paymentIntentId, HttpSession session) throws Exception {
+	@PostMapping("/payment/success")
+	public ResponseEntity<String> paymentSuccess(@RequestBody Map<String, String> body, HttpSession session) throws Exception {
 		/*
 		 * upon successful payment, save the order details in the order table
 		 * to save order details, we will collect required attributes and save it to session
 		 */
-		
+			
 		// get cart items from session
 		List<CartItem> cartItems = cartService.listCartItems(SessionUtils.getUserFromSession(session));
 
 		// get stripe session id from session and find payment type from stripe server
-		// String stripeSessionId = (String) session.getAttribute("stripe_session_id");
+		String paymentIntentId = body.get("payment_intent_id");
 		String paymentType = paymentService.getPaymentType(paymentIntentId);
 	    
 	    // save payment type in session
@@ -146,16 +140,7 @@ public class CartController {
 	    User user = (User) session.getAttribute("authenticated_user");
 		cartService.removeCart(user);
 		
-		// send payment successful email to the customer
-		// ... to implement if we have time ...
-		return "Payment Successful!";
-	}
-	
-	// draft implementation of payment cancel api
-	// ...
-	@GetMapping("/payment/cancel")
-	public String paymentCancel() {
-		return "Payment Cancelled!";
+		return ResponseEntity.ok("Payment Successful!");
 	}
 		
 	// cancel order in cart page
