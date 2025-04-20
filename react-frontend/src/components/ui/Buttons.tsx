@@ -1,6 +1,7 @@
 import cartIcon from "@assets/svgs/add-to-cart-icon.svg";
 import { useNavigate } from "react-router";
 import CartApi from "../../feature/cart/service/CartApi";
+import axios from "axios";
 
 
 interface AddToCartButtonProps {
@@ -16,8 +17,13 @@ export const AddToCartButton = ({ productId }: AddToCartButtonProps) => {
                 navigate("/cart");
             })
             .catch(err => {
-                alert(err.response?.data?.message || "Failed to add to cart.");
-                console.error("Add to cart error:", err);
+                if (axios.isAxiosError(err)) {
+                    alert(err.response?.data?.message || "Failed to add to cart.");
+                    console.error("Add to cart error:", err);
+                } else {
+                    alert("Unknown error");
+                    console.error(err);
+                }
             });
     };
 
