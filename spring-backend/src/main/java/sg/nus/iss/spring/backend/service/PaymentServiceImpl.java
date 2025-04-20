@@ -52,6 +52,9 @@ public class PaymentServiceImpl implements PaymentService {
 		BigDecimal subTotal = calculateSubtotal(cartItems);
 		BigDecimal gstAmount = calculateGST(subTotal);
 		BigDecimal grandTotal = subTotal.add(gstAmount).add(BigDecimal.valueOf(deliveryType.getFee()));
+		
+		// Add grand total to the session to use it later
+		session.setAttribute("order_grand_total", grandTotal.floatValue());
 
 		long amountInCents = grandTotal.multiply(BigDecimal.valueOf(100)).longValue();
 		PaymentIntent intent = createStripePaymentIntent(amountInCents);
@@ -64,12 +67,27 @@ public class PaymentServiceImpl implements PaymentService {
 
 	@Override
 	public String getPaymentType(String paymentIntentId) throws StripeException {
-		PaymentIntent intent = PaymentIntent.retrieve(
-				paymentIntentId,
-				PaymentIntentRetrieveParams.builder().addExpand("payment_method").build(),
-				null);
-		PaymentMethod method = intent.getPaymentMethodObject();
-		return method.getType();
+		if (paymentIntentId == null || !paymentIntentId.startsWith("pi_")) {
+            throw new IllegalArgumentException("Invalid Payment Intent ID");
+        }
+
+        try {
+            PaymentIntent paymentIntent = PaymentIntent.retrieve(
+                paymentIntentId,
+                PaymentIntentRetrieveParams.builder()
+                    .addExpand("payment_method")
+                    .build(),
+                null
+            );
+
+            PaymentMethod paymentMethod = paymentIntent.getPaymentMethodObject();
+            return paymentMethod.getType();  // e.g., "card", "paynow"
+
+        } catch (StripeException e) {
+            // Log or rethrow depending on your app's needs
+            throw new RuntimeException("Failed to retrieve PaymentIntent from Stripe", e);
+        }
+
 	}
 
 	private CheckoutRequestDTO getCheckoutDataFromSession(HttpSession session) throws Exception {
