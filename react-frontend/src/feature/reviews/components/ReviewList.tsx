@@ -1,9 +1,12 @@
+import { useAuth } from "../../../context/AuthContext";
 import { useReviewsByProduct } from "../hooks/useReviews";
 import { ReviewCard } from "./ReviewCard";
 import { ReviewForm } from "./ReviewForm";
 
 export const ReviewList = () => {
     const { refreshReviews, reviews, loading, error } = useReviewsByProduct();
+    const { user } = useAuth();
+    const userHasReview = user && reviews.some((review) => review.user.id === user.id);
 
     if (loading) {
         return (
@@ -25,13 +28,13 @@ export const ReviewList = () => {
         <div className="mb-15">
             <h1 className="text-2xl mb-15 font-semibold text-center uppercase">Reviews</h1>
 
-            <ReviewForm refreshReviews={refreshReviews} />
+            <ReviewForm refreshReviews={refreshReviews} userHasReview={userHasReview} />
 
 
             {reviews.length === 0 ? (
                 <p className="text-gray-500 text-center">No reviews yet.</p>
             ) : (
-                <ul className="flex flex-1 flex-col items-center w-max">
+                <ul className="flex flex-1 flex-col w-full">
                     <div>
                         {reviews.map((review) => (
                             <ReviewCard key={review.id} review={review} />
