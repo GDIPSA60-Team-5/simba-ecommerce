@@ -3,23 +3,23 @@ import { useLocation } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import CheckoutForm from './StripeCheckoutForm.tsx';
 import { Link } from 'react-router-dom';
-import { useCart } from '../../../hooks/useCart.ts';
 import { useEffect } from 'react';
-
+import { useCartContext } from '../../../context/CartContext';
 
 // Written by Aung Myin Moe
 const stripePromise = await loadStripe('pk_test_51RBtJ5GBEBEiOSMS84fM0Eozu7inX60wlw19XZ8RmsFlXDdyYIgINu1R8BsdCKfD2o3v6TEGUEDqtC0N0KPZdVAd00BGENAvN7');
 const GST = 0.09;
 
 export default function CheckoutPage() {
+    // Use the new context hook instead of the old useCart hook
     const {
-        myCart,
+        cart,
         deliveryFee,
         setDeliveryFee,
-        retrieveCart,
-        retrieveDeliType,
+        refreshCart,
+        refreshDeliveryTypes,
         setSelectedDeliveryType
-    } = useCart();
+    } = useCartContext();
 
     const location = useLocation();
     const { clientSecret } = location.state || {}; // from navigate("/checkout", { state: { clientSecret } })
@@ -33,9 +33,8 @@ export default function CheckoutPage() {
 
     useEffect(() => {
         console.log("retrieving cart from server");
-        retrieveCart();
-
-        retrieveDeliType();
+        refreshCart();
+        refreshDeliveryTypes();
 
         // restore the delivery type and shipping information to cart page
         const savedDeliveryType = sessionStorage.getItem("deliveryType");
@@ -51,13 +50,13 @@ export default function CheckoutPage() {
                 console.error("Failed to parse savedDeliveryType", err);
             }
         }
-    }, []);
+    }, [refreshCart, refreshDeliveryTypes, setSelectedDeliveryType, setDeliveryFee]);
 
     function calculateTotal() {
         let total = 0;
-        myCart.forEach((myCartItem) => {
-            const quantityToUse = myCartItem.quantity;
-            total += myCartItem.product.price * quantityToUse;
+        cart.forEach((cartItem) => {
+            const quantityToUse = cartItem.quantity;
+            total += cartItem.product.price * quantityToUse;
         });
         return total;
     }
@@ -97,25 +96,25 @@ export default function CheckoutPage() {
                             </div>
                         </div>
                         <div className="ml-10">
-                            {myCart.map((myCartItem) => (
-                                <tr className="align-top">
+                            {cart.map((cartItem) => (
+                                <tr key={cartItem.id} className="align-top">
                                     <td className="py-3 pr-6">
                                         <div className="flex flex-col items-center gap-4">
                                             <img
-                                                src={myCartItem.product.imageUrl}
-                                                alt={myCartItem.product.name}
+                                                src={cartItem.product.imageUrl}
+                                                alt={cartItem.product.name}
                                                 className="w-12 h-15 object-cover rounded"
                                             />
                                         </div>
                                     </td>
 
                                     <td className="w-2/3 pt-4 text-left">
-                                        <span className="font-normal text-center break-words">{myCartItem.product.name}</span>
-                                        <br /><span className="font-light">Qty {myCartItem.quantity}</span>
+                                        <span className="font-normal text-center break-words">{cartItem.product.name}</span>
+                                        <br /><span className="font-light">Qty {cartItem.quantity}</span>
                                     </td>
 
                                     <td className="pt-4 text-right font-normal">
-                                        {(myCartItem.product.price * myCartItem.quantity).toFixed(2)}
+                                        {(cartItem.product.price * cartItem.quantity).toFixed(2)}
                                     </td>
                                 </tr>
                             ))}

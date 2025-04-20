@@ -1,49 +1,42 @@
 import { JSX } from 'react';
-import { Spinner } from './ui/Spinner';
-import { CartItem } from '../../../types/CartItem';
+import { useCartContext } from '../../../context/CartContext';
 
-interface CartActionsProps {
-    cart: CartItem[];
-    isSaving: boolean;
-    cartChanged: boolean;
-    onSave: () => Promise<boolean>;
-    onDelete: () => Promise<void>;
-}
+export function CartActions(): JSX.Element | null {
+    const {
+        cart,
+        isSaving,
+        cartChanged,
+        saveCart,
+        deleteCart,
+        refreshCart
+    } = useCartContext();
 
-export function CartActions({
-    cart,
-    isSaving,
-    cartChanged,
-    onSave,
-    onDelete
-}: CartActionsProps): JSX.Element | null {
     if (cart.length === 0) {
         return null;
     }
+
+    const handleDeleteCartClick = async (): Promise<void> => {
+        const success = await deleteCart();
+        if (success) {
+            refreshCart();
+        }
+    };
 
     return (
         <div className="flex gap-6 mt-6">
             <button
                 type="button"
-                onClick={onSave}
+                onClick={saveCart}
                 disabled={isSaving || !cartChanged}
-                className={`px-6 py-4 text-white transition-colors duration-300 
-          ${isSaving ? 'bg-gray-300 cursor-not-allowed' : cartChanged ? 'bg-green-500 hover:bg-green-600' : 'bg-gray-400 cursor-not-allowed'}`}
+                className={`px-4 py-3 text-white font-semibold transition-all duration-200 block mt-1
+                    ${isSaving ? 'bg-gray-300 cursor-not-allowed' : cartChanged ? 'bg-green-600 hover:contrast-[115%] cursor-pointer active:scale-[0.98] active:brightness-90' : 'bg-gray-400 cursor-not-allowed'}`}
             >
-                {isSaving ? (
-                    <div className="flex items-center gap-2">
-                        <Spinner />
-                        Saving...
-                    </div>
-                ) : (
-                    "SAVE CART"
-                )}
+                SAVE CART
             </button>
 
             <button
-                type="button"
-                onClick={onDelete}
-                className="py-4 px-6 bg-red-600 text-white border-none hover:bg-red-700 active:bg-red-800 transition duration-200"
+                onClick={handleDeleteCartClick}
+                className="px-4 py-3 bg-red-600 text-white font-semibold cursor-pointer transition-all duration-200 hover:contrast-[115%] active:brightness-90 active:scale-[0.98] block mt-1"
             >
                 DELETE CART
             </button>
