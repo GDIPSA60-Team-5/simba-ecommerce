@@ -39,7 +39,6 @@ const Profile = () => {
                             aria-label="User profile"
                         >
                             <ProfilePicture user={user} />
-                            {/* <img src={userIcon} alt="User Icon" className="w-8 h-8" /> */}
                         </button>
 
                         {isDropdownOpen && (
