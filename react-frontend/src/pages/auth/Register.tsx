@@ -29,12 +29,9 @@ export default function Register() {
     address: '',
     dateOfBirth: '',
   });
-
   const [showText, setShowText] = useState(false);
   const [typed, setTyped] = useState('');
-  const heroText =
-    'You can unlock special discounts by signing our membership';
-
+  const heroText = 'You can unlock special discounts by signing our membership';
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
@@ -46,6 +43,37 @@ export default function Register() {
       form.password === form.confirmPassword,
     [emailValid, form.password, form.confirmPassword]
   );
+  const pwdMismatch =
+    form.confirmPassword !== '' && form.password !== form.confirmPassword;
+
+  const passwordStrength = useMemo(() => {
+    let score = 0;
+    if (form.password.length >= 8) score++;
+    if (/[A-Z]/.test(form.password)) score++;
+    if (/[a-z]/.test(form.password)) score++;
+    if (/[0-9]/.test(form.password)) score++;
+    if (/[\W_]/.test(form.password)) score++;
+    return score;
+  }, [form.password]);
+
+  const strengthLabels = [
+    'Too Short',
+    'Weak',
+    'Fair',
+    'Good',
+    'Strong',
+    'Very Strong',
+  ];
+  const strengthColors = [
+    'bg-gray-200',
+    'bg-red-500',
+    'bg-orange-500',
+    'bg-yellow-400',
+    'bg-green-400',
+    'bg-green-600',
+  ];
+  const strengthLabel = strengthLabels[passwordStrength];
+  const strengthColor = strengthColors[passwordStrength];
 
   useEffect(() => {
     const t1 = setTimeout(() => setShowText(true), 600);
@@ -91,7 +119,8 @@ export default function Register() {
     label: string,
     name: keyof RegisterForm,
     type = 'text',
-    required = false
+    required = false,
+    errorBorder = false
   ) => (
     <div>
       <label htmlFor={name} className="block text-sm font-medium text-gray-700">
@@ -104,7 +133,11 @@ export default function Register() {
         value={form[name]}
         onChange={handleChange}
         required={required}
-        className="w-full border-b-2 py-1 px-2 outline-none transition border-gray-400 focus:border-black"
+        className={`w-full border-b-2 py-1 px-2 outline-none transition ${
+          errorBorder
+            ? 'border-red-500 focus:border-red-500'
+            : 'border-gray-400 focus:border-black'
+        }`}
       />
     </div>
   );
@@ -129,13 +162,11 @@ export default function Register() {
             )}
           </div>
         </div>
-
         {typedDone && (
           <p className="text-gray-700 font-medium mt-4 animate-fade-in">
             {heroText}
           </p>
         )}
-
         {typedDone && (
           <Link to="/login" className="animate-fade-in mt-4">
             Already a member? Sign in →
@@ -155,7 +186,6 @@ export default function Register() {
                 {error}
               </p>
             )}
-
             <div className="w-full space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 {renderInput('First Name', 'firstName', 'text', true)}
@@ -168,17 +198,32 @@ export default function Register() {
             <div
               className={`w-full overflow-hidden transition-all duration-500 ${
                 emailValid
-                  ? 'max-h-[200px] opacity-100 mt-6'
+                  ? 'max-h-[240px] opacity-100 mt-6'
                   : 'max-h-0 opacity-0'
               }`}
             >
-              <div className="space-y-6">
-                {renderInput('Password', 'password', 'password', true)}
+              <div className="space-y-4">
+                {renderInput('Password', 'password', 'password', true, pwdMismatch)}
+                <div className="w-full mt-1">
+                  <div className="h-2 w-full bg-gray-200 rounded">
+                    <div
+                      className={`h-2 rounded ${strengthColor}`}
+                      style={{ width: `${(passwordStrength / 5) * 100}%` }}
+                    />
+                  </div>
+                  <p className="text-sm mt-1 text-gray-700">{strengthLabel}</p>
+                </div>
                 {renderInput(
                   'Confirm Password',
                   'confirmPassword',
                   'password',
-                  true
+                  true,
+                  pwdMismatch
+                )}
+                {pwdMismatch && (
+                  <p className="text-red-500 text-sm mt-1">
+                    Passwords do not match
+                  </p>
                 )}
               </div>
             </div>

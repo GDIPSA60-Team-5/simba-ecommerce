@@ -13,7 +13,7 @@ const FilterButton = ({ label, status, activeStatus, onClick }: FilterButtonProp
     return (
         <button
             onClick={() => onClick(status)}
-            className={`w-1/5 text-center relative transition-colors duration-300 text-2xl ${isActive ? "text-black" : "text-gray-300"
+            className={`w-1/5 text-center relative cursor-pointer transition-colors duration-300 text-2xl ${isActive ? "text-black" : "text-gray-300"
                 } rounded-[7px]`}
         >
             {label}

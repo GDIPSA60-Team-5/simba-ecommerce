@@ -25,7 +25,7 @@ VALUES
     ('Rebecca Yarros'),
     ('Jonathan Eig'),
     ('Nathan Hill'),
----    10
+--    10
     ('Ann Napolitano'),
     ('S.A. Cosby'),
     ('Jean M. Twenge'),
@@ -36,7 +36,7 @@ VALUES
     ('Mariana Enriquez'),
     ('Teju Cole'),
     ('Esther Yi'),
----     20
+--     20
     ('Nick Morgan'),
     ('Jeff Duntemann'),
     ('Donald Knuth'),
@@ -47,7 +47,7 @@ VALUES
     ('Vera Storme'),
     ('Anthony Doerr'),
     ('Tom Turcich'),
----     30
+--     30
     ('Jennifer Wintgens'),
     ('Daniel Kahneman'),
     ('Parmy Olson'),
@@ -103,13 +103,13 @@ VALUES
     ('The Things We Cannot Say: A WWII Historical Fiction Novel','An intense story of survival, hardship, and heartbreak',21.74,60,'/images/books/book-39.png',4.8,39,8,'BOOK');
 
 -- Insert Users
-INSERT INTO users (username, password, first_name, last_name, phone_number, email, address, date_of_birth, role)
+INSERT INTO users (username, password, first_name, last_name, phone_number, email, address, date_of_birth, role,profile_picture_url)
 VALUES
-    ('john_doe', 'password123', 'John', 'Doe', '123456789', 'john@example.com', '123 Main St', '1990-01-01', 'USER'),
-    ('admin_user', 'adminpass', 'Admin', 'User', '987654321', 'admin@example.com', '456 Admin Rd', '1985-05-15', 'ADMIN'),
-    ('alice', 'pass123', 'Alice', 'Tan', '91234567', 'alice@example.com', '123 Orchard Rd', '1990-01-01', 'USER'),
-    ('bob', 'pass123', 'Bob', 'Lee', '98765432', 'bob@example.com', '456 Clementi Rd', '1985-05-15', 'ADMIN'),
-    ('carol', 'pass123', 'Carol', 'Lim', '92223333', 'carol@example.com', '789 Bukit Timah', '1992-07-10', 'USER');
+    ('john_doe', 'password123', 'John', 'Doe', '123456789', 'john@example.com', '123 Main St', '1990-01-01', 'USER','/images/john.png'),
+    ('admin_user', 'adminpass', 'Admin', 'User', '987654321', 'admin@example.com', '456 Admin Rd', '1985-05-15', 'ADMIN','/imag es/alice'),
+    ('alice', 'pass123', 'Alice', 'Tan', '91234567', 'alice@example.com', '123 Orchard Rd', '1990-01-01', 'USER',''),
+    ('bob', 'pass123', 'Bob', 'Lee', '98765432', 'bob@example.com', '456 Clementi Rd', '1985-05-15', 'ADMIN',''),
+    ('carol', 'pass123', 'Carol', 'Lim', '92223333', 'carol@example.com', '789 Bukit Timah', '1992-07-10', 'USER','');
 
 -- Insert Delivery Types
 INSERT INTO delivery_types (name, description, fee)

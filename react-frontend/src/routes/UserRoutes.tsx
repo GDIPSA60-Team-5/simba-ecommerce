@@ -1,5 +1,5 @@
 import { RouteObject } from "react-router-dom";
-import PurchaseHistory from "../pages/user/PurchaseHistory";
+import OrderHistory from "../pages/user/OrderHistory";
 import RequireAuth from "./guards/RequireAuth";
 import Profile from "../pages/user/Profile";
 import UserLayout from "../layouts/UserLayout";
@@ -10,7 +10,7 @@ const UserRoutes: RouteObject[] = [
         element: <UserLayout />,
         children: [
             { path: "", element: <RequireAuth><Profile /></RequireAuth> },
-            { path: "orders", element: <RequireAuth><PurchaseHistory /></RequireAuth> },
+            { path: "orders", element: <RequireAuth><OrderHistory /></RequireAuth> },
         ],
     },
 ];
