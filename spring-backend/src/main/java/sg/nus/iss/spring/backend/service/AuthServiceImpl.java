@@ -3,12 +3,14 @@ package sg.nus.iss.spring.backend.service;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import sg.nus.iss.spring.backend.dto.LoginRequest;
+import sg.nus.iss.spring.backend.dto.UserSessionDTO;
 import sg.nus.iss.spring.backend.exception.auth.InvalidCredentialsException;
 import sg.nus.iss.spring.backend.exception.auth.UserAlreadyExistsException;
 import sg.nus.iss.spring.backend.interfacemethods.AuthService;
 import sg.nus.iss.spring.backend.enums.Role;
 import sg.nus.iss.spring.backend.model.User;
 import sg.nus.iss.spring.backend.repository.UserRepository;
+import sg.nus.iss.spring.backend.util.SessionUtils;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -66,8 +68,15 @@ public class AuthServiceImpl implements AuthService {
      * Get current authenticated user from session
      */
     @Override
-    public User getAuthenticatedUser(HttpSession session) {
-        User user = (User) session.getAttribute("authenticated_user");
-        return user;
+    public UserSessionDTO getAuthenticatedUser(HttpSession session) {
+        User user = SessionUtils.getUserFromSession(session);
+        return new UserSessionDTO(
+                user.getId(),
+                user.getUsername(),
+                user.getFirstName(),
+                user.getLastName(),
+                user.getProfilePictureUrl(),
+                user.getRole()
+        );
     }
 }

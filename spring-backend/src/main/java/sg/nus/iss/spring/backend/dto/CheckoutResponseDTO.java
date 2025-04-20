@@ -1,9 +1,9 @@
 package sg.nus.iss.spring.backend.dto;
 
-public class OrderResponseDTO {
+public class CheckoutResponseDTO {
     private String clientSecret;
 
-    public OrderResponseDTO(String clientSecret) {
+    public CheckoutResponseDTO(String clientSecret) {
         this.clientSecret = clientSecret;
     }
 
