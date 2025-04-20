@@ -1,23 +1,19 @@
 // components/DeliveryOptions.tsx
 import React, { JSX, useEffect, useRef } from 'react';
-import { DeliveryType } from '../../../types/DeliveryType';
 import { ValidationErrors } from '../../../types/ValidationErrors';
+import { useCartContext } from '../../../context/CartContext';
 
 interface DeliveryOptionsProps {
-    selectedDeliveryType: DeliveryType | null;
-    setSelectedDeliveryType: (type: DeliveryType | null) => void;
-    setDeliveryFee: (fee: number) => void;
-    deliveryTypes: DeliveryType[];
-    validationErrors: ValidationErrors | null;
+    validationErrors?: ValidationErrors | null;
 }
 
-export function DeliveryOptions({
-    selectedDeliveryType,
-    setSelectedDeliveryType,
-    setDeliveryFee,
-    deliveryTypes,
-    validationErrors
-}: DeliveryOptionsProps): JSX.Element {
+export function DeliveryOptions({ validationErrors }: DeliveryOptionsProps): JSX.Element {
+    const {
+        deliveryTypes,
+        selectedDeliveryType,
+        setSelectedDeliveryType,
+        setDeliveryFee
+    } = useCartContext();
     const shippingAddressRef = useRef<HTMLTextAreaElement>(null);
 
     useEffect(() => {

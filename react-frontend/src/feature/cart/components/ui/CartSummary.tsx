@@ -1,14 +1,21 @@
 import { JSX } from "react";
+import { useCartContext } from "../../../../context/CartContext";
+import { calculateCartTotal } from "../../utils/calculateCartTotal";
 
 // components/CartSummary.tsx
-interface CartSummaryProps {
-    total: number;
-    tax: number;
-    deliveryFee: number;
-}
 
-export function CartSummary({ total, tax, deliveryFee }: CartSummaryProps): JSX.Element {
+
+export function CartSummary(): JSX.Element {
+    const {
+        cart,
+        updatedQuantities,
+        deliveryFee
+    } = useCartContext();
+
+    const total = calculateCartTotal(cart, updatedQuantities);
+    const tax = total * 0.09;
     const grandTotal = total + tax + deliveryFee;
+
 
     return (
         <table className="w-full border-collapse text-sm">

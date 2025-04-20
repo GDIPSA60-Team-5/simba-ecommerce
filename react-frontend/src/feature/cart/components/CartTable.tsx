@@ -1,14 +1,15 @@
 import { CartItem } from '../../../types/CartItem';
 import { CartItemRow } from ".";
 import { JSX } from 'react';
+import { useCartContext } from '../../../context/CartContext';
 
-interface CartTableProps {
-    cart: CartItem[];
-    updateCartQtyState: (cartItemId: number, quantity: number) => void;
-    refreshCart: () => void;
-}
+export function CartTable(): JSX.Element {
+    const {
+        cart,
+        updateCartQtyState,
+        refreshCart
+    } = useCartContext();
 
-export function CartTable({ cart, updateCartQtyState, refreshCart }: CartTableProps): JSX.Element {
     if (cart.length === 0) {
         return (
             <div className="text-center">

@@ -1,36 +1,22 @@
 // components/ListCartItem.tsx
-import React, { useState, useEffect, JSX } from 'react';
-
-import { calculateCartTotal } from '../utils/calculateCartTotal';
-
-import { useCart } from '../hooks/useCart';
-import { useDeliveryType } from '../hooks/useDeliveryType';
-import { useCartActions } from '../hooks/useCartActions';
+import React, { useEffect, JSX } from 'react';
+import { useCartContext } from '../../../context/CartContext';
 import { useCartCheckout } from '../hooks/useCartCheckout';
-
 import { CartHeader, CartTable, CartSummary, CartActions } from '.';
 import { DeliveryOptions } from './DeliveryOptions';
-import { DeliveryType } from '../../../types/DeliveryType';
-
 
 export default function ListCartItem(): JSX.Element {
-    const { cart, loading, error, refreshCart } = useCart();
-    const { deliveryTypes } = useDeliveryType();
     const {
-        updatedQuantities,
-        isSaving,
-        cartChanged,
-        updateCartQtyState,
+        cartLoading: loading,
+        cartError: error,
+        selectedDeliveryType,
+        setSelectedDeliveryType,
+        setDeliveryFee,
         saveCart,
-        deleteCart
-    } = useCartActions(cart);
+        cartChanged
+    } = useCartContext();
 
-    const [selectedDeliveryType, setSelectedDeliveryType] = useState<DeliveryType | null>(null);
-    const [deliveryFee, setDeliveryFee] = useState<number>(0);
     const { submitOrder, validationErrors } = useCartCheckout(saveCart, cartChanged);
-
-    const total = calculateCartTotal(cart, updatedQuantities);
-    const tax = total * 0.09;
 
     useEffect(() => {
         const savedDeliveryType = sessionStorage.getItem("deliveryType");
@@ -45,7 +31,7 @@ export default function ListCartItem(): JSX.Element {
                 console.error("Failed to parse savedDeliveryType", err);
             }
         }
-    }, []);
+    }, [setSelectedDeliveryType, setDeliveryFee]);
 
     const handleSubmitOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
@@ -66,13 +52,6 @@ export default function ListCartItem(): JSX.Element {
         submitOrder(orderDetails);
     };
 
-    const handleDeleteCartClick = async (): Promise<void> => {
-        const success = await deleteCart();
-        if (success) {
-            refreshCart();
-        }
-    };
-
     if (loading) {
         return <div className="text-center py-10">Loading your cart...</div>;
     }
@@ -87,27 +66,12 @@ export default function ListCartItem(): JSX.Element {
 
             <div className="flex justify-between gap-8 mb-8">
                 <div className="w-[70%]">
-                    <CartTable
-                        cart={cart}
-                        updateCartQtyState={updateCartQtyState}
-                        refreshCart={refreshCart}
-                    />
-
-                    <CartActions
-                        cart={cart}
-                        isSaving={isSaving}
-                        cartChanged={cartChanged}
-                        onSave={saveCart}
-                        onDelete={handleDeleteCartClick}
-                    />
+                    <CartTable />
+                    <CartActions />
                 </div>
 
                 <div className="w-[30%] min-w-[220px] border-t-18 border-black ml-5 mt-2 pt-4">
-                    <CartSummary
-                        total={total}
-                        tax={tax}
-                        deliveryFee={deliveryFee}
-                    />
+                    <CartSummary />
 
                     {validationErrors?.cart && (
                         <div style={{ color: "red", marginBottom: "1rem" }}>
@@ -115,19 +79,13 @@ export default function ListCartItem(): JSX.Element {
                         </div>
                     )}
 
-                    <DeliveryOptions
-                        selectedDeliveryType={selectedDeliveryType}
-                        setSelectedDeliveryType={setSelectedDeliveryType}
-                        setDeliveryFee={setDeliveryFee}
-                        deliveryTypes={deliveryTypes}
-                        validationErrors={validationErrors}
-                    />
+                    <DeliveryOptions validationErrors={validationErrors} />
 
                     <div>
                         <button
                             type="button"
                             onClick={handleSubmitOrder}
-                            className="px-6 py-4 bg-black text-white border-none rounded-none hover:bg-gray-800 active:bg-gray-900 transition duration-200"
+                            className="px-4 py-3 bg-black text-white font-semibold cursor-pointer transition-all duration-200 hover:contrast-[115%] active:brightness-90 active:scale-[0.98] block mt-4"
                         >
                             CHECKOUT
                         </button>

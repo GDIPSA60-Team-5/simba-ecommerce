@@ -11,7 +11,7 @@ import Register from "../pages/auth/Register";
 import RequireNoAuth from "./guards/RequireNoAuth";
 import Cart from "../pages/Cart";
 import RequireAuth from "./guards/RequireAuth";
-import CheckoutPage from "../feature/stripe/components/StripeCheckoutPage"; 
+import CheckoutPage from "../feature/stripe/components/StripeCheckoutPage";
 import { CartProvider } from "../context/CartContext";
 
 const PublicRoutes: RouteObject[] = [
