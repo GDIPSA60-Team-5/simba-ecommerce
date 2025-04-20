@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { Product } from "../../../types/Product";
 import { useFilters } from "../../../context/FilterContext";
-import { PageResponseDTO } from "../../../types/PageResponseDTO";
+import { PageResponseDTO } from "../../../types/dto/PageResponseDTO";
 
 const API_URL = "/api/products";
 

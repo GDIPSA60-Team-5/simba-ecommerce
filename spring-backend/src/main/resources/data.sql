@@ -15,13 +15,13 @@ VALUES
 -- Insert Authors
 INSERT INTO authors (name)
 VALUES
-    ('J.K. Rowling'),
-    ('Herbert Schildt'),
-    ('Rick Steves'),
-    ('Dave Ramsey'),
-    ('James McBride'),
-    ('Amanda Peters'),
-    ('Michael Finkel'),
+    ('Lisa Allen'),
+    ('Phyo Nyi Nyi Paing'),
+    ('Amisha Sathi'),
+    ('Kristin Dwyer'),
+    ('Matthew Walker '),
+    ('George R. R. Martin '),
+    ('Dustin Thao'),
     ('Rebecca Yarros'),
     ('Jonathan Eig'),
     ('Nathan Hill'),
@@ -62,13 +62,13 @@ VALUES
 -- Insert Books (Products)
 INSERT INTO products (name, description, price, quantity, image_url, rating, author_id, category_id, product_type)
 VALUES
-    ('Harry Potter and the Philosopher''s Stone', 'Fantasy novel about a young wizard attending Hogwarts.', 15.99, 100, '/images/books/book-1.png', 4.9, 1, 1, 'BOOK'),
-    ('Java How to Program', 'An in-depth guide to mastering Java programming.', 35.99, 50, '/images/books/book-2.png', 4.5, 2, 2, 'BOOK'),
-    ('Rick Steves'' Europe: Belgium', 'Travel guide to the beautiful countries of Belgium.', 21.99, 40, '/images/books/book-3.png', 5.0, 3, 3, 'BOOK'),
-    ('The Total Money Makeover', 'A guide to taking control of your finances and eliminating debt.', 19.99, 30, '/images/books/book-4.png', 4.7, 4, 4, 'BOOK'),
-    ('Atomic Habits', 'An easy & proven way to build good habits & break bad ones.', 14.99, 200, '/images/books/book-5.png', 4.8, 5, 5, 'BOOK'),
-    ('Fourth Wing', 'An epic fantasy novel about a deadly competition to become an elite dragon rider.', 19.99, 150, '/images/books/book-6.png', 4.7, 6, 1, 'BOOK'),
-    ('The Woman in Me', 'Memoir by Britney Spears detailing her life and career.', 24.99, 100, '/images/books/book-7.png', 4.6, 7, 6, 'BOOK'),
+    ('The Travel Book', 'Help you to learn to drive your dollar further during the travel.', 15.99, 100, '/images/books/book-1.png', 4.9, 1, 3, 'BOOK'),
+    ('The Battle for the Fae King Throne', 'A battle for the Fea King Throne', 35.99, 50, '/images/books/book-2.png', 5.0, 2, 1, 'BOOK'),
+    ('Beyond the Ocean Door', 'About a telepathy fantasy adventure', 21.99, 40, '/images/books/book-3.png', 5.0, 3, 10, 'BOOK'),
+    ('The Atlas of Us', 'A breathtaking tour de force of angst and longing', 19.99, 30, '/images/books/book-4.png', 4.7, 4, 1, 'BOOK'),
+    ('Why We Sleep', 'The New Science of Sleep and Dreams', 14.99, 200, '/images/books/book-5.png', 4.8, 5, 5, 'BOOK'),
+    ('A Feast for Crows', 'An epic fantasy novel about a deadly competition to become an elite dragon rider.', 19.99, 150, '/images/books/book-6.png', 4.7, 6, 1, 'BOOK'),
+    ('You''ve Reached Sam', 'How do you move forward when everything you love is on the line?', 24.99, 100, '/images/books/book-7.png', 4.6, 7, 5, 'BOOK'),
     ('Lessons in Chemistry', 'A novel about a scientist turned TV cooking show host.', 18.99, 120, '/images/books/book-8.png', 4.7, 8, 1, 'BOOK'),
     ('The Housemaid', 'A psychological thriller with a jaw-dropping twist.', 16.99, 180, '/images/books/book-9.png', 4.5, 9, 1, 'BOOK'),
     ('Bride', 'A romantic comedy about a woman who finds herself in unexpected situations.', 15.99, 160, '/images/books/book-10.png', 4.6, 10, 1, 'BOOK'),

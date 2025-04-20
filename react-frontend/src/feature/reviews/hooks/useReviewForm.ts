@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 export function useReviewForm(refreshReviews?: () => void) {
     const { id } = useParams();
 
-    const [content, setContent] = useState("");
+    const [comment, setComment] = useState("");
     const [rating, setRating] = useState<number>(5);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState("");
@@ -14,7 +14,7 @@ export function useReviewForm(refreshReviews?: () => void) {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!content.trim()) {
+        if (!comment.trim()) {
             setError("Review cannot be empty.");
             return;
         }
@@ -23,8 +23,8 @@ export function useReviewForm(refreshReviews?: () => void) {
             setSubmitting(true);
             setError("");
 
-            ReviewApi.postReview(id!, { content, rating: rating });
-            setContent("");
+            await ReviewApi.postReview(id!, { comment, rating: rating });
+            setComment("");
 
             if (refreshReviews) refreshReviews();
 
@@ -45,8 +45,8 @@ export function useReviewForm(refreshReviews?: () => void) {
     };
 
     return {
-        content,
-        setContent,
+        comment,
+        setComment,
         rating,
         setRating,
         submitting,

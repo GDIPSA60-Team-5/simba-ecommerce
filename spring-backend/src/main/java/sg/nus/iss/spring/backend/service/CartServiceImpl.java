@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
-import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
+import sg.nus.iss.spring.backend.dto.CheckoutRequestDTO;
 import sg.nus.iss.spring.backend.enums.OrderStatus;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
 import sg.nus.iss.spring.backend.model.*;
@@ -64,29 +64,20 @@ public class CartServiceImpl implements CartService {
 		User user = (User) session.getAttribute("authenticated_user");
 		
 		// get order data from session
-		OrderDetailsDTO orderData = (OrderDetailsDTO) session.getAttribute("order_data");
+		CheckoutRequestDTO orderData = (CheckoutRequestDTO) session.getAttribute("order_data");
 		
 		// get payment type data from session
 		String paymentType = (String) session.getAttribute("payment_type");
-		Optional<PaymentType> existingPType = paymentRepo.findByName(paymentType);
-		PaymentType pType;
-		if (existingPType.isEmpty()) {
-			pType = new PaymentType(paymentType);
-			paymentRepo.save(pType);
-		} else {
-			pType = existingPType.get();
-		}
+		PaymentType pType = paymentRepo.findByName(paymentType)
+				.orElseGet(() -> paymentRepo.save(new PaymentType(paymentType)));
+
 		
 		// get delivery type data from order data
-		String deliType = orderData.getDeliveryType();
-		Optional<DeliveryType> existingDeliType = deliRepo.findByName(deliType);
-		DeliveryType dType;
-		if (existingDeliType.isEmpty()) {
-			throw new Exception("DeliveryType not found");
-		} else {
-			dType = existingDeliType.get();
-		}
-		
+		Integer deliveryTypeId = orderData.getDeliveryTypeId();
+		DeliveryType dType = deliRepo.findById(deliveryTypeId)
+				.orElseThrow(() -> new Exception("DeliveryType not found"));
+
+
 		// get dateTime of order and shipping address from order data
 		LocalDateTime dateTime = LocalDateTime.now();
 		String shippingAddress = orderData.getShippingAddress();
@@ -164,13 +155,8 @@ public class CartServiceImpl implements CartService {
 		int userId = user.getId();
 	    Optional<CartItem> cart = cartRepo.findByProductIdAndUserId(productId, userId);
 ;
-	    if (cart.isEmpty()) {
-	    	throw new RuntimeException("Cart not found");
-	    } else {
-	    	cartRepo.deleteByProductId(productId);
-	    }
+	    if (cart.isEmpty()) throw new RuntimeException("Cart not found");
 
-	
-	
+		cartRepo.deleteByProductId(productId);
 	}
 }

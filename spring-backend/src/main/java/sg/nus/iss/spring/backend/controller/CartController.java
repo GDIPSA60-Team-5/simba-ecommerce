@@ -7,6 +7,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,9 +22,10 @@ import com.stripe.exception.StripeException;
 
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
-import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
+import sg.nus.iss.spring.backend.dto.CheckoutRequestDTO;
+import sg.nus.iss.spring.backend.dto.CheckoutResponseDTO;
+import sg.nus.iss.spring.backend.exception.auth.UserNotAuthenticatedException;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
-import sg.nus.iss.spring.backend.interfacemethods.DeliveryService;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.DeliveryType;
@@ -31,6 +33,7 @@ import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.model.User;
 import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
 import sg.nus.iss.spring.backend.repository.ProductRepository;
+import sg.nus.iss.spring.backend.util.SessionUtils;
 
 
 /* Written by Aung Myin Moe */
@@ -45,26 +48,18 @@ public class CartController {
 	private PaymentService paymentService;
 	
 	@Autowired
-	private DeliveryService deliService;
-	
-	@Autowired 
 	private ProductRepository pRepo;
 	
 	@Autowired 
 	private DeliveryTypeRepository deliveryRepo;
 	
 	private static final int DEFAULT_CART_QUANTITY = 1;
-	
-	// create a user object calling method to reduce duplication
-	private User getUser(HttpSession session) {
-		User user = (User) session.getAttribute("authenticated_user");
-		return user;
-	}
-	
+
 	// get a list of products in the cart
+	@Transactional
 	@GetMapping("/cart")
 	public List<CartItem> viewCart(HttpSession session) {
-		return cartService.listCartItems(getUser(session));
+		return cartService.listCartItems(SessionUtils.getUserFromSession(session));
 	}
 	
 	// adjust the quantity of products in the cart
@@ -87,7 +82,7 @@ public class CartController {
 	
 	// click the submit order button to go to payment gateway page
 	@PostMapping("/cart/submit")
-	public ResponseEntity<?> formPayment(@Valid @RequestBody OrderDetailsDTO orderDetailsDTO, BindingResult result, HttpSession session) 
+	public ResponseEntity<?> formPayment(@Valid @RequestBody CheckoutRequestDTO checkoutRequestDTO, BindingResult result, HttpSession session)
 			throws StripeException, Exception {
 
 		Map<String, String> errors = new HashMap<>();
@@ -96,21 +91,15 @@ public class CartController {
 		            errors.put(err.getField(), err.getDefaultMessage())
 		        );
 		    }
-		
-		String deliveryType = orderDetailsDTO.getDeliveryType();
-		if (deliveryType != null) { 
-			DeliveryType selectedType = deliveryRepo.findByName(deliveryType).orElse(null);
-			if (selectedType == null) {
-				errors.put("deliveryType","Invalid delivery type selected");
-			}
-		}
-		// save form input data into session
-		session.setAttribute("order_data", orderDetailsDTO);
-		
-		// get the cart items of the user
-		List<CartItem> cartItems = cartService.listCartItems(getUser(session));
-		
-		// validation for empty cart
+
+		Integer deliveryTypeId = checkoutRequestDTO.getDeliveryTypeId();
+		 if(deliveryTypeId != null) {
+			 DeliveryType selectedType = deliveryRepo.findById(deliveryTypeId).orElse(null);
+	        if (selectedType == null) errors.put("deliveryType", "Invalid delivery type selected");
+		 }
+
+		List<CartItem> cartItems = cartService.listCartItems(SessionUtils.getUserFromSession(session));
+
 		if (cartItems.isEmpty()) {
 			errors.put("cart","Cart cannot be empty");
 		}
@@ -118,8 +107,11 @@ public class CartController {
 		if (!errors.isEmpty()) {
 			return ResponseEntity.badRequest().body(errors);
 		}
-		
-		Map<String, Object>response = paymentService.createStripeCheckoutSession(cartItems, session);
+
+		// save form input data into session
+		session.setAttribute("order_data", checkoutRequestDTO);
+
+		CheckoutResponseDTO response = paymentService.createStripeCheckoutSession(cartItems, session);
 		return ResponseEntity.ok(response);
 	}
 	
@@ -131,10 +123,10 @@ public class CartController {
 		 */
 			
 		// get cart items from session
-		List<CartItem> cartItems = cartService.listCartItems(getUser(session));
-	
-		// get payment type from payment intent id
-		String paymentIntentId = body.get("payment_intent_id");
+		List<CartItem> cartItems = cartService.listCartItems(SessionUtils.getUserFromSession(session));
+
+		// get stripe session id from session and find payment type from stripe server
+		// String stripeSessionId = (String) session.getAttribute("stripe_session_id");
 		String paymentType = paymentService.getPaymentType(paymentIntentId);
 	    
 	    // save payment type in session
@@ -142,6 +134,7 @@ public class CartController {
 		
 	    // save the order record
 	    cartService.saveOrderRecord(session, cartItems);
+
 	    
 		// delete the cart after saving order
 	    User user = (User) session.getAttribute("authenticated_user");
@@ -151,32 +144,28 @@ public class CartController {
 	}
 		
 	// cancel order in cart page
-	@DeleteMapping("/delete-cart")
+	@DeleteMapping("/cart/delete")
 	public void deleteCart(HttpSession session) {
-		cartService.removeCart(getUser(session));
+		cartService.removeCart(SessionUtils.getUserFromSession(session));
 	}
-	
-	// get delivery type
-	@GetMapping("/deli-type")
-	public List<DeliveryType> getDeliType() {
-		return deliService.getDeliType();
-	}
-		
+
 	//Done by Haziq:
 	@PostMapping("/cart/add")
-	public ResponseEntity<String> addToCart(HttpSession session, @RequestParam int productId){
-		User user = getUser(session);
-		if (user==null) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("You must be logged in to add to cart.");
-		}
-		System.out.println("Add to Cart. ProductId=" + productId + ", quantity=" + DEFAULT_CART_QUANTITY);
+	public ResponseEntity<?> addToCart(HttpSession session, @RequestParam int productId){
+		try {
+		User user = SessionUtils.getUserFromSession(session);
 		cartService.addToCart(user, productId, DEFAULT_CART_QUANTITY);
 		return ResponseEntity.ok("Product added to cart");
+		} catch (UserNotAuthenticatedException e) {
+			return ResponseEntity
+					.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("message", "You must be logged in to view cart."));
+		}
 	}
 
 	@DeleteMapping("/cart/remove/{productId}")
 	public ResponseEntity<String> removeProductFromCart(HttpSession session, @PathVariable int productId){
-		cartService.removeProductFromCart(getUser(session), productId);
+		cartService.removeProductFromCart(SessionUtils.getUserFromSession(session), productId);
 		return ResponseEntity.ok("Product removed from cart");
 	}
 

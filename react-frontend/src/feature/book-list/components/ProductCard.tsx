@@ -2,31 +2,12 @@ import { Product } from "../../../types/Product";
 import { Link } from "react-router-dom";
 import StarRating from "./StarRating";
 import ProductCategoryTag from "./ProductCategoryTag";
-import axios from "axios";
 import eyeIcon from "@assets/svgs/eye.svg";
 import { AddToCartButton } from "../../../components/ui/Buttons";
 
 
 export function ProductCard({ product }: { product: Product }) {
-  const handleAddToCart = (productId:number) => {
-    axios.post(`http://localhost:8080/api/cart/add`, null, {
-      params: {
-        productId: productId
-      },
-      withCredentials: true
-      })
-    .then(() => {
-      alert("Product added to cart!");
-    })
-    .catch(err => {
-      alert(err.response?.data?.message || "Failed to add to cart.");
-      console.error("Add to cart error:", err);
-    });
-  };
 
-  const OnClick = () => {
-    handleAddToCart(product.id)
-  };
   return (
     <div className="product-card w-full">
       <Link to={`/books/${product.id}`} className="h-[350px] relative block transition-transform duration-300 hover:scale-105">
@@ -62,7 +43,8 @@ export function ProductCard({ product }: { product: Product }) {
         <img src={cartIcon} width={20} alt="" />
       </button> */}
 
-      <AddToCartButton OnClick={OnClick} />
+      <AddToCartButton productId={product.id} />
+
     </div >
 
   );
