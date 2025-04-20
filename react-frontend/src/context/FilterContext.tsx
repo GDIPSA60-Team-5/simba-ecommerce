@@ -44,19 +44,25 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
             pageNo: Number(searchParams.get('pageNo')) || 1,
         };
     }, [searchParams]);
-
     const updateFilter = (name: keyof FilterParams, value: any) => {
         const newParams = new URLSearchParams(searchParams.toString());
+
         if (value === undefined || value === '') {
             newParams.delete(name);
         } else {
             newParams.set(name, String(value));
         }
+
+        if (name !== 'pageNo') {
+            newParams.set('pageNo', '1');
+        }
+
         setSearchParams(newParams, { replace: true });
     };
 
     const updateFilters = (updates: Partial<FilterParams>) => {
         const newParams = new URLSearchParams(searchParams.toString());
+        let shouldResetPage = false;
 
         Object.entries(updates).forEach(([key, value]) => {
             if (value === undefined || value === '') {
@@ -64,10 +70,19 @@ export const FilterProvider = ({ children }: { children: ReactNode }) => {
             } else {
                 newParams.set(key, String(value));
             }
+
+            if (key !== 'pageNo') {
+                shouldResetPage = true;
+            }
         });
+
+        if (shouldResetPage) {
+            newParams.set('pageNo', '1');
+        }
 
         setSearchParams(newParams, { replace: true });
     };
+
 
     return (
         <FilterContext.Provider value={{ filters, updateFilter, updateFilters }}>

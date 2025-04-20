@@ -7,9 +7,20 @@ async function getReviewsByProduct(id: string) {
   return response.data;
 }
 
-async function postReview(productId: string, reviewData: { content: string; rating: number }) {
+async function postReview(productId: string, reviewData: { comment: string; rating: number }) {
   const response = await apiClient.post(`/products/${productId}/reviews`, reviewData);
   return response.data;
 }
 
-export default { getReviewsByProduct, postReview };
+async function updateReview(id: number, reviewData: { comment: string; rating: number }) {
+  const response = await apiClient.put(`/reviews/${id}`, reviewData);
+  return response.data;
+}
+
+async function deleteReview(id: number) {
+  const response = await apiClient.delete(`reviews/${id}`);
+  return response.data;
+}
+
+
+export default { getReviewsByProduct, postReview, updateReview, deleteReview };

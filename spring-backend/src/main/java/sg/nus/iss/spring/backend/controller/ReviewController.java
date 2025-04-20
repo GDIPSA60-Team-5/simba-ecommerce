@@ -56,8 +56,13 @@ public class ReviewController {
     }
 
     @PutMapping("/reviews/{id}")
-    public Review editReview(@PathVariable int id, @RequestBody Review review) {
-        return reviewService.editReview(id, review);
+    public ResponseEntity<Review> editReview(@PathVariable int id, @RequestBody Review review) {
+        try {
+        Review newReview = reviewService.editReview(id, review);
+        return new ResponseEntity<>(newReview, HttpStatus.OK);
+        } catch (ResourceNotFoundException e) {
+            return  new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @DeleteMapping("/reviews/{id}")

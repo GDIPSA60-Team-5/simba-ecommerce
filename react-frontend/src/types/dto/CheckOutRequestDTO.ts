@@ -1,4 +1,4 @@
 export interface CheckoutRequestDTO {
-    deliveryTypeId: number;
-    shippingAddress: string;
+    deliveryTypeId: number | null;
+    shippingAddress: string | null;
 }

@@ -43,9 +43,13 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     public Review editReview(int id, Review review) {
-        reviewRepository.existsById(id);
-        review.setId(id);
-        return reviewRepository.save(review);
+        Review reviewToUpdate = reviewRepository.findById(id);
+        if (reviewToUpdate == null) throw new ResourceNotFoundException("Review not found");
+
+
+        reviewToUpdate.setComment(review.getComment());
+        reviewToUpdate.setRating(review.getRating());
+        return reviewRepository.save(reviewToUpdate);
     }
 
     @Override
