@@ -47,7 +47,10 @@ public class AuthController {
             authService.register(user);
             return new ResponseEntity<>(HttpStatus.CREATED);
         } catch (UserAlreadyExistsException e) {
-            return new ResponseEntity<>(HttpStatus.EXPECTATION_FAILED);
+
+            // At the moment, this will be either "Username taken" or "Email Taken"
+            String errorMessage = e.getMessage();
+            return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(errorMessage);
         }
     }
 
