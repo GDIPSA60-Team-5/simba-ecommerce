@@ -98,10 +98,12 @@ export default function Register() {
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError('');
+
     if (!pwdOK) {
       setError('Please complete all required fields correctly.');
       return;
     }
+
     try {
       const { confirmPassword, ...payload } = form;
       await axios.post('/api/auth/register', payload, {
@@ -109,9 +111,11 @@ export default function Register() {
       });
       navigate('/login', { state: { regSuccess: true, name: form.firstName } });
     } catch (err: any) {
-      setError(
-        err.response?.status === 417 ? 'User already exists.' : 'Registration failed.'
-      );
+      if (err.response && err.response.data) {
+        setError(err.response.data);
+      } else {
+        setError('Registration failed. Please try again later.');
+      }
     }
   };
 

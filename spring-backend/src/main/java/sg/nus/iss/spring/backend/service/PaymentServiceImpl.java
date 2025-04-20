@@ -81,10 +81,9 @@ public class PaymentServiceImpl implements PaymentService {
             );
 
             PaymentMethod paymentMethod = paymentIntent.getPaymentMethodObject();
-            return paymentMethod.getType();  // e.g., "card", "paynow"
+            return paymentMethod.getType();
 
         } catch (StripeException e) {
-            // Log or rethrow depending on your app's needs
             throw new RuntimeException("Failed to retrieve PaymentIntent from Stripe", e);
         }
 

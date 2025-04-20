@@ -16,10 +16,11 @@ import sg.nus.iss.spring.backend.enums.Role;
 import sg.nus.iss.spring.backend.model.User;
 import sg.nus.iss.spring.backend.service.AuthServiceImpl;
 
+import java.util.stream.Collectors;
+
 /* Written by Phyo Nyi Nyi Paing */
 @RestController
 @RequestMapping("/api/auth/")
-@CrossOrigin(origins = "http://localhost:5173", allowCredentials = "true")
 public class AuthController {
 
     private final Role DEFAULT_ROLE = Role.USER;
@@ -35,7 +36,11 @@ public class AuthController {
     @PostMapping("/register")
     public ResponseEntity<?> register(@Valid @RequestBody User user, BindingResult result) {
         if (result.hasErrors()) {
-            return ResponseEntity.badRequest().body(result.getAllErrors());
+            String errorMessage = result.getAllErrors()
+                    .stream()
+                    .map(error -> error.getDefaultMessage())
+                    .collect(Collectors.joining(", "));
+            return ResponseEntity.badRequest().body(errorMessage);
         }
         try {
             user.setRole(DEFAULT_ROLE);
