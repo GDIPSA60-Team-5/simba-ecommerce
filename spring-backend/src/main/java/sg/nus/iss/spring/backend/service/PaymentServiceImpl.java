@@ -2,10 +2,7 @@ package sg.nus.iss.spring.backend.service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,89 +16,94 @@ import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.PaymentIntentRetrieveParams;
 
 import jakarta.servlet.http.HttpSession;
-import sg.nus.iss.spring.backend.dto.OrderDetailsDTO;
+import sg.nus.iss.spring.backend.dto.CheckoutRequestDTO;
+import sg.nus.iss.spring.backend.dto.CheckoutResponseDTO;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
 import sg.nus.iss.spring.backend.model.CartItem;
 import sg.nus.iss.spring.backend.model.DeliveryType;
 import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
 
-
-/* Written by Aung Myin Moe */
+/* Written By Aung Myin Moe */
 @Service
 public class PaymentServiceImpl implements PaymentService {
-	@Value("${stripe.secret.key}")
-    private String stripeSecretKey;
-	
+
+	private final DeliveryTypeRepository deliveryTypeRepository;
+	private final String stripeSecretKey;
+	private static final BigDecimal GST_RATE = new BigDecimal("0.09");
+
 	@Autowired
-	private DeliveryTypeRepository deliRepo;
-	
-	public Map<String, Object> createStripeCheckoutSession(List<CartItem> cartItems, HttpSession session) 
-			throws StripeException, Exception {
-		
-		Stripe.apiKey = stripeSecretKey; // move to config ideally
-
-	    BigDecimal subTotal = BigDecimal.ZERO;
-	    BigDecimal deliFee = BigDecimal.ZERO;
-	    BigDecimal GST_RATE = new BigDecimal("0.09"); // 9% GST
-	    
-	    // get delivery type from session object
-	    OrderDetailsDTO orderDetails = (OrderDetailsDTO) session.getAttribute("order_data");
-	    Optional<DeliveryType> deliType = deliRepo.findByName(orderDetails.getDeliveryType());
-	    if (deliType.isPresent()) {
-	    	deliFee = BigDecimal.valueOf(deliType.get().getFee());
-	    } else {
-	    	throw new Exception("Invalid DeliveryType");
-	    }
-
-	    for (CartItem item : cartItems) {
-	    	BigDecimal unitPrice = BigDecimal.valueOf(item.getProduct().getPrice());
-	        BigDecimal quantity = BigDecimal.valueOf(item.getQuantity());
-	        subTotal = subTotal.add(unitPrice.multiply(quantity).setScale(2, RoundingMode.HALF_UP));
-	    }
-	    // Compute GST separately from subtotal
-	    BigDecimal gstAmount = subTotal.multiply(GST_RATE).setScale(2, RoundingMode.HALF_UP);
-
-	    // Final total
-	    BigDecimal grandTotal = subTotal.add(gstAmount).add(deliFee);
-
-	    // Convert to cents for Stripe
-	    long amountInCents = grandTotal.multiply(BigDecimal.valueOf(100)).longValue();
-
-	    PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
-	        .setAmount(amountInCents)
-	        .setCurrency("sgd")
-	        .setAutomaticPaymentMethods(
-	            PaymentIntentCreateParams.AutomaticPaymentMethods.builder().setEnabled(true).build()
-	        )
-	        .build();
-
-	    PaymentIntent intent = PaymentIntent.create(params);
-
-	    Map<String, Object> response = new HashMap<>();
-	    String clientSecret = intent.getClientSecret();
-	    session.setAttribute("stripe_session_id", clientSecret);
-	    response.put("clientSecret", clientSecret);
-	    return response;
+	public PaymentServiceImpl(
+			DeliveryTypeRepository deliveryTypeRepository,
+			@Value("${stripe.secret.key}") String stripeSecretKey
+	) {
+		this.deliveryTypeRepository = deliveryTypeRepository;
+		this.stripeSecretKey = stripeSecretKey;
 	}
-	
+
+	@Override
+	public CheckoutResponseDTO createStripeCheckoutSession(List<CartItem> cartItems, HttpSession session)
+			throws StripeException, Exception {
+
+		Stripe.apiKey = stripeSecretKey;
+
+		CheckoutRequestDTO checkoutRequest = getCheckoutDataFromSession(session);
+		DeliveryType deliveryType = fetchDeliveryType(checkoutRequest.getDeliveryTypeId());
+
+		BigDecimal subTotal = calculateSubtotal(cartItems);
+		BigDecimal gstAmount = calculateGST(subTotal);
+		BigDecimal grandTotal = subTotal.add(gstAmount).add(BigDecimal.valueOf(deliveryType.getFee()));
+
+		long amountInCents = grandTotal.multiply(BigDecimal.valueOf(100)).longValue();
+		PaymentIntent intent = createStripePaymentIntent(amountInCents);
+
+		String clientSecret = intent.getClientSecret();
+		session.setAttribute("stripe_session_id", clientSecret);
+
+		return new CheckoutResponseDTO(clientSecret);
+	}
+
+	@Override
 	public String getPaymentType(String paymentIntentId) throws StripeException {
-		/* get the payment method from stripe api
-		 * 1. retrieve the session
-		 * 2. get the payment intent ID
-		 * 3. retrieve the payment intent with payment method details
-		 * 4. get the payment method type
-		 */
-	    
-	    PaymentIntent paymentIntent = PaymentIntent.retrieve(
-	        paymentIntentId,
-	        PaymentIntentRetrieveParams.builder()
-	            .addExpand("payment_method")  // important: expand this!
-	            .build(),
-	        null
-	    );
-	    
-	    PaymentMethod paymentMethod = paymentIntent.getPaymentMethodObject();
-	    return paymentMethod.getType(); // "card", "paynow", etc.
+		PaymentIntent intent = PaymentIntent.retrieve(
+				paymentIntentId,
+				PaymentIntentRetrieveParams.builder().addExpand("payment_method").build(),
+				null);
+		PaymentMethod method = intent.getPaymentMethodObject();
+		return method.getType();
+	}
+
+	private CheckoutRequestDTO getCheckoutDataFromSession(HttpSession session) throws Exception {
+		CheckoutRequestDTO data = (CheckoutRequestDTO) session.getAttribute("order_data");
+		if (data == null) {
+			throw new Exception("Missing checkout data in session");
+		}
+		return data;
+	}
+
+	private DeliveryType fetchDeliveryType(Integer deliveryTypeId) throws Exception {
+		return deliveryTypeRepository.findById(deliveryTypeId)
+				.orElseThrow(() -> new Exception("Invalid DeliveryType"));
+	}
+
+	private BigDecimal calculateSubtotal(List<CartItem> cartItems) {
+		return cartItems.stream()
+				.map(item -> BigDecimal.valueOf(item.getProduct().getPrice())
+						.multiply(BigDecimal.valueOf(item.getQuantity())))
+				.map(amount -> amount.setScale(2, RoundingMode.HALF_UP))
+				.reduce(BigDecimal.ZERO, BigDecimal::add);
+	}
+
+	private BigDecimal calculateGST(BigDecimal subtotal) {
+		return subtotal.multiply(GST_RATE).setScale(2, RoundingMode.HALF_UP);
+	}
+
+	private PaymentIntent createStripePaymentIntent(long amountInCents) throws StripeException {
+		PaymentIntentCreateParams params = PaymentIntentCreateParams.builder()
+				.setAmount(amountInCents)
+				.setCurrency("sgd")
+				.setAutomaticPaymentMethods(
+						PaymentIntentCreateParams.AutomaticPaymentMethods.builder().setEnabled(true).build())
+				.build();
+		return PaymentIntent.create(params);
 	}
 }
-

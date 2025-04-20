@@ -1,13 +1,12 @@
-import { CartItemType, DeliveryType } from "../types/types";
+import { CartItem } from "../types/CartItem";
+import { DeliveryType } from "../types/DeliveryType";
 import { CartContextType } from "../types/CartContext";
-import React, { createContext, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import axios, { AxiosResponse } from "axios";
 
 
-// create context
 export const CartContext = createContext<CartContextType | undefined>(undefined);
 
-// CartProvider component to provide state
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [myCart, updateMyCart] = useState<CartItemType[]>([]);
     const [deliveryFee, setDeliveryFee] = useState(0);
@@ -42,10 +41,21 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
 
     return (
-        <CartContext.Provider value={{ myCart, updateMyCart, deliveryFee, setDeliveryFee, updatedQuantities, setUpdatedQuantities, retrieveCart, deliType, updateDeliType, retrieveDeliType,
+        <CartContext.Provider value={{
+            myCart, updateMyCart, deliveryFee, setDeliveryFee, updatedQuantities, setUpdatedQuantities, retrieveCart, deliType, updateDeliType, retrieveDeliType,
             selectedDeliveryType, setSelectedDeliveryType,
         }}>
             {children}
         </CartContext.Provider>
     );
 };
+
+
+export const useCartContext = () => {
+    const context = useContext(CartContext);
+    if (!context) {
+        throw new Error('useCart must be used within a CartProvider');
+    }
+    return context;
+};
+

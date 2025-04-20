@@ -1,23 +1,26 @@
 package sg.nus.iss.spring.backend.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
-import sg.nus.iss.spring.backend.interfacemethods.DeliveryService;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import sg.nus.iss.spring.backend.interfacemethods.DeliveryTypeService;
 import sg.nus.iss.spring.backend.model.DeliveryType;
-import sg.nus.iss.spring.backend.service.DeliveryServiceImpl;
+import sg.nus.iss.spring.backend.service.DeliveryTypeServiceImpl;
 
 import java.util.List;
 
-public class DeliveryController
+@RestController
+@RequestMapping("/api")
+public class DeliveryTypeController
 {
-    private DeliveryService deliveryService;
+    private final DeliveryTypeService deliveryTypeService;
 
-    public DeliveryController(DeliveryServiceImpl deliveryService) {
-        this.deliveryService = deliveryService;
+    public DeliveryTypeController(DeliveryTypeServiceImpl deliveryTypeService) {
+        this.deliveryTypeService = deliveryTypeService;
     }
 
     @GetMapping("/delivery-types")
     public List<DeliveryType> getAllDeliveryTypes() {
-        return deliveryService.getDeliType();
+        return deliveryTypeService.getDeliType();
     }
 }

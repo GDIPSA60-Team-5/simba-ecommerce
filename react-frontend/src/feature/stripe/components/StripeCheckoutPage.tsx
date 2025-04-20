@@ -26,7 +26,7 @@ export default function CheckoutPage() {
 
     const options = {
         clientSecret: clientSecret,
-        appearance: { 
+        appearance: {
             theme: 'stripe' as const,
         },
     };
@@ -102,16 +102,16 @@ export default function CheckoutPage() {
                                     <td className="py-3 pr-6">
                                         <div className="flex flex-col items-center gap-4">
                                             <img
-                                            src={myCartItem.product.imageUrl}
-                                            alt={myCartItem.product.name}
-                                            className="w-12 h-15 object-cover rounded"
+                                                src={myCartItem.product.imageUrl}
+                                                alt={myCartItem.product.name}
+                                                className="w-12 h-15 object-cover rounded"
                                             />
                                         </div>
                                     </td>
 
                                     <td className="w-2/3 pt-4 text-left">
                                         <span className="font-normal text-center break-words">{myCartItem.product.name}</span>
-                                        <br/><span className="font-light">Qty {myCartItem.quantity}</span>
+                                        <br /><span className="font-light">Qty {myCartItem.quantity}</span>
                                     </td>
 
                                     <td className="pt-4 text-right font-normal">
@@ -162,9 +162,9 @@ export default function CheckoutPage() {
 
             {!clientSecret && (
                 <div className="text-center">
-                    <img 
-                        src="/images/no-checkout-session.png" 
-                        alt="No Checkout Session" 
+                    <img
+                        src="/images/no-checkout-session.png"
+                        alt="No Checkout Session"
                         className="mx-auto w-70 h-70 mb-14"
                     />
                     <h1 className="text-3xl font-bold text-red-600">No Active Checkout Session!</h1>
@@ -173,5 +173,5 @@ export default function CheckoutPage() {
             )}
 
         </div>
-    );      
+    );
 }
