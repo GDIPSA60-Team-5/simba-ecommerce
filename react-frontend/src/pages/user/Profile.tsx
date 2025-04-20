@@ -1,4 +1,3 @@
-// src/pages/user/Profile.tsx
 import { useEffect, useState, ChangeEvent, FormEvent } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
@@ -28,6 +27,7 @@ export default function Profile() {
   }, [user]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setError(null); // clear error on input
     setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
@@ -39,6 +39,7 @@ export default function Profile() {
       await axios.put(`/api/users/${profile.id}`, payload);
       setProfile(prev => ({ ...prev!, ...payload }));
       setEditMode(false);
+      setError(null);
     } catch (err: any) {
       console.error(err.response || err);
       setError(err.response?.data?.message || "Failed to save changes");
@@ -46,7 +47,6 @@ export default function Profile() {
   };
 
   if (loading) return <div className="p-6">Loading…</div>;
-  if (error) return <div className="p-6 text-red-500">{error}</div>;
   if (!profile) return null;
 
   return (
@@ -89,6 +89,7 @@ export default function Profile() {
                 onClick={() => {
                   setFormData(profile);
                   setEditMode(false);
+                  setError(null);
                 }}
                 className="px-2 py-1 text-xs bg-white text-gray-800 rounded hover:bg-gray-100"
               >
@@ -97,6 +98,12 @@ export default function Profile() {
             </>
           )}
         </div>
+
+        {error && (
+          <div className="mb-4 p-3 bg-red-100 text-red-700 border border-red-300 rounded text-sm">
+            {error}
+          </div>
+        )}
 
         <form onSubmit={handleSave}>
           <table className="table-auto w-full border-collapse">

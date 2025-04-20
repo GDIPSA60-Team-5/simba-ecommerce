@@ -8,6 +8,7 @@ import sg.nus.iss.spring.backend.service.CategoryServiceImpl;
 
 import java.util.List;
 
+/* Written By Li Xing Bang */
 @RestController
 @RequestMapping("/api/categories")
 public class CategoryController {

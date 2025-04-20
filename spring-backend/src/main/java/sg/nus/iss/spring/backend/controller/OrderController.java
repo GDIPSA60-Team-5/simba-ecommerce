@@ -15,6 +15,7 @@ import sg.nus.iss.spring.backend.util.SessionUtils;
 import java.time.LocalDate;
 import java.util.List;
 
+/* Written By Huang Jing Jia */
 @RestController
 @RequestMapping("/api/orders")
 public class OrderController {
@@ -49,6 +50,15 @@ public class OrderController {
         return ResponseEntity.ok(orders);
     }
 
+    @PutMapping("{orderId}/cancel")
+    public ResponseEntity<String> cancelOrder(@PathVariable Integer orderId) {
+        boolean success = orderService.cancelOrder(orderId);
+        if (success) {
+            return ResponseEntity.ok("Order cancelled successfully");
+        } else {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Unable to cancel order");
+        }
+    }
 
     @GetMapping("/{orderId}")
     public ResponseEntity<Order> getOrderDetails(@PathVariable("orderId") int orderId, HttpSession session) {

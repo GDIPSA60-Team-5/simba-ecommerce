@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import OrderAPI from "../services/OrderAPI";
 import { Order } from "../../../types/Order";
 
@@ -7,7 +7,7 @@ export const useUserOrders = (userId: number | undefined) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    useEffect(() => {
+    const fetchOrders = useCallback(() => {
         if (!userId) return;
         setLoading(true);
         setError(null);
@@ -18,5 +18,9 @@ export const useUserOrders = (userId: number | undefined) => {
             .finally(() => setLoading(false));
     }, [userId]);
 
-    return { orders, loading, error };
+    useEffect(() => {
+        fetchOrders();
+    }, [fetchOrders]);
+
+    return { orders, loading, error, refreshOrders: fetchOrders };
 };

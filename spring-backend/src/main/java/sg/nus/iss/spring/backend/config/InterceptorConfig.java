@@ -7,6 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import sg.nus.iss.spring.backend.Interceptor.SecurityInterceptor;
 
+/* Written By Zhang Rui */
 @Component
 public class InterceptorConfig implements WebMvcConfigurer{
     @Autowired

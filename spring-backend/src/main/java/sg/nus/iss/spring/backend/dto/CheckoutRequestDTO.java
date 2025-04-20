@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-
+/* Written By Phyo Nyi Nyi Paing, Aung Myin Moe */
 public class CheckoutRequestDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	

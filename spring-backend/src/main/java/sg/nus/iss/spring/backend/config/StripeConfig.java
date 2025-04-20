@@ -7,6 +7,8 @@ import com.stripe.Stripe;
 
 import jakarta.annotation.PostConstruct;
 
+
+/* Written By Aung Myin Moe */
 @Configuration
 public class StripeConfig {
 	@Value("${stripe.secret.key}")

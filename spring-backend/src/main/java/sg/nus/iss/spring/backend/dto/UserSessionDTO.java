@@ -1,6 +1,7 @@
 package sg.nus.iss.spring.backend.dto;
 
 import sg.nus.iss.spring.backend.enums.Role;
+/* Written By Phyo Nyi Nyi Paing */
 
 public class UserSessionDTO {
     private int id;

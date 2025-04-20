@@ -12,6 +12,7 @@ import sg.nus.iss.spring.backend.model.User;
 import sg.nus.iss.spring.backend.repository.UserRepository;
 import sg.nus.iss.spring.backend.util.SessionUtils;
 
+/* Written By Phyo Nyi Nyi Paing */
 @Service
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;

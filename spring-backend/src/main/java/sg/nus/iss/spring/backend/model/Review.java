@@ -1,6 +1,8 @@
 package sg.nus.iss.spring.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+
 import java.time.LocalDateTime;
 
 
@@ -19,6 +21,7 @@ public class Review {
     @JoinColumn(name="user_id", nullable = false)
     private User user;
 
+    @Size(max = 250, message = "Comment must not exceed 225 characters")
     private String comment;
 
     private float rating;

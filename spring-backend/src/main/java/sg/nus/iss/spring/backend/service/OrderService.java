@@ -9,7 +9,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
+/* Written by Huang Jing Jia */
 @Service
 public class OrderService {
 
@@ -40,6 +42,18 @@ public class OrderService {
     public void saveOrder(Order order) {
         orderRepository.save(order);
     }
+
+    public boolean cancelOrder(Integer orderId) {
+        Optional<Order> optionalOrder = orderRepository.findById(orderId);
+        if (optionalOrder.isEmpty()) return false;
+
+        Order order = optionalOrder.get();
+
+        order.setStatus(OrderStatus.CANCELLING);
+        orderRepository.save(order);
+        return true;
+    }
+
 
     public void deleteOrder(int orderId) {
         orderRepository.deleteById(orderId);

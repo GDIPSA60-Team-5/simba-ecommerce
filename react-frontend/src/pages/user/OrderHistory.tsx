@@ -10,7 +10,7 @@ import { Order } from "../../types/Order";
 
 const OrderHistory = () => {
   const { user } = useAuth();
-  const { orders, loading, error } = useUserOrders(user?.id);
+  const { orders, loading, error, refreshOrders } = useUserOrders(user?.id);
   const [filter, setFilter] = useState<OrderStatus>(OrderStatus.All);
   const [activeButton, setActiveButton] = useState<OrderStatus>(OrderStatus.All);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -25,8 +25,18 @@ const OrderHistory = () => {
   const filteredOrders =
     filter === OrderStatus.All ? orders : orders.filter((o) => o.status === filter);
 
-  const handleCancel = (orderNumber: number) => {
-    console.log(`Cancel order #${orderNumber}`);
+  const handleCancel = async (orderId: number) => {
+    const confirm = window.confirm(`Are you sure you want to cancel order #${orderId}?`);
+    if (!confirm) return;
+
+    try {
+      await axios.put(`/api/orders/${orderId}/cancel`);
+      alert(`Order #${orderId} cancelled.`);
+      refreshOrders();
+    } catch (err) {
+      alert("Failed to cancel the order. Please try again.");
+      console.error(err);
+    }
   };
 
   const handleView = async (orderNumber: number) => {

@@ -13,6 +13,7 @@ import sg.nus.iss.spring.backend.interfacemethods.AuthService;
 import sg.nus.iss.spring.backend.enums.Role;
 import sg.nus.iss.spring.backend.service.AuthServiceImpl;
 
+/* Written By Phyo Nyi Nyi Paing */
 @RestController
 @RequestMapping("/api/admin/auth")
 public class AdminAuthController {
