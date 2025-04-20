@@ -33,7 +33,6 @@ const NavBar = () => {
                     <ul className="flex items-center mt-[30px] gap-[42px] self-stretch w-full">
                         <li><Link to="/">HOME</Link></li>
                         <li><Link to="/books">BOOKS</Link></li>
-                        <li><Link to="/bestsellers">BESTSELLERS</Link></li>
                         <li><Link to="/contact">CONTACT</Link></li>
                     </ul>
                 </nav>
