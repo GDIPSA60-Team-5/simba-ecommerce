@@ -15,7 +15,6 @@ public class InterceptorConfig implements WebMvcConfigurer{
     public void addInterceptors(InterceptorRegistry registry) {
         // This interceptor only takes care of the URL paths stated below
         registry.addInterceptor(securityInterceptor)
-                .addPathPatterns("/api/orders/*","/api/cart/*","/api/cart");
-
+                .addPathPatterns("/api/orders/**","/api/cart/**", "/api/auth/logout");
     }
 }
