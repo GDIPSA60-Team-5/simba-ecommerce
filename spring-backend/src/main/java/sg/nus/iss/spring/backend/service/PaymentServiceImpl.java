@@ -63,6 +63,9 @@ public class PaymentServiceImpl implements PaymentService {
 
 	    // Final total
 	    BigDecimal grandTotal = subTotal.add(gstAmount).add(deliFee);
+	    
+	    // Add grand total to the session to use it later
+	    session.setAttribute("order_grand_total", grandTotal.floatValue());
 
 	    // Convert to cents for Stripe
 	    long amountInCents = grandTotal.multiply(BigDecimal.valueOf(100)).longValue();
@@ -92,16 +95,26 @@ public class PaymentServiceImpl implements PaymentService {
 		 * 4. get the payment method type
 		 */
 	    
-	    PaymentIntent paymentIntent = PaymentIntent.retrieve(
-	        paymentIntentId,
-	        PaymentIntentRetrieveParams.builder()
-	            .addExpand("payment_method")  // important: expand this!
-	            .build(),
-	        null
-	    );
-	    
-	    PaymentMethod paymentMethod = paymentIntent.getPaymentMethodObject();
-	    return paymentMethod.getType(); // "card", "paynow", etc.
+		if (paymentIntentId == null || !paymentIntentId.startsWith("pi_")) {
+	        throw new IllegalArgumentException("Invalid Payment Intent ID");
+	    }
+
+	    try {
+	        PaymentIntent paymentIntent = PaymentIntent.retrieve(
+	            paymentIntentId,
+	            PaymentIntentRetrieveParams.builder()
+	                .addExpand("payment_method")
+	                .build(),
+	            null
+	        );
+
+	        PaymentMethod paymentMethod = paymentIntent.getPaymentMethodObject();
+	        return paymentMethod.getType();  // e.g., "card", "paynow"
+
+	    } catch (StripeException e) {
+	        // Log or rethrow depending on your app's needs
+	        throw new RuntimeException("Failed to retrieve PaymentIntent from Stripe", e);
+	    }
 	}
 }
 

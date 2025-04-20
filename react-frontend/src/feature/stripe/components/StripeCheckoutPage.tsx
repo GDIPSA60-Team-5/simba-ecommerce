@@ -142,7 +142,7 @@ export default function CheckoutPage() {
                             </tr>
                             <tr className="align-top text-left">
                                 <td className="py-3 pr-6"></td>
-                                <td className="w-2/3 pt-4 font-bold border-t border-gray-800">TOTAL</td>
+                                <td className="pt-4 font-bold border-t border-gray-800">TOTAL</td>
                                 <td className="pt-4 text-right font-bold border-t border-gray-800">
                                     SGD {grandTotal().toFixed(2)}
                                 </td>
