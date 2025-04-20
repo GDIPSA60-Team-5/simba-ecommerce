@@ -27,7 +27,8 @@ const CartApi = {
     },
 
     async deleteAll() {
-        const response = await apiClient.post("/cart/delete");
+        const response = await apiClient.delete("/cart/delete");
+        console.log(response);
         return response.data;
     },
 

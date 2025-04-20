@@ -1,4 +1,3 @@
-import { CartItem } from '../../../types/CartItem';
 import { CartItemRow } from ".";
 import { JSX } from 'react';
 import { useCartContext } from '../../../context/CartContext';
