@@ -36,17 +36,12 @@ export default function ListCartItem(): JSX.Element {
     const handleSubmitOrder = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
 
-        if (!selectedDeliveryType) {
-            alert("Please select a delivery type before submitting.");
-            return;
-        }
-
         const shippingAddressElement = document.getElementById('shippingAddress') as HTMLTextAreaElement;
         const shippingAddress = shippingAddressElement?.value;
 
         const orderDetails = {
-            deliveryTypeId: selectedDeliveryType.id,
-            shippingAddress,
+            deliveryTypeId: selectedDeliveryType?.id ?? null,
+            shippingAddress: shippingAddress,
         };
 
         submitOrder(orderDetails);
