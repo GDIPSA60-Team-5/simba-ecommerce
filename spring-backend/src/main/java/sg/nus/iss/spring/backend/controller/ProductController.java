@@ -8,7 +8,6 @@ import sg.nus.iss.spring.backend.dto.ProductFilterRequestDTO;
 import sg.nus.iss.spring.backend.interfacemethods.ProductService;
 import sg.nus.iss.spring.backend.model.Product;
 import sg.nus.iss.spring.backend.service.ProductServiceImpl;
-import java.util.List;
 
 /* Written By Li Xing Bang */
 @RestController

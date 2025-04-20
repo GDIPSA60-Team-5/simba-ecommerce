@@ -23,3 +23,5 @@ Using npm:
 ```bash
 npm run dev
 ```
+
+That is all needed to run the front end

@@ -75,7 +75,7 @@ public class ReviewServiceImpl implements ReviewService {
         review.setUser(user);
         review.setProduct(product);
         review.setRating(reviewContent.getRating());
-        review.setComment(reviewContent.getContent());
+        review.setComment(reviewContent.getComment());
         review.setCreatedAt(LocalDateTime.now());
 
         return reviewRepository.save(review);
