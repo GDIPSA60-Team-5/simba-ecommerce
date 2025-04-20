@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -23,6 +24,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import sg.nus.iss.spring.backend.dto.CheckoutRequestDTO;
 import sg.nus.iss.spring.backend.dto.CheckoutResponseDTO;
+import sg.nus.iss.spring.backend.exception.auth.UserNotAuthenticatedException;
 import sg.nus.iss.spring.backend.interfacemethods.CartService;
 import sg.nus.iss.spring.backend.interfacemethods.PaymentService;
 import sg.nus.iss.spring.backend.model.CartItem;
@@ -164,10 +166,16 @@ public class CartController {
 
 	//Done by Haziq:
 	@PostMapping("/cart/add")
-	public ResponseEntity<String> addToCart(HttpSession session, @RequestParam int productId){
+	public ResponseEntity<?> addToCart(HttpSession session, @RequestParam int productId){
+		try {
 		User user = SessionUtils.getUserFromSession(session);
 		cartService.addToCart(user, productId, DEFAULT_CART_QUANTITY);
 		return ResponseEntity.ok("Product added to cart");
+		} catch (UserNotAuthenticatedException e) {
+			return ResponseEntity
+					.status(HttpStatus.UNAUTHORIZED)
+					.body(Map.of("message", "You must be logged in to view cart."));
+		}
 	}
 
 	@DeleteMapping("/cart/remove/{productId}")
