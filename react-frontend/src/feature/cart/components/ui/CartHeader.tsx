@@ -6,9 +6,9 @@ export const CartHeader = () => {
             <Link
                 type="button"
                 to="/books"
-                className="text-gray-700 hover:text-gray-900 active:text-gray-900 font-medium transition-colors duration-200 transform hover:scale-110 active:scale-100"
+                className="text-gray-700 hover:text-gray-900 active:text-gray-900 font-medium transition-all duration-200 transform hover:underline hover:scale-110 active:scale-100"
             >
-                &#x25c0; BACK TO SHOPPING
+                &#8592; BACK TO SHOPPING
             </Link>
 
             {/* Title centered absolutely */}
