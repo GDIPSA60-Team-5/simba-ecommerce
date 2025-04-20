@@ -1,7 +1,7 @@
-import { User } from "../types/User";
+import { UserSessionDTO } from "../types/dto/UserSessionDTO";
 
 interface ProfilePictureProps {
-    user: User | null;
+    user: UserSessionDTO | null;
     height?: string;
 }
 
