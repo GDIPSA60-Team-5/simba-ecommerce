@@ -11,7 +11,7 @@ interface ReviewFormProps {
 }
 export const ReviewForm = ({ refreshReviews, userHasReview }: ReviewFormProps) => {
     const { user, isAuthenticated, loading } = useAuth();
-    const { content, setContent, handleSubmit, error, submitting, rating, setRating } = useReviewForm(() => {
+    const { comment, setComment, handleSubmit, error, submitting, rating, setRating } = useReviewForm(() => {
         refreshReviews();
     });
 
@@ -20,7 +20,7 @@ export const ReviewForm = ({ refreshReviews, userHasReview }: ReviewFormProps) =
     if (!isAuthenticated) {
         return (
             <div className="text-center text-3xl mb-15 font-light">
-                <Link to="/signup" className="font-light">Sign up</Link> to leave your review
+                <Link to="/signup" className="font-light underline hover:text-black/50">Sign up</Link> to leave your review
             </div>
         );
     }
@@ -43,8 +43,8 @@ export const ReviewForm = ({ refreshReviews, userHasReview }: ReviewFormProps) =
                 <div className="flex flex-col">
                     <div className="flex gap-5 mb-3">
                         <input
-                            value={content}
-                            onChange={(e) => setContent(e.target.value)}
+                            value={comment}
+                            onChange={(e) => setComment(e.target.value)}
                             className="w-[400px] focus:outline-none border-b-black border-b"
                             type="text"
                             placeholder="Read the book? Express your thoughts..."
