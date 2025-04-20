@@ -8,146 +8,175 @@ const PurchaseHistory = () => {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [filter, setFilter] = useState('All');
-  const [activeButton, setActiveButton] = useState('All');
 
+  type Tab = "All" | "Shipping" | "Delivered" | "Cancelled" | "Returned";
+  const [filter, setFilter] = useState<Tab>("All");
 
+  const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [viewLoading, setViewLoading] = useState(false);
+  const [viewError, setViewError] = useState<string | null>(null);
+
+  const welcomeMessage = "Thank you for becoming our member.";
+  const [displayedText, setDisplayedText] = useState("");
+  const [showMessage, setShowMessage] = useState(true);
+
+  useEffect(() => {
+    let i = 0;
+    const interval = setInterval(() => {
+      setDisplayedText(welcomeMessage.slice(0, i + 1));
+      i++;
+      if (i === welcomeMessage.length) {
+        clearInterval(interval);
+        setTimeout(() => setShowMessage(false), 1000);
+      }
+    }, 50);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     if (!user) return;
-
     setLoading(true);
-    setError(null);
+    axios
+      .get<Order[]>(`/api/orders/user/${user.id}`)
+      .then(({ data }) => setOrders(data))
+      .catch(() => setError("Failed to load orders"))
+      .finally(() => setLoading(false));
+  }, [user]);
 
-    axios.get(`/api/orders/user/${user.id}`)
-      .then((response) => {
-        setOrders(response.data)
-      }).catch((error) => {
-        setError("Failed to fetch orders");
-        console.error(error);
-      }).finally(() => {
-        setLoading(false);
-      });
-  }, []);
-
-  const filterOrders = (status: string) => {
-    setFilter(status);
-    setActiveButton(status);
+  const handleView = async (order: Order) => {
+    if (order.orderItems?.length) {
+      setSelectedOrder(order);
+      return;
+    }
+    setViewLoading(true);
+    setViewError(null);
+    try {
+      const { data } = await axios.get<Order>(`/api/orders/${order.id}`);
+      setSelectedOrder(data);
+    } catch {
+      setViewError("Failed to load order details");
+    } finally {
+      setViewLoading(false);
+    }
   };
 
+  const filteredOrders = orders.filter(o => {
+    if (filter === "All") return true;
+    return o.status.toLowerCase() === filter.toLowerCase();
+  });
 
-  const filteredOrders = filter === 'All' ? orders : orders.filter(order => order.status === filter);
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
+  if (loading) return <div className="p-6">Loading…</div>;
+  if (error) return <div className="p-6 text-red-500">{error}</div>;
 
   return (
-
-    <div className="w-3/4 p-6">
-      <div className="flex justify-between items-center mb-6">
-        <button className="text-[11px] text-gray-700 hover:text-gray-900">← BACK TO PROFILE</button>
-        <h1 className="text-[11px] text-gray-800 font-semibold">PROFILE / ORDERS</h1>
-      </div>
-
-      <>
-        <div className="flex justify-center mb-6">
-          <h2 className="text-[30px] text-gray-800 font-bold">Your Orders</h2>
-        </div>
-
-        <div className="flex justify-evenly w-full mb-6">
-          <button
-            onClick={() => filterOrders('All')}
-            className={`w-1/5 text-center relative ${activeButton === 'All' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
-          >
-            All
-            {activeButton === 'All' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
-          </button>
-          <button
-            onClick={() => filterOrders('Shipping')}
-            className={`w-1/5 text-center relative ${activeButton === 'Shipped' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
-          >
-            Shipping
-            {activeButton === 'Shipped' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
-          </button>
-          <button
-            onClick={() => filterOrders('Delivered')}
-            className={`w-1/5 text-center relative ${activeButton === 'Delivered' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
-          >
-            Delivered
-            {activeButton === 'Delivered' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
-          </button>
-          <button
-            onClick={() => filterOrders('Cancelled')}
-            className={`w-1/5 text-center relative ${activeButton === 'Cancelled' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
-          >
-            Cancelled
-            {activeButton === 'Cancelled' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
-          </button>
-          <button
-            onClick={() => filterOrders('Returned')}
-            className={`w-1/5 text-center relative ${activeButton === 'Returned' ? 'text-black text-[13px]' : 'text-gray-300'} rounded-[7px]`}
-          >
-            Returned
-            {activeButton === 'Returned' && <span className="absolute mt-4 left-1/2 transform -translate-x-1/2 text-3xl">•</span>}
-          </button>
-        </div>
-
-        {
-          filteredOrders.length > 0 ? (
-            filteredOrders.map((order, index) => (
-              <div key={index} className="border p-6 my-4 rounded-lg shadow-lg bg-white border-gray-300">
-                <div className="flex justify-between items-center">
-                  <div className="text-gray-700 font-bold text-[11px]">Order Status:</div>
-                  <div className="text-gray-700 text-[14px]">{order.status}</div>
-                </div>
-
-                <div className="flex space-x-4 mt-4">
-                  <img
-                    src={order.orderItems[1].product.imageUrl}
-                    alt={order.orderItems[1].product.name}
-                    className="w-32 h-48 object-cover"
-                  />
-
-                  <div className="space-y-2 ml-4">
-                    <p className="text-gray-600">Order No: #{order.id}</p>
-                    <p className="text-gray-600">Order Date: {order.dateTime}</p>
-                    <p className="text-gray-600">Books Total: {order.orderItems.length}</p>
-                    <p className="text-gray-800 text-[18px]">Total Price: ${order.totalAmount}</p>
+    <div className="flex flex-col min-h-screen p-1">
+      {showMessage ? (
+        <p className="text-3xl font-bold text-center">{displayedText}</p>
+      ) : (
+        <>
+          <div className="w-4/5 mx-auto p-6">
+            <div className="flex justify-between items-center mb-6 text-xs">
+              <button className="text-gray-700 hover:text-gray-900">&larr; BACK TO PROFILE</button>
+              <span className="font-semibold">PROFILE / ORDERS</span>
+            </div>
+            <h1 className="text-3xl font-bold text-center mb-8">Your Orders</h1>
+            <div className="flex justify-evenly mb-10">
+              {(["All","Shipping","Delivered","Cancelled","Returned"] as Tab[]).map(tab => (
+                <button
+                  key={tab}
+                  className={`relative w-1/5 text-center ${filter === tab ? "text-black font-semibold" : "text-gray-400"}`}
+                  onClick={() => setFilter(tab)}
+                >
+                  {tab}
+                  {filter === tab && <span className="absolute left-1/2 -translate-x-1/2 mt-4 text-3xl">•</span>}
+                </button>
+              ))}
+            </div>
+            {filteredOrders.length === 0 ? (
+              <p className="text-center text-gray-500">No purchase history found.</p>
+            ) : (
+              filteredOrders.map(order => (
+                <div key={order.id} className="border border-gray-300 p-6 mb-8 rounded-lg shadow bg-white">
+                  <div className="flex justify-between items-center text-sm mb-4">
+                    <span className="font-semibold">Order Status:</span>
+                    <span className="tracking-wide">{order.status}</span>
+                  </div>
+                  <div className="flex gap-4">
+                    {order.orderItems?.[0] && (
+                      <img
+                        src={order.orderItems[0].product.imageUrl}
+                        alt={order.orderItems[0].product.name}
+                        className="w-24 h-36 object-cover rounded"
+                      />
+                    )}
+                    <div className="space-y-1">
+                      <p>Order No: #{order.id}</p>
+                      <p>Order Date: {order.dateTime}</p>
+                      <p>Items Total: {order.orderItems?.length ?? "-"}</p>
+                      <p className="font-semibold mt-1">Total Price: ${order.totalAmount.toFixed(2)}</p>
+                    </div>
+                  </div>
+                  <div className="border-t mt-6 pt-6 flex gap-4">
+                    <button
+                      className="px-6 py-2 border border-gray-300 hover:bg-gray-100"
+                      onClick={() => console.log("Cancel", order.id)}
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      className="px-8 py-2 text-white bg-black hover:bg-black/70"
+                      onClick={() => handleView(order)}
+                    >
+                      View
+                    </button>
                   </div>
                 </div>
-
-                <div className="border-t-2 my-4 border-gray-400"></div>
-                <div className="flex space-x-4 mt-4">
-                  <button
-                    onClick={() => handleCancel(order.id)}
-                    className=" text-black border border-black/10 px-6 py-2  bg-white hover:bg-gray-100 transition-color duration-300 cursor-pointer"
-                  >
-                    Cancel
-                  </button>
-
-                  <button
-                    onClick={() => handleView(order.id)}
-                    className=" text-white border border-transparent px-8 py-2  bg-black hover:bg-black/70 transition-color duration-300 cursor-pointer"
-                  >
-                    View
-                  </button>
-                </div>
+              ))
+            )}
+          </div>
+          {selectedOrder && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
+              <div className="relative bg-white w-[90%] md:w-2/3 lg:w-1/2 max-h-[90vh] overflow-y-auto p-8 rounded-xl shadow-2xl">
+                <button
+                  onClick={() => setSelectedOrder(null)}
+                  className="absolute top-4 right-4 text-xl text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+                <h2 className="text-2xl font-bold mb-4">
+                  Order #{selectedOrder.id}
+                  <span className="ml-3 text-base font-normal text-gray-500">({selectedOrder.status})</span>
+                </h2>
+                {viewLoading && <p className="mb-6">Loading…</p>}
+                {viewError && <p className="mb-6 text-red-500">{viewError}</p>}
+                {!viewLoading && !viewError && selectedOrder.orderItems.map(item => (
+                  <div key={item.id} className="flex gap-4 mb-6">
+                    <img
+                      src={item.product.imageUrl}
+                      alt={item.product.name}
+                      className="w-24 h-36 object-cover rounded"
+                    />
+                    <div className="flex-1">
+                      <p className="font-semibold">{item.product.name}</p>
+                      <p className="text-sm text-gray-500 mt-1">Quantity: {item.quantity}</p>
+                      <p className="text-sm mt-1">Unit Price: ${item.unitPriceAtTransaction.toFixed(2)}</p>
+                      <p className="font-medium mt-2">Subtotal: ${(item.unitPriceAtTransaction * item.quantity).toFixed(2)}</p>
+                    </div>
+                  </div>
+                ))}
+                {!viewLoading && !viewError && (
+                  <div className="border-t pt-4 text-right">
+                    <span className="font-bold text-lg">Order Total:</span>
+                    <span className="font-bold text-lg">${selectedOrder.totalAmount.toFixed(2)}</span>
+                  </div>
+                )}
               </div>
-            ))
-          ) : (
-            <p>No purchase history found.</p>
+            </div>
           )}
-      </>
+        </>
+      )}
     </div>
   );
-};
-
-const handleCancel = (orderNumber: number) => {
-  console.log(`Cancel order #${orderNumber}`);
-};
-
-const handleView = (orderNumber: number) => {
-  console.log(`View order #${orderNumber}`);
 };
 
 export default PurchaseHistory;
