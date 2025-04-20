@@ -133,11 +133,10 @@ export default function Register() {
         value={form[name]}
         onChange={handleChange}
         required={required}
-        className={`w-full border-b-2 py-1 px-2 outline-none transition ${
-          errorBorder
-            ? 'border-red-500 focus:border-red-500'
-            : 'border-gray-400 focus:border-black'
-        }`}
+        className={`w-full border-b-2 py-1 px-2 outline-none transition ${errorBorder
+          ? 'border-red-500 focus:border-red-500'
+          : 'border-gray-400 focus:border-black'
+          }`}
       />
     </div>
   );
@@ -159,7 +158,9 @@ export default function Register() {
               <p className="text-gray-700 font-medium animate-blink-caret">
                 {typed}
               </p>
+
             )}
+
           </div>
         </div>
         {typedDone && (
@@ -168,7 +169,7 @@ export default function Register() {
           </p>
         )}
         {typedDone && (
-          <Link to="/login" className="animate-fade-in mt-4">
+          <Link to="/login" className="underline animate-fade-in mt-4">
             Already a member? Sign in →
           </Link>
         )}
@@ -196,11 +197,10 @@ export default function Register() {
             </div>
 
             <div
-              className={`w-full overflow-hidden transition-all duration-500 ${
-                emailValid
-                  ? 'max-h-[240px] opacity-100 mt-6'
-                  : 'max-h-0 opacity-0'
-              }`}
+              className={`w-full overflow-hidden transition-all duration-500 ${emailValid
+                ? 'max-h-[240px] opacity-100 mt-6'
+                : 'max-h-0 opacity-0'
+                }`}
             >
               <div className="space-y-4">
                 {renderInput('Password', 'password', 'password', true, pwdMismatch)}
@@ -229,9 +229,8 @@ export default function Register() {
             </div>
 
             <div
-              className={`w-full overflow-hidden transition-all duration-500 ${
-                pwdOK ? 'max-h-[400px] opacity-100 mt-6' : 'max-h-0 opacity-0'
-              }`}
+              className={`w-full overflow-hidden transition-all duration-500 ${pwdOK ? 'max-h-[400px] opacity-100 mt-6' : 'max-h-0 opacity-0'
+                }`}
             >
               <div className="space-y-6">
                 {renderInput('Phone Number', 'phoneNumber')}
@@ -243,11 +242,10 @@ export default function Register() {
             <button
               type="submit"
               disabled={!pwdOK}
-              className={`w-full py-2 px-4 rounded-md text-white transition ${
-                pwdOK
-                  ? 'bg-black hover:bg-neutral-800'
-                  : 'bg-gray-400 cursor-not-allowed'
-              }`}
+              className={`w-full py-2 px-4 rounded-md text-white transition ${pwdOK
+                ? 'bg-black hover:bg-neutral-800'
+                : 'bg-gray-400 cursor-not-allowed'
+                }`}
             >
               Register
             </button>

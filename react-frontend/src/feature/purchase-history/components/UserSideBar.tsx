@@ -15,7 +15,7 @@ export const UserSideBar = () => {
                         key={item.path}
                         to={item.path}
                         className={({ isActive }) =>
-                            `w-full text-left text-[11px] flex items-center ${isActive ? "text-black text-[13px]" : "text-gray-500"
+                            `w-full text-left text-[16px] flex items-center ${isActive ? "text-black text-[16px]" : "text-gray-500"
                             }`
                         }
                     >
