@@ -7,8 +7,9 @@ import StarRating from "../../book-list/components/StarRating";
 
 interface ReviewFormProps {
     refreshReviews: () => void;
+    userHasReview?: boolean | null;
 }
-export const ReviewForm = ({ refreshReviews }: ReviewFormProps) => {
+export const ReviewForm = ({ refreshReviews, userHasReview }: ReviewFormProps) => {
     const { user, isAuthenticated, loading } = useAuth();
     const { content, setContent, handleSubmit, error, submitting, rating, setRating } = useReviewForm(() => {
         refreshReviews();
@@ -20,6 +21,14 @@ export const ReviewForm = ({ refreshReviews }: ReviewFormProps) => {
         return (
             <div className="text-center text-3xl mb-15 font-light">
                 <Link to="/signup" className="font-light">Sign up</Link> to leave your review
+            </div>
+        );
+    }
+
+    if (userHasReview) {
+        return (
+            <div className="text-center text-xl mb-10 font-light text-green-700">
+                ✅ Thank you for leaving a review!
             </div>
         );
     }
