@@ -126,7 +126,7 @@ public class CartController {
 		List<CartItem> cartItems = cartService.listCartItems(SessionUtils.getUserFromSession(session));
 
 		// get stripe session id from session and find payment type from stripe server
-		// String stripeSessionId = (String) session.getAttribute("stripe_session_id");
+		String paymentIntentId = body.get("payment_intent_id");
 		String paymentType = paymentService.getPaymentType(paymentIntentId);
 	    
 	    // save payment type in session
