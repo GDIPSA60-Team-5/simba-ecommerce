@@ -95,14 +95,11 @@ public class CartController {
 		    }
 
 		Integer deliveryTypeId = checkoutRequestDTO.getDeliveryTypeId();
-        DeliveryType selectedType = deliveryRepo.findById(deliveryTypeId).orElse(null);
-        if (selectedType == null) {
-            errors.put("deliveryType", "Invalid delivery type selected");
-        }
+		 if(deliveryTypeId != null) {
+			 DeliveryType selectedType = deliveryRepo.findById(deliveryTypeId).orElse(null);
+	        if (selectedType == null) errors.put("deliveryType", "Invalid delivery type selected");
+		 }
 
-        // save form input data into session
-		session.setAttribute("order_data", checkoutRequestDTO);
-		
 		List<CartItem> cartItems = cartService.listCartItems(SessionUtils.getUserFromSession(session));
 
 		if (cartItems.isEmpty()) {
@@ -112,7 +109,10 @@ public class CartController {
 		if (!errors.isEmpty()) {
 			return ResponseEntity.badRequest().body(errors);
 		}
-		
+
+		// save form input data into session
+		session.setAttribute("order_data", checkoutRequestDTO);
+
 		CheckoutResponseDTO response = paymentService.createStripeCheckoutSession(cartItems, session);
 		return ResponseEntity.ok(response);
 	}

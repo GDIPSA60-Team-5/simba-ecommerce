@@ -24,8 +24,8 @@ export function DeliveryOptions({ validationErrors }: DeliveryOptionsProps): JSX
     }, []);
 
     const handleDeliveryTypeChange = (e: React.ChangeEvent<HTMLSelectElement>): void => {
-        const selectedName = e.target.value;
-        const selected = deliveryTypes.find(type => type.name === selectedName) || null;
+        const selectedId = parseInt(e.target.value);
+        const selected = deliveryTypes.find(type => type.id === selectedId) || null;
         setSelectedDeliveryType(selected);
         setDeliveryFee(selected ? selected.fee : 0);
         sessionStorage.setItem("deliveryType", JSON.stringify(selected));
@@ -49,26 +49,26 @@ export function DeliveryOptions({ validationErrors }: DeliveryOptionsProps): JSX
                     name="deliveryType"
                     required
                     className="w-full p-3 bg-white border border-gray-300 rounded-sm shadow-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-gray-400 transition ease-in-out"
-                    value={selectedDeliveryType ? selectedDeliveryType.name : ""}
+                    value={selectedDeliveryType ? selectedDeliveryType.id : ""}
                     onChange={handleDeliveryTypeChange}
                 >
-                    <option value="" className="text-gray-400">
+                    <option value="0" className="text-gray-400">
                         -- Please select a delivery type --
                     </option>
                     {Array.isArray(deliveryTypes) &&
                         deliveryTypes.map((type) => (
                             <option
                                 key={type.id}
-                                value={type.name}
+                                value={type.id}
                                 className="text-gray-700 bg-white"
                             >
                                 {`${type.name} (SGD ${type.fee.toFixed(2)}) -- ${type.description} --`}
                             </option>
                         ))}
                 </select>
-                {validationErrors?.deliveryType && (
+                {validationErrors?.deliveryTypeId && (
                     <div className="text-red-600 mt-2 text-sm">
-                        {validationErrors.deliveryType}
+                        {validationErrors.deliveryTypeId}
                     </div>
                 )}
             </div>
