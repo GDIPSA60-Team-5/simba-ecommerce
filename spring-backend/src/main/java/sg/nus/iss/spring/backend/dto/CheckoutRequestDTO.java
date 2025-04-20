@@ -3,30 +3,31 @@ package sg.nus.iss.spring.backend.dto;
 import java.io.Serializable;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 
-public class OrderDetailsDTO implements Serializable {
+public class CheckoutRequestDTO implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	@NotBlank(message = "Delivery type is required")
-    private String deliveryType;
+	@NotNull(message = "Delivery type is required")
+    private Integer deliveryTypeId;
 	
 	@NotBlank(message = "Shipping address required")
 	@Size(min = 10, max = 255, message = "Address must be within 10 - 255 characters")
 	String shippingAddress;
 		
-	public OrderDetailsDTO(String deliveryType, String shippingAddress) {
-		this.deliveryType = deliveryType;
+	public CheckoutRequestDTO(Integer deliveryTypeId, String shippingAddress) {
+		this.deliveryTypeId = deliveryTypeId;
 		this.shippingAddress = shippingAddress;
 	}
 
-	public String getDeliveryType() {
-		return deliveryType;
+	public Integer getDeliveryTypeId() {
+		return deliveryTypeId;
 	}
 
-	public void setDeliveryType(String deliveryType) {
-		this.deliveryType = deliveryType;
+	public void setDeliveryTypeId(Integer deliveryTypeId) {
+		this.deliveryTypeId = deliveryTypeId;
 	}
 
 	public String getShippingAddress() {

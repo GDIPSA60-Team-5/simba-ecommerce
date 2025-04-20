@@ -6,9 +6,10 @@ import java.util.Map;
 import com.stripe.exception.StripeException;
 
 import jakarta.servlet.http.HttpSession;
+import sg.nus.iss.spring.backend.dto.CheckoutResponseDTO;
 import sg.nus.iss.spring.backend.model.CartItem;
 
 public interface PaymentService {
-	Map<String, Object> createStripeCheckoutSession(List<CartItem> cartItems, HttpSession session) throws StripeException, Exception;
+	CheckoutResponseDTO createStripeCheckoutSession(List<CartItem> cartItems, HttpSession session) throws StripeException, Exception;
 	String getPaymentType(String stripeSessionId) throws StripeException;
 }

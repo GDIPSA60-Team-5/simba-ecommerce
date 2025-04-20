@@ -14,11 +14,11 @@ const CheckoutForm = () => {
         if (!stripe || !elements) return;
 
         setIsProcessing(true);
-        
+
         const result = await stripe.confirmPayment({
             elements,
             confirmParams: {
-            return_url: "http://localhost:8080/api/payment/success", // Replace with your frontend route
+                return_url: "http://localhost:8080/",
             },
         });
 

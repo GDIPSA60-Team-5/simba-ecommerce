@@ -1,6 +1,8 @@
 package sg.nus.iss.spring.backend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*;
 import sg.nus.iss.spring.backend.enums.Role;
 
 import java.io.Serializable;
@@ -11,45 +13,56 @@ import java.util.List;
 @Table(name = "users")
 public class User implements Serializable {
 	private static final long serialVersionUID = 1L;
-	
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @NotBlank(message = "Username is required")
+    @Size(max = 50, message = "Username must not exceed 50 characters")
     @Column(nullable = false, unique = true, length = 50)
     private String username;
 
+    @NotBlank(message = "Password is required")
+    @Size(min = 6, message = "Password must be at least 6 characters long")
     @Column(nullable = false)
     private String password;
 
+    @NotBlank(message = "First name is required")
+    @Size(max = 50, message = "First name must not exceed 50 characters")
     @Column(name = "first_name", nullable = false, length = 50)
     private String firstName;
 
+    @NotBlank(message = "Last name is required")
+    @Size(max = 50, message = "Last name must not exceed 50 characters")
     @Column(name = "last_name", nullable = false, length = 50)
     private String lastName;
 
+    @Pattern(regexp = "^\\+?[0-9. ()-]{7,25}$", message = "Invalid phone number")
     @Column(name = "phone_number", length = 20)
     private String phoneNumber;
 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Size(max = 255, message = "Address must not exceed 255 characters")
     @Column(length = 255)
     private String address;
 
+    @Past(message = "Date of birth must be in the past")
     @Column(name = "date_of_birth")
     @Temporal(TemporalType.DATE)
     private Date dateOfBirth;
 
+    public String getProfilePictureUrl() {
+        return profilePictureUrl;
+    }
+
+    @Size(max = 255)
     @Column(name = "profile_picture_url")
     private String profilePictureUrl;
-
-    @OneToMany(mappedBy = "user")
-    private List<Review> reviews;
-
-    // One to many mapping for UserCart
-    @OneToMany(mappedBy = "user")
-    private List<CartItem> cartItems;
 
     @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
@@ -151,5 +164,10 @@ public class User implements Serializable {
     public void setPassword(String password) {
         this.password = password;
     }
+
+    public void setProfilePictureUrl(String profilePictureUrl) {
+        this.profilePictureUrl = profilePictureUrl;
+    }
+
 }
 

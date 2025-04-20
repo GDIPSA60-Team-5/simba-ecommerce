@@ -1,32 +1,26 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import axios from 'axios';
-import { User } from '../types/User';
+import { UserSessionDTO } from '../types/dto/UserSessionDTO';
 
 
 interface AuthContextType {
-    user: User | null;
-    isAuthenticated: boolean;
-    isAdmin: boolean;
-    refreshUser: () => void;
-}
-
-interface AuthContextType {
-    user: User | null;
+    user: UserSessionDTO | null;
     isAuthenticated: boolean;
     isAdmin: boolean;
     refreshUser: () => void;
     loading: boolean;
 }
 
+
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [user, setUser] = useState<User | null>(null);
+    const [user, setUser] = useState<UserSessionDTO | null>(null);
     const [loading, setLoading] = useState(true);
 
     const refreshUser = () => {
         setLoading(true);
-        axios.get<User>('/api/auth/me', { withCredentials: true })
+        axios.get<UserSessionDTO>('/api/auth/me', { withCredentials: true })
             .then((res) => setUser(res.data))
             .catch(() => setUser(null))
             .finally(() => setLoading(false));

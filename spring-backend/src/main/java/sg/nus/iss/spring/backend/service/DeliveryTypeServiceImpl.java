@@ -5,12 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import sg.nus.iss.spring.backend.interfacemethods.DeliveryService;
+import sg.nus.iss.spring.backend.interfacemethods.DeliveryTypeService;
 import sg.nus.iss.spring.backend.model.DeliveryType;
 import sg.nus.iss.spring.backend.repository.DeliveryTypeRepository;
 
 @Service
-public class DeliveryServiceImpl implements DeliveryService {
+public class DeliveryTypeServiceImpl implements DeliveryTypeService {
 	@Autowired
 	DeliveryTypeRepository deliRepo;
 	
