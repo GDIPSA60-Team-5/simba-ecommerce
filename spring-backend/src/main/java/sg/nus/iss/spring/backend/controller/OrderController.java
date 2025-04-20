@@ -29,13 +29,13 @@ public class OrderController {
     @GetMapping("/user/{user}")
     public ResponseEntity<List<Order>> getAllOrders(
             @PathVariable(required = false) User user,
-            @RequestParam(required = false) String status,
+            @RequestParam(required = false) OrderStatus orderstatus,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateFrom,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dateTo,
             @RequestParam(required = false) Integer page,
             @RequestParam(required = false) Integer size) {
 
-        List<Order> orders = orderService.getAllOrdersFiltered(user, status, dateFrom, dateTo);
+        List<Order> orders = orderService.getAllOrdersFiltered(user, orderstatus, dateFrom, dateTo);
 
         if (page != null && size != null) {
             int fromIndex = page * size;
