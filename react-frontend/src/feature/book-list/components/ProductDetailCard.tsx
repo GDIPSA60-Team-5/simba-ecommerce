@@ -27,7 +27,7 @@ export const ProductDetailCard = () => {
                     {product.rating}
                 </div>
                 <p className="product-description">{product.description}</p>
-                <AddToCartButton productId={product.id} />
+                <AddToCartButton product={product} />
 
             </div>
         </div>

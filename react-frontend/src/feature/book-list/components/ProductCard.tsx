@@ -43,7 +43,7 @@ export function ProductCard({ product }: { product: Product }) {
         <img src={cartIcon} width={20} alt="" />
       </button> */}
 
-      <AddToCartButton productId={product.id} />
+      <AddToCartButton product={product} />
 
     </div >
 

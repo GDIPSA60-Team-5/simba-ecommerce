@@ -1,16 +1,17 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 function CheckoutResult() {
     const navigate = useNavigate();
+    const hasSubmitted = useRef(false); // Add this ref to track submission
 
     useEffect(() => {
-        // Use window.location.search to make sure it works on fresh reloads
+        if (hasSubmitted.current) return; // Prevent double submission
+        hasSubmitted.current = true;
+
         const queryParams = new URLSearchParams(window.location.search);
         const redirectStatus = queryParams.get('redirect_status');
         const paymentIntentId = queryParams.get('payment_intent');
-
-        console.log('Query params:', { redirectStatus, paymentIntentId });
 
         if (paymentIntentId && redirectStatus === "succeeded") {
             fetch("http://localhost:8080/api/payment/success", {
@@ -19,10 +20,9 @@ function CheckoutResult() {
                 credentials: 'include',
                 body: JSON.stringify({ payment_intent_id: paymentIntentId }),
             })
-                .then(res => res.json())
+                .then(res => res.text())
                 .then(data => {
                     console.log('Backend confirmation:', data);
-                    console.log('Payment Success!');
                     navigate("/account/orders");
                     setTimeout(() => {
                         alert("Payment Success!");
@@ -39,9 +39,7 @@ function CheckoutResult() {
         }
     }, [navigate]);
 
-    return (
-        <></>
-    );
+    return null;
 }
 
-export default CheckoutResult;
+export default CheckoutResult;
